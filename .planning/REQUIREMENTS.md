@@ -106,13 +106,47 @@ Which phases cover which requirements. Populated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (all v1 REQ-IDs) | — | Pending (unmapped until roadmap) |
+| ENV-01 | Phase 1 | Pending |
+| ENV-02 | Phase 1 | Pending |
+| ENV-03 | Phase 1 | Pending |
+| ENV-04 | Phase 3 | Pending |
+| ENV-05 | Phase 2 | Pending |
+| ENV-06 | Phase 3 | Pending |
+| GATE-01 | Phase 6 | Pending |
+| GATE-02 | Phase 6 | Pending |
+| GATE-03 | Phase 6 | Pending |
+| CHI-01 | Phase 1 | Pending |
+| CHI-02 | Phase 2 | Pending |
+| SRCH-01 | Phase 6 | Pending |
+| SRCH-02 | Phase 6 | Pending |
+| EXACT-01 | Phase 4 | Pending |
+| EXACT-02 | Phase 4 | Pending |
+| EXACT-03 | Phase 5 | Pending |
+| EXACT-04 | Phase 5 | Pending |
+| EXACT-05 | Phase 5 | Pending |
+| EXACT-06 | Phase 5 | Pending |
+| VRF-01 | Phase 2 | Pending |
+| VRF-02 | Phase 2 | Pending |
+| VRF-03 | Phase 6 | Pending |
+| CLI-01 | Phase 6 | Pending |
+| CLI-02 | Phase 6 | Pending |
+| POOL-0 | Phase 7 | Pending |
+| POOL-1 | Phase 8 | Pending |
+| POOL-2 | Phase 8 | Pending |
+| POOL-3 | Phase 9 | Pending |
+| POOL-4 | Phase 10 | Pending |
+| POOL-5 | Phase 10 | Pending |
+| POOL-6 | Phase 9 | Pending |
+| POOL-7 | Phase 12 | Pending |
+| ESC-01 | Phase 11 | Pending |
+| ESC-02 | Phase 11 | Pending |
+| ESC-03 | Phase 11 | Pending |
 
 **Coverage:**
 - v1 requirements: **35 total** (ENV 6, GATE 3, CHI 2, SRCH 2, EXACT 6, VRF 3, CLI 2, POOL 8, ESC 3)
-- Mapped to phases: 0
-- Unmapped: 35 ⚠️ (filled by roadmapper)
+- Mapped to phases: **35**
+- Unmapped: **0** ✓
 
 ---
 *Requirements defined: 2026-07-21*
-*Last updated: 2026-07-21 after initial definition*
+*Last updated: 2026-07-21 after roadmap creation (traceability mapped: 35/35 → Phases 1–12)*
