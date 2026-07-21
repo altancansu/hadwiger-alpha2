@@ -621,3 +621,42 @@ else:
 ```json
 [[2,20],[4,7],[8,18],[9,13],[12,27],[16,22],[17,24],[19,29],[26,28],[0],[1],[3],[10],[11],[21],[23]]
 ```
+
+---
+
+## Appendix E — Pinned verbatim: gate (§2), kill-battery runbook (§4), governing rules (§5)
+
+*Preserved from the source document because §2/§4/§5 were digested (not stored byte-exact) in the initial preservation, and the project-research agents flagged the exact G1–G6 definitions as needed downstream. Rendered in unicode; content is the author's §2/§4/§5.*
+
+### §2 — The gate: anatomy of a minimal counterexample
+
+Everything below is proven about a minimal counterexample G to the α=2 case (Plummer–Stiebitz–Toft 2003; Bosse 2019; Carter 2024; Costa–Luu–Wood–Yip 2025). The gate exists so that no compute is ever spent on a candidate that is dead on arrival, and it is run in increasing order of cost.
+
+| # | Requirement | Source / reason |
+|---|---|---|
+| G1 | n ≥ 31, n odd, n = 2χ(G) − 1 | Carter's computational bound; criticality |
+| G2 | H = Ḡ triangle-free with diameter 2 (equivalently: edge-maximal triangle-free) | no dominating edge may exist |
+| G3 | χ(G) ≥ 7, κ(G) ≥ χ(G), δ(G) ≥ χ(G)+1, G Hamiltonian, G vertex-critical, H − v has a perfect matching for all v | RST for K₆; PST properties |
+| G4 | 8 ≤ ω(G) ≤ χ(G) − 3, and clique ratio ω/n below ≈ 1/4 | K₈ is unavoidable (Carter; also R(3,8)=28); Chudnovsky–Seymour's seagull theorem builds the minor above the threshold |
+| G5 | Every non-adjacent pair lies in an induced C₅; G contains W₅, K₈, and all 33 of Carter's unavoidable graphs as induced subgraphs | unavoidability results |
+| G6 | G lies outside every proven-safe family | see list below |
+
+**Proven-safe families** (membership here is an instant kill): line graphs (Reed–Seymour); quasi-line graphs (Chudnovsky–Fradkin); C₅-free graphs (PST); inflations of any graph on ≤ 11 vertices (PST); inflations of complements of girth-≥5 graphs, including the 5-cycle, Petersen, and Hoffman–Singleton graphs; inflations of complements of triangle-free Kneser graphs; the Clebsch, Mesner, and Gewirtz complements and their inflations; the Higman–Sims complement (explicit K₅₀ model); Andrásfai and odd-anticycle inflations; the Eberhard Cayley complements; graphs with fractional clique cover number below 3 and even order (Blasiak); and any graph on ≤ 87 vertices for the connected-matching weakening (Füredi–Gyárfás–Simonyi; Chen–Deng). Most of these were verified in the December 2025 paper *because they resemble hypothetical counterexamples* — which is exactly why a candidate must clear them.
+
+### §4 — Phase 2: the kill battery (runbook)
+
+For each candidate graph, execute in order. Nothing counts as *found* until step 6's verifier passes; nothing counts as *absent* until an exact method proves it.
+
+1. **Gate.** Run G1–G6 in cost order; kill on first failure; log the reason and seed.
+2. **Exact chromatic number.** Build H, confirm triangle-freeness and edge-maximality, compute ν(H) by Edmonds blossom, set χ = n − ν. No estimates anywhere.
+3. **Heuristic model search, profile-general.** Search for a K_χ model with branch sets of size ≤ 2. Encode the seed-137 lesson: iterate over pair/singleton profiles (from all-pairs down to clique-heavy), seed clique-rich profiles from a greedy large clique, allow unused vertices, and repair conflicts with 3-set redistributions. Budget: 60 s.
+4. **Exact ILP.** Compute had₂(G) exactly (variables: candidate pairs and singletons; constraints: vertex-disjointness plus one pairwise-conflict inequality per obstructing C₄, path, or edge of H). Use symmetry-breaking for vertex-transitive candidates. This step is decisive in both directions for the size-≤2 question.
+5. **Branch-set-3 escalation.** If had₂(G) < χ exactly: first, record the instance as an **SHC candidate** — that inequality alone, verified, refutes Seymour's strengthening and is a prize independent of HC. Then attack HC proper with size-3 sets: check the Chudnovsky–Seymour seagull conditions, attempt clique-plus-seagull constructions, and extend the ILP with triple variables pruned by common-neighborhood emptiness (in a sparse triangle-free H, the common H-neighborhood of a connected triple is almost always empty, so triple-conflict constraints are few).
+6. **Verification.** Any model found, by any method, passes the independent verifier: branch sets disjoint, sizes valid, every pair an actual edge of G, all C(χ,2) cross-adjacencies present. Verified instances are appended to the certificate corpus with seed, edge list, model, and method. Status: **KILLED**.
+7. **Residue.** Anything not killed and not exactly resolved is **RESISTANT** and goes to Phase 3. Resistance is a statement about our searchers until an exact method says otherwise — seed 137 is the standing reminder that the first resistant instance we ever met was a bug in our own profile assumption, dissolved by the ILP in one run.
+
+### §5 — The two governing rules (Phase 3)
+
+**The Falsification Rule.** Any proposed "no K_k minor" argument must first be *mechanically executed* against the certificate corpus and must decline to prove impossibility on every instance where a verified model exists. An argument that "proves" non-existence for a graph holding a hand-checkable K_χ model is not evidence about the candidate — it is refuted, full stop. The corpus is thus not merely a results file; it is a falsification suite for bogus impossibility proofs, and it grows stronger with every kill.
+
+**The Monotonicity Audit.** Any invariant-based impossibility claim must use a genuinely minor-monotone invariant. The known list is short — essentially the Colin de Verdière parameter μ and its relatives — and even there, upper-bounding μ for a dense graph means proving no high-corank certifying matrix exists, which has no known certificate technique. The celebrated rank methods (Frankl–Wilson, slice rank, Haemers minrank), spectral gaps, and rigidity notions are not minor-monotone, because contraction destroys linear structure; they are disqualified at the door. Note the corpus already speaks here: each certificate proves μ(G) ≥ χ(G) − 1 on its instance, so a rank-flavored impossibility claim about a tested graph contradicts an explicitly checkable object.
