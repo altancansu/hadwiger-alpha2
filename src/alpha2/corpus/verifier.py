@@ -148,6 +148,13 @@ def verify_chi_witness(rec):
         if len(e) != 2:
             raise VerificationError(f"malformed M edge {e!r}")
         a, b = e
+        # CR-01: range-check BEFORE indexing adj. adj is a plain list, so a
+        # negative a/b silently wraps (adj[-1] == adj[n-1]) and would let a forged
+        # matching alias one vertex under two labels, slipping past `covered` and
+        # inflating |M| (hence nu, hence chi). Same 0 <= v < n discipline used for
+        # H_edges and tutte_berge_U.
+        if not (isinstance(a, int) and isinstance(b, int) and 0 <= a < n and 0 <= b < n):
+            raise VerificationError(f"M edge {(a, b)!r} vertex out of range [0,{n})")
         if b not in adj[a]:
             raise VerificationError(f"M edge {(a, b)} is not an H-edge")
         if a in covered or b in covered:

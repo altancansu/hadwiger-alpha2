@@ -118,6 +118,32 @@ def test_general_path_nonempty_witness_star():
     assert (4 - 3 + 1) // 2 == 1
 
 
+def test_cr01_negative_index_alias_in_matching_raises():
+    """CR-01 soundness repro: a negative-index vertex in matching_M must RAISE.
+
+    H = star at vertex 2 on n=3: edges (0,2),(1,2). TRUE nu=1 (both H-edges share
+    vertex 2; no size-2 matching exists), so TRUE chi = n - nu = 2. The forged
+    record claims nu=2 (=> chi=1) via matching_M=[[0,2],[-1,1]], where the literal
+    -1 aliases adj[-1] == adj[2] through Python list-index wraparound. The `covered`
+    set tracks the RAW values (0,2,-1,1) so it never sees the vertex-2 collision.
+    Before the range check verify_chi_witness returned True (a soundness break);
+    it must now raise VerificationError.
+    """
+    edges = [[0, 2], [1, 2]]
+    bad = {
+        "H_edges": edges,
+        "H_edges_sha256": _sha(edges),
+        "invariants": {
+            "n": 3, "num_H_edges": 2, "nu_H": 2, "chi_G": 1,
+            "omega_G": None, "had_2": 2,
+        },
+        "matching_M": [[0, 2], [-1, 1]],  # -1 aliases adj[-1] == adj[2] (n=3)
+        "tutte_berge_U": [0],             # crafted so the U-leg ALSO yields nu=2
+    }
+    with pytest.raises(VerificationError):
+        verify_chi_witness(bad)
+
+
 def test_wrong_chi_witness_mutant_raises():
     """Good seed-1 witness with chi_G lowered to 15 (n-nu=16 != 15) MUST raise.
 
