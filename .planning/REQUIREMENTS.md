@@ -42,7 +42,7 @@ Broad scope: the full program except Lean formalization (milestone 2). Each requ
 - [x] **EXACT-02**: A pulp/CBC backend implements `ExactBackend` as the reference solver (reproduces the 296) using obstruction-based constraint generation (enumerate C₄s/paths of triangle-free H) replacing the O(|E_G|²) loop, guarded by the structural-checksum assertion (conflict classes = H-edges / cherries Σ C(deg,2) / 4-cycles).
 - [x] **EXACT-03**: An OR-Tools CP-SAT backend implements `ExactBackend` for scale, using deterministic single-worker / `interleave_search` for any recorded impossibility claim.
 - [ ] **EXACT-04**: A differential harness cross-checks CBC and CP-SAT on shared instances (disagreement is release-blocking); an instance is tagged **SHC-CANDIDATE** only when BOTH backends prove optimality with equal had₂ < χ.
-- [ ] **EXACT-05**: Branch-set-3 (had₃) escalation is implemented behind a flag — triple variables ⟺ ≤1 H-edge (Chudnovsky–Seymour seagull tier first), pruned by empty common H-neighborhood; fires only on had₂ < χ; tested on synthetic size-3-forced instances.
+- [x] **EXACT-05**: Branch-set-3 (had₃) escalation is implemented behind a flag — triple variables ⟺ ≤1 H-edge (Chudnovsky–Seymour seagull tier first), pruned by empty common H-neighborhood; fires only on had₂ < χ; tested on synthetic size-3-forced instances.
 - [ ] **EXACT-06**: Symmetry-breaking (for vertex-transitive candidates) is assume-and-verify: it may accelerate the existence branch, but the impossibility branch always reruns without it (the H=C₅ "WLOG vertex unused" disaster is a regression test).
 
 ### Verifier & corpus — the trust root (VRF)
@@ -123,7 +123,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 | EXACT-02 | Phase 4 | Complete |
 | EXACT-03 | Phase 5 | Complete |
 | EXACT-04 | Phase 5 | Pending |
-| EXACT-05 | Phase 5 | Pending |
+| EXACT-05 | Phase 5 | Complete |
 | EXACT-06 | Phase 5 | Pending |
 | VRF-01 | Phase 2 | Complete |
 | VRF-02 | Phase 2 | Complete |

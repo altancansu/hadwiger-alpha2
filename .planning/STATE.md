@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: "Completed 05-01-PLAN.md — CP-SAT second exact backend (EXACT-03): C5->PROVED_OPTIMAL had_2=3 through trust root; FEASIBLE!=OPTIMAL status honesty; num_workers=1+seed determinism (1/7)"
-last_updated: "2026-07-22T08:59:00.131Z"
+last_updated: "2026-07-22T09:12:22.513Z"
 last_activity: 2026-07-22
 progress:
   total_phases: 12
   completed_phases: 4
   total_plans: 19
-  completed_plans: 12
+  completed_plans: 14
   percent: 33
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-07-21)
 ## Current Position
 
 Phase: 05 (cp-sat-differential-gate-had) — EXECUTING
-Plan: 2 of 7
+Plan: 3 of 7
 Status: Ready to execute
 Last activity: 2026-07-22
 
-Progress: [██████░░░░] 63%
+Progress: [███████░░░] 74%
 
 ## Performance Metrics
 
@@ -59,6 +59,7 @@ Progress: [██████░░░░] 63%
 | Phase 02 P01 | 12min | 3 tasks | 8 files |
 | Phase 02 P02 | 14min | 3 tasks | 5 files |
 | Phase 05 P01 | 12min | 3 tasks | 2 files |
+| Phase 05 P02 | 18min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -98,6 +99,8 @@ Execution decisions (Phase 02 Plan 02):
 - [Phase ?]: Phase 05 Plan 01: CP-SAT recorded-mode determinism is num_workers=1 + a pinned module-constant random_seed (137), resolving RESEARCH Open-Q4; interleave_search deliberately NOT used.
 - [Phase ?]: Phase 05 Plan 01: cpsat.py is the ONLY ortools importer; reuses the frozen build_had2_problem (no re-enumeration), mirrors cbc.py swapping pulp->cp_model.
 - [Phase ?]: Phase 05 Plan 01: CP-SAT non-optimal optimize bound = round(best_objective_bound) if finite else n, always bound_source='trivial_n' (no cbc_log analog invented).
+- [Phase ?]: Phase 05 Plan 02: had3.py checksum is a closed-form degree/codegree recompute independent of the enumeration (n_triples=C(n,3)-sum C(deg,2); n_conflicts=sum C(deg,3)+sum C(codeg,3)); reuses had2.ChecksumError; conflict scope = seagull/Tier-1 (triple-single+triple-pair from W(T)), Tier-2 triple-triple deferred
+- [Phase ?]: Phase 05 Plan 02: size-3-forced test uses a genuine had_2<had_3 (4<5) instance, NOT had_2<chi — no triangle-free H with had_2<chi is known (would be a Hadwiger counterexample); had_2<had_3 is the honest escalation signal
 
 ### Pending Todos
 
@@ -119,6 +122,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-22T08:59:00.122Z
+Last session: 2026-07-22T09:12:01.003Z
 Stopped at: Completed 05-01-PLAN.md — CP-SAT second exact backend (EXACT-03): C5->PROVED_OPTIMAL had_2=3 through trust root; FEASIBLE!=OPTIMAL status honesty; num_workers=1+seed determinism (1/7)
 Resume file: None
