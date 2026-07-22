@@ -36,7 +36,9 @@ jobs:
       - name: python -O assert-stripping canary
         # The trust root + corpus R1 must stay meaningful with asserts stripped
         # (Pitfall 6 / T-3-03): a rubber-stamp verifier would pass here otherwise.
-        run: uv run --frozen python -O -m pytest tests/test_verifier_dash_O.py tests/test_corpus_r1.py -q
+        # Phase 4 extends the canary over the solver path (T-4-05): the solver
+        # isolation guards + NotProvedOptimal/ChecksumError raises under -O.
+        run: uv run --frozen python -O -m pytest tests/test_verifier_dash_O.py tests/test_corpus_r1.py tests/test_solver_isolation.py -q
 
   # Scheduled/release gate: R3 replay (slow) + the full-296 R2 panel, on the
   # pinned 3.12.13 byte-reproduction interpreter (setup-uv reads .python-version).
