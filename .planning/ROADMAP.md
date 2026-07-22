@@ -179,7 +179,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Pinned Environment & Verbatim Port | 2/2 | Complete | 2026-07-22 |
+| 1. Pinned Environment & Verbatim Port | 2/2 | Complete    | 2026-07-22 |
 | 2. Trust Root & Corpus Schema | 0/TBD | Not started | - |
 | 3. Corpus Reproduction & CI (First Blood) | 0/TBD | Not started | - |
 | 4. ExactBackend & CBC Reference | 0/TBD | Not started | - |

@@ -108,7 +108,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 |-------------|-------|--------|
 | ENV-01 | Phase 1 | Complete |
 | ENV-02 | Phase 1 | Complete |
-| ENV-03 | Phase 1 | Pending |
+| ENV-03 | Phase 1 | Complete |
 | ENV-04 | Phase 3 | Pending |
 | ENV-05 | Phase 2 | Pending |
 | ENV-06 | Phase 3 | Pending |
