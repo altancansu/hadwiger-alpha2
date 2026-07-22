@@ -1,0 +1,34 @@
+[project]
+name = "alpha2"
+version = "0.1.0"
+description = "The alpha = 2 Program - reproducible Hadwiger triangle-free-process harness"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "networkx==3.6.1",
+    "pulp==3.3.2",
+    "ortools==9.15.6755",
+]
+
+[project.optional-dependencies]
+nauty = ["pynauty==2.8.8.1"]
+dev = ["pytest", "ruff"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/alpha2"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+# Determinism-sensitive modules must never be auto-rewritten (byte-reproduction
+# depends on CPython set-iteration order). Lint-only; never `ruff format`/`--fix`
+# these files.
+extend-exclude = [
+    "src/alpha2/generators/tfp.py",
+    "src/alpha2/search/heuristic.py",
+]
