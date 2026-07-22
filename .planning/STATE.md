@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
-last_updated: "2026-07-22T10:02:02.491Z"
+status: ready_to_plan
+stopped_at: Phase 5 complete (7/7) — ready to discuss Phase 6
+last_updated: 2026-07-22T10:09:15.731Z
 last_activity: 2026-07-22
 progress:
   total_phases: 12
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-21)
 
 **Core value:** Reconstruct the *attempt* under discipline — build the adversary so that anything surviving it is a correct road to a disproof, and anything dying leaves a machine-verified result; never invent the missing hour. Epistemic integrity (verified existence, radioactive impossibility) wins over speed, coverage, or narrative.
-**Current focus:** Phase 05 — cp-sat-differential-gate-had
+**Current focus:** Phase 6 — kill battery cli (gate, search, statuses)
 
 ## Current Position
 
-Phase: 05 (cp-sat-differential-gate-had) — EXECUTING
-Plan: 7 of 7
-Status: Phase complete — ready for verification
+Phase: 6
+Plan: Not started
+Status: Ready to plan
 Last activity: 2026-07-22
 
 Progress: [██████████] 100%
@@ -36,7 +36,7 @@ Progress: [██████████] 100%
 
 **Velocity:**
 
-- Total plans completed: 14
+- Total plans completed: 21
 - Average duration: ~8 min
 - Total execution time: ~0.5 hours
 
@@ -49,6 +49,7 @@ Progress: [██████████] 100%
 | 2 | 2 | - | - |
 | 03 | 4 | - | - |
 | 04 | 4 | - | - |
+| 5 | 7 | - | - |
 
 **Recent Trend:**
 

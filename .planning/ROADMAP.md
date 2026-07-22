@@ -200,7 +200,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 | 2. Trust Root & Corpus Schema | 2/2 | Complete    | 2026-07-22 |
 | 3. Corpus Reproduction & CI (First Blood) | 4/4 | Complete   | 2026-07-22 |
 | 4. ExactBackend & CBC Reference | 4/4 | Complete   | 2026-07-22 |
-| 5. CP-SAT, Differential Gate & had₃ | 7/7 | Complete   | 2026-07-22 |
+| 5. CP-SAT, Differential Gate & had₃ | 7/7 | Complete    | 2026-07-22 |
 | 6. Kill Battery CLI (Gate, Search, Statuses) | 0/TBD | Not started | - |
 | 7. P0 — CDM Frontier | 0/TBD | Not started | - |
 | 8. P1 & P2 — Seeded Families at Scale | 0/TBD | Not started | - |
