@@ -367,11 +367,16 @@ jobs:
   canary:
     runs-on: ubuntu-latest          # newer-Python drift canary (informational)
     continue-on-error: true         # catches random/set-order drift ON PURPOSE
+    env:
+      PYTHONPATH: src               # import alpha2 without a project install
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
-        with: { python-version: "3.13" }
-      - run: uv run pytest tests/test_corpus_r2.py tests/test_fingerprint.py -q
+      - uses: astral-sh/setup-uv@v6  # pin to a commit SHA in the real file
+      # --no-project bypasses pyproject's `requires-python = ">=3.12,<3.13"`, so the
+      # tests actually RUN under 3.13 and a genuine hash mismatch (not a resolution
+      # error) is what fails the job. requires-python stays pinned; 3.12.13 remains
+      # the byte-reproduction interpreter for every required job.
+      - run: uv run --no-project --isolated --python 3.13 --with networkx==3.6.1 --with pytest==8.3.4 pytest tests/test_corpus_r2.py tests/test_fingerprint.py -q
 ```
 *R3 (full `repro/` replay asserting identical corpus JSON) and the full-296 R2 panel run as a separate release/nightly job — slow, pinned to 3.12.13.*
 
@@ -404,21 +409,24 @@ jobs:
 
 **If this table is non-empty:** A1 and A2 are the load-bearing assumptions a `/gsd:discuss-phase` pass (or planner confirmation) should lock before execution.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Do all 296 become stored full certificates, or 27 stored + 269 regenerate-and-verify-live?**
    - What we know: SC1 says "re-verified from stored JSON alone" for all 296; the reference stored only 27.
    - What's unclear: whether "stored JSON" means a 296-record corpus or a 27-record corpus + a manifest that drives live regeneration of the 269.
    - Recommendation: store all 296 (A1) — it is the strongest reading of SC1, makes R1 a pure JSON re-verify, and the append-only store already supports it. Confirm with the author/planner.
+   - **Resolution (adopted, A1):** All 296 are stored as full self-contained schema-v1 certificates (not 27 stored + 269 regenerate-only); R1 re-verifies every record from stored JSON alone. Locked into Plans 01-03.
 
 2. **seed-137: carried D.3 literal (16-set) vs re-solved 17-set now?**
    - What we know: the roadmap puts CBC in Phase 4; Phase 2 stored the 16-set interim; Appendix D.3 shows a verifiable 16-set model.
    - What's unclear: whether SC1 "seed-137 included" is satisfied by the 16-set interim (it is a valid K₁₆ model) or demands the 17-set had_2 family.
    - Recommendation: carry the D.3 16-set literal (A2), keep Phase 3 solver-free; Phase 4 drops in the 17-set family with no schema change.
+   - **Resolution (adopted, A2):** seed-137 is stored ONCE as the Appendix D.3 16-set literal (had_2=16 interim; method string documents had_2=17), solver-free — no CBC/PuLP/CP-SAT in Phase 3. Locked into Plan 02 (seed137.py).
 
 3. **Sequential `append_certificate` vs a batch builder for the 296 freeze?**
    - What we know: the store is O(N²) on bulk load; witness extraction at n=501 is heavy.
    - Recommendation: measure the MVP sequential path first; only add a tested batch path if it's too slow (A3). Never weaken verify-at-append.
+   - **Resolution (adopted, A3):** The existing sequential `append_certificate` freeze is accepted for MVP (O(N²) but correct); no batch builder is introduced. Slow-freeze escape hatch (background run / raised timeout / reduced heuristic time_budget for the bulk pass) documented in Plans 01/02. Never weaken verify-at-append.
 
 ## Environment Availability
 

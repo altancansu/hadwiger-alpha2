@@ -44,7 +44,7 @@ A disciplined, fully reproducible harness that redoes the Hadwiger **α = 2 atte
 | Tool | Purpose | Notes |
 |------|---------|-------|
 | Homebrew `nauty` | Installs `geng`, `pickg`, `countg`, `shortg`, `labelg`, `showg` | Formula currently at 2.9.3 (verified). Nothing is installed on this machine yet — `which geng` fails today. |
-| GitHub Actions | CI: verifier + corpus fingerprint tests | Run on `ubuntu-latest` **and** macOS. Make **Linux x86_64 the canonical reference platform** for regenerating ILP-method certificates (see CBC platform note in Version Compatibility). |
+| GitHub Actions | CI: verifier + corpus fingerprint tests | Run on `ubuntu-latest` only; **Linux x86_64 is the canonical reference platform** for regenerating ILP-method certificates (see CBC platform note in Version Compatibility). macOS CI is **out of scope** per the reproduction-contract decision — the reproduction phase is solver-free and cross-platform byte-exact heuristic replay is explicitly excluded (REQUIREMENTS.md Out of Scope: "Byte-exact cross-platform / cross-interpreter heuristic replay"). |
 | `uv lock` / pinned `requirements.txt` | Freeze the five version numbers above | The program's "nothing rests on memory" rule applied to packaging |
 ## Installation
 # 1. nauty (geng, pickg, countg, shortg, labelg, showg)
