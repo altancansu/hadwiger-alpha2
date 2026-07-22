@@ -114,7 +114,12 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
   3. The G5/G6 known-safe screen is a maintained settled/open map with citations, consulted by the gate so proven terrain is never re-hunted.
   4. The heuristic iterates non-spanning profiles (p′+s′=χ, 2p′+s′≤n) and finds the seed-137-class model the spanning profile misses; restarts-to-solution and initial-conflict instrumentation are exposed for P7 fitness.
   5. Statuses (KILLED / SHC-CANDIDATE / RESISTANT) are derived views over the immutable corpus + append-only results log — every instance's terminal state carries method + certificate reference + reason + seed/provenance, transitions never edit stored records, and RESISTANT is reachable only via exact-method timeout.
-**Plans**: TBD
+**Plans**: 5 plans
+- [ ] 06-01-PLAN.md — Gate mechanism (G1–G6 cost-ordered chain, Role B tiers) + invariants/cliques (ω, κ); seed-137 passes the hard-set (GATE-01, GATE-02)
+- [ ] 06-02-PLAN.md — MVP e2e slice: `alpha2 battery` 7-step runbook + append-only JSONL results log; seed-137 in-memory had₂=17 verified kill (CLI-01, CLI-02)
+- [ ] 06-03-PLAN.md — Profile-general heuristic: non-spanning (p′,s′) iteration + instrumentation; finds the seed-137-class model (SRCH-01, SRCH-02)
+- [ ] 06-04-PLAN.md — Derived statuses (KILLED/SHC-CANDIDATE/RESISTANT, read-only) + G5/G6 safe-family map (VRF-03, GATE-03)
+- [ ] 06-05-PLAN.md — Gate-trust author sign-off checkpoint: §2↔FEATURES reconciliation + B₇ + Role A/B (GATE-02, non-blocking for SC1)
 **Research flags**: GATE-02 requires author input (pin exact original G1–G6 §2 definitions; confirm B₇ meaning in the PST citation) — gather early, needed before the gate is trusted.
 
 ### Phase 7: P0 — CDM Frontier
