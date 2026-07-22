@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 02-02-PLAN.md — schema v1 + append-only atomic store (verify-at-append + os.replace) + reproduction contract; Phase 02 complete (2/2)
-last_updated: "2026-07-22T03:00:00.000Z"
+status: ready_to_plan
+stopped_at: Phase 2 complete (2/2) — ready to discuss Phase 3
+last_updated: 2026-07-22T03:01:27.781Z
 last_activity: 2026-07-22
 progress:
   total_phases: 12
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-21)
 
 **Core value:** Reconstruct the *attempt* under discipline — build the adversary so that anything surviving it is a correct road to a disproof, and anything dying leaves a machine-verified result; never invent the missing hour. Epistemic integrity (verified existence, radioactive impossibility) wins over speed, coverage, or narrative.
-**Current focus:** Phase 03 — corpus-reproduction-ci (First Blood)
+**Current focus:** Phase 3 — corpus reproduction & ci (first blood)
 
 ## Current Position
 
-Phase: 02 (trust-root-corpus-schema) — COMPLETE (2/2); next: Phase 03
-Plan: 2 of 2 complete
-Status: Phase 02 complete — trust root + schema v1 + append-only store shipped
+Phase: 3
+Plan: Not started
+Status: Ready to plan
 Last activity: 2026-07-22
 
 Progress: [██████████] 100% (Phase 02)
@@ -36,7 +36,7 @@ Progress: [██████████] 100% (Phase 02)
 
 **Velocity:**
 
-- Total plans completed: 4
+- Total plans completed: 6
 - Average duration: ~8 min
 - Total execution time: ~0.5 hours
 
@@ -46,6 +46,7 @@ Progress: [██████████] 100% (Phase 02)
 |-------|-------|-------|----------|
 | 01 | 2 | ~18 min | ~9 min |
 | 1 | 2 | - | - |
+| 2 | 2 | - | - |
 
 **Recent Trend:**
 
