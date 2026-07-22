@@ -229,6 +229,53 @@ def test_metamorphic_ignores_non_proved_outcomes():
 
 
 # --------------------------------------------------------------------------- #
+# WR-02 — the gate compares two solves of ONE instance/mode (defense-in-depth)
+# --------------------------------------------------------------------------- #
+def _proved_problem(value, problem, mode="optimize"):
+    """A hand-built PROVED_OPTIMAL outcome for an arbitrary problem/mode label."""
+    return ExactOutcome(
+        problem=problem,
+        mode=mode,
+        status=Status.PROVED_OPTIMAL,
+        value=value,
+        bound=value,
+        bound_source="definition",
+        family=((0, 1),),
+        backend="synthetic",
+        backend_version="test",
+    )
+
+
+def test_mismatched_problem_raises_critical():
+    # Pairing a had_2 outcome with a had_3 outcome compares two incomparable
+    # quantities — a caller bug, quarantined before any verdict is computed.
+    with pytest.raises(CriticalDisagreement) as exc:
+        differential_verdict(_proved(3), _proved_problem(3, "had3"), chi=3)
+    assert "had2" in str(exc.value) and "had3" in str(exc.value)
+
+
+def test_mismatched_mode_raises_critical():
+    # Pairing an optimize outcome with a decision outcome is a caller bug: the
+    # modes differ, so the first consistency guard quarantines it.
+    with pytest.raises(CriticalDisagreement):
+        differential_verdict(
+            _proved_problem(3, "had2", "optimize"),
+            _proved_problem(3, "had2", "decision"),
+            chi=3,
+        )
+
+
+def test_non_optimize_pair_is_rejected():
+    # Two decision outcomes match on problem/mode but the gate is optimize-only.
+    with pytest.raises(ValueError):
+        differential_verdict(
+            _proved_problem(3, "had2", "decision"),
+            _proved_problem(4, "had2", "decision"),
+            chi=3,
+        )
+
+
+# --------------------------------------------------------------------------- #
 # No-solver-import — stdlib-only trust boundary
 # --------------------------------------------------------------------------- #
 def test_no_solver_import():

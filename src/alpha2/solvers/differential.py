@@ -52,7 +52,20 @@ def differential_verdict(a, b, chi):
     SHC-CANDIDATE is licensed ONLY when BOTH outcomes are PROVED_OPTIMAL with the
     SAME exact value AND that value < chi. Equal proven value >= chi is
     AGREED_KILL. Anything short of two matching proofs is INSUFFICIENT.
+
+    Defense-in-depth (mirrors `result.__post_init__` / the backends' bool
+    rejection): the gate compares two solves of ONE instance in ONE mode. Pairing
+    a had_2 outcome with a had_3 outcome — or an optimize with a decision outcome
+    — compares two INCOMPARABLE quantities and is a caller bug, not a verdict;
+    both are rejected up front (raises-only, so `python -O` cannot strip them).
     """
+    if a.problem != b.problem or a.mode != b.mode:
+        raise CriticalDisagreement(
+            f"mismatched outcomes: a=({a.problem},{a.mode}) b=({b.problem},{b.mode}) "
+            "— the differential gate compares two solves of ONE instance/mode"
+        )
+    if a.mode != "optimize":
+        raise ValueError("differential_verdict is an optimize-mode gate")
     both_proved = (
         a.status is Status.PROVED_OPTIMAL and b.status is Status.PROVED_OPTIMAL
     )
