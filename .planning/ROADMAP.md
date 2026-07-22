@@ -11,7 +11,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Pinned Environment & Verbatim Port** - uv-locked CPython 3.12.x stack; Appendix C ported byte-preserved; fingerprint test green
-- [ ] **Phase 2: Trust Root & Corpus Schema** - independent stdlib-only verifier (fails closed under `python -O`); witness-complete append-only schema v1
+- [x] **Phase 2: Trust Root & Corpus Schema** - independent stdlib-only verifier (fails closed under `python -O`); witness-complete append-only schema v1
 - [ ] **Phase 3: Corpus Reproduction & CI (First Blood)** - 296/296 regenerated and independently re-verified; golden manifest frozen; verifier + reproduction run as CI on every commit
 - [ ] **Phase 4: ExactBackend & CBC Reference** - status-honest exact had₂ (PROVED_OPTIMAL vs INCUMBENT_ONLY); obstruction-based encoding; seed-137 regression
 - [ ] **Phase 5: CP-SAT, Differential Gate & had₃** - second engine; dual-backend agreement gates any SHC-CANDIDATE; had₃ tier proven on synthetics; assume-and-verify symmetry breaking
@@ -51,7 +51,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
   4. The reproduction contract is encoded and documented: byte-exact (seed-derived heuristic) vs semantic (exact-method) reproduction distinguished, solver/platform versions recorded per certificate, Linux x86_64 designated the canonical reference-regeneration platform.
 **Plans**: 2 plans
 - [x] 02-01-PLAN.md — Trust root: independent stdlib-only verifier (VRF-01) + Tutte-Berge witness verification & extractor (CHI-02), proven by mutant suite + `-O` canary + import-boundary
-- [ ] 02-02-PLAN.md — Schema v1 + append-only atomic store with verify-at-append gate (VRF-02) + reproduction contract byte-exact/semantic + version/platform stamps (ENV-05)
+- [x] 02-02-PLAN.md — Schema v1 + append-only atomic store with verify-at-append gate (VRF-02) + reproduction contract byte-exact/semantic + version/platform stamps (ENV-05)
 
 ### Phase 3: Corpus Reproduction & CI (First Blood)
 **Goal**: The full 296-instance corpus regenerates and independently re-verifies, and that reproduction runs as the permanent test suite — the trust anchor and regression harness for everything downstream.
@@ -182,7 +182,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Pinned Environment & Verbatim Port | 2/2 | Complete    | 2026-07-22 |
-| 2. Trust Root & Corpus Schema | 1/2 | In Progress|  |
+| 2. Trust Root & Corpus Schema | 2/2 | Complete    | 2026-07-22 |
 | 3. Corpus Reproduction & CI (First Blood) | 0/TBD | Not started | - |
 | 4. ExactBackend & CBC Reference | 0/TBD | Not started | - |
 | 5. CP-SAT, Differential Gate & had₃ | 0/TBD | Not started | - |

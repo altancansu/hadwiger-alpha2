@@ -15,7 +15,7 @@ Broad scope: the full program except Lean formalization (milestone 2). Each requ
 - [x] **ENV-02**: The Appendix C toolkit is ported into a repo-relative Python package (no `/mnt` paths), deterministic in (n, seed), split into library + thin CLI, with the reference algorithms unchanged.
 - [x] **ENV-03**: A corpus-fingerprint test asserts canonical generator invariants (n=31 seed 1 → |E(H)|=131, ν=15, χ=16) to guard byte-reproduction across environments.
 - [ ] **ENV-04**: The full 296-instance corpus (284 TFP complements n=31–501, 12 sum-free Cayley p≤151, seed-137) is regenerated and independently re-verified; all 27 stored certificates reproduce.
-- [ ] **ENV-05**: A reproduction contract distinguishes byte-exact (heuristic, seed-derived) from semantic (exact-method) reproduction and records solver/platform versions per certificate; Linux x86_64 is the canonical reference-regeneration platform.
+- [x] **ENV-05**: A reproduction contract distinguishes byte-exact (heuristic, seed-derived) from semantic (exact-method) reproduction and records solver/platform versions per certificate; Linux x86_64 is the canonical reference-regeneration platform.
 - [ ] **ENV-06**: A test suite + CI run the verifier over the stored corpus on every commit, including a `python -O` job (assert-stripping canary) and the fingerprint test.
 
 ### Gate — G1–G6 necessary-conditions filter (GATE)
@@ -48,7 +48,7 @@ Broad scope: the full program except Lean formalization (milestone 2). Each requ
 ### Verifier & corpus — the trust root (VRF)
 
 - [x] **VRF-01**: An independent verifier (its own stdlib-only code path, sharing no logic with any searcher) checks disjointness, valid sizes, pairs/triples inducing connected G-subgraphs, and all C(χ,2) cross-adjacencies — using real checks, not `assert` (correct under `python -O`).
-- [ ] **VRF-02**: Nothing enters the corpus unverified; the append-only corpus stores full certificates (family/provenance, invariants ν/χ/ω, Tutte–Berge witness, the FULL optimal branch-set family — never `fam[:χ]`-truncated — verified flag, method, backend statuses + versions).
+- [x] **VRF-02**: Nothing enters the corpus unverified; the append-only corpus stores full certificates (family/provenance, invariants ν/χ/ω, Tutte–Berge witness, the FULL optimal branch-set family — never `fam[:χ]`-truncated — verified flag, method, backend statuses + versions).
 - [ ] **VRF-03**: Instance status (KILLED / SHC-CANDIDATE / RESISTANT) is a derived view over the immutable corpus + results log; transitions (e.g., RESISTANT → KILLED after a longer budget) never edit stored records.
 
 ### CLI & results log (CLI)
@@ -110,7 +110,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 | ENV-02 | Phase 1 | Complete |
 | ENV-03 | Phase 1 | Complete |
 | ENV-04 | Phase 3 | Pending |
-| ENV-05 | Phase 2 | Pending |
+| ENV-05 | Phase 2 | Complete |
 | ENV-06 | Phase 3 | Pending |
 | GATE-01 | Phase 6 | Pending |
 | GATE-02 | Phase 6 | Pending |
@@ -126,7 +126,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 | EXACT-05 | Phase 5 | Pending |
 | EXACT-06 | Phase 5 | Pending |
 | VRF-01 | Phase 2 | Complete |
-| VRF-02 | Phase 2 | Pending |
+| VRF-02 | Phase 2 | Complete |
 | VRF-03 | Phase 6 | Pending |
 | CLI-01 | Phase 6 | Pending |
 | CLI-02 | Phase 6 | Pending |

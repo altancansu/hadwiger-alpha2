@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-02-PLAN.md — golden fingerprint frozen (gated), stored D.2 model re-verified, CHI-01 AST guard; Phase 01 complete (2/2)
-last_updated: "2026-07-22T02:22:28.852Z"
+stopped_at: Completed 02-02-PLAN.md — schema v1 + append-only atomic store (verify-at-append + os.replace) + reproduction contract; Phase 02 complete (2/2)
+last_updated: "2026-07-22T03:00:00.000Z"
 last_activity: 2026-07-22
 progress:
   total_phases: 12
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
-  completed_plans: 3
-  percent: 8
+  completed_plans: 4
+  percent: 17
 ---
 
 # Project State
@@ -21,24 +21,24 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-21)
 
 **Core value:** Reconstruct the *attempt* under discipline — build the adversary so that anything surviving it is a correct road to a disproof, and anything dying leaves a machine-verified result; never invent the missing hour. Epistemic integrity (verified existence, radioactive impossibility) wins over speed, coverage, or narrative.
-**Current focus:** Phase 02 — trust-root-corpus-schema
+**Current focus:** Phase 03 — corpus-reproduction-ci (First Blood)
 
 ## Current Position
 
-Phase: 02 (trust-root-corpus-schema) — EXECUTING
-Plan: 2 of 2
-Status: Ready to execute
+Phase: 02 (trust-root-corpus-schema) — COMPLETE (2/2); next: Phase 03
+Plan: 2 of 2 complete
+Status: Phase 02 complete — trust root + schema v1 + append-only store shipped
 Last activity: 2026-07-22
 
-Progress: [████████░░] 75%
+Progress: [██████████] 100% (Phase 02)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 3
-- Average duration: ~5 min
-- Total execution time: ~0.1 hours
+- Total plans completed: 4
+- Average duration: ~8 min
+- Total execution time: ~0.5 hours
 
 **By Phase:**
 
@@ -54,6 +54,7 @@ Progress: [████████░░] 75%
 
 *Updated after each plan completion*
 | Phase 02 P01 | 12min | 3 tasks | 8 files |
+| Phase 02 P02 | 14min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,14 @@ Execution decisions (Phase 01 Plan 02):
 - [Phase ?]: matching_edges() added to invariants/matching.py so witness.py obtains M without calling max_weight_matching outside matching.py (CHI-01 guard); extract_witness lives only in invariants/witness.py
 - [Phase ?]: Wrong-chi proven at two boundaries: chi_G=17 trips verify_model_record k<chi; chi_G=15 trips verify_chi_witness n-nu!=chi (not catchable by family-size check)
 
+Execution decisions (Phase 02 Plan 02):
+
+- Schema v1: had_2 is DERIVED as len(model_branch_sets); build_record RAISES on len < chi — truncation (fam[:chi]) is structurally impossible; schema SUPPORTS k≥chi so Phase 4 drops in seed-137's true 17-set family with no schema change.
+- Append-only immutability = per-prior-record re-verification against each record's own frozen H_edges_sha256 (the research's literal new[:len(old)]==old byte-compare is a no-op when new==old+[rec]); tampering with any stored record refuses the next append.
+- Atomic write = tempfile(dir=path.parent)→flush→os.fsync→os.replace, temp unlinked on failure; append_certificate gates on BOTH verify_model_record AND verify_chi_witness AND verified=True (no has_witness opt-out).
+- backends version stamps use importlib.metadata.version() (stdlib) so schema.py imports no networkx/pulp/ortools — same stdlib-only trust boundary as the verifier; reproduction.kind=byte_exact iff method mentions 'heuristic', canonical_platform always linux-x86_64.
+- D.3 seed-137 stored as the 16-set K16 INTERIM (had_2=16); backends.cbc = bundled-with-pulp provenance — exact CBC binary version stamped at ILP-solve time in Phase 4.
+
 ### Pending Todos
 
 None yet.
@@ -103,6 +112,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-22T02:22:22.045Z
-Stopped at: Completed 01-02-PLAN.md — golden fingerprint frozen (gated), stored D.2 model re-verified, CHI-01 AST guard; Phase 01 complete (2/2)
+Last session: 2026-07-22T03:00:00.000Z
+Stopped at: Completed 02-02-PLAN.md — schema v1 + append-only atomic store (verify-at-append + os.replace) + reproduction contract; Phase 02 complete (2/2)
 Resume file: None
