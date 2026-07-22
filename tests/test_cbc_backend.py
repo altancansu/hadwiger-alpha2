@@ -10,15 +10,34 @@ Fast integration tests over `get_backend("cbc")`:
   * decision mode both legs: target_k=3 -> MODEL_FOUND, target_k=4 ->
     PROVED_INFEASIBLE (value None, family None).
 
-Embedded-literal discipline (test_corpus_r1 precedent): adjacencies are in-file
-literals; no cross-test imports. Trust-root calls are made OUTSIDE any test
-truth-expression — call, bind k, then compare — so the verification itself is
-never an optimization-strippable statement.
+Plus the 296-lineage every-commit kill panel (ROADMAP SC2, every-commit leg):
+
+  * seed-1 and seed-137 (n=31) regenerated from the frozen generator, gated on
+    their pinned invariants BEFORE any solve is trusted (the R2 discipline —
+    a drifted generator must never self-certify), then killed in decision
+    mode at k = chi = 16 (~2.5 s each) with the family routed through the
+    trust root as an IN-MEMORY schema-v1 record (never written to data/);
+  * a Cayley p=31 (seed 5310) kill in the slow tier, structurally gated
+    (|S|-regular, symmetric — the R2 Cayley tripwire) and provenance-shaped
+    to mirror the committed cayley:p31:s5310 record (read-only comparison).
+
+Embedded-literal discipline (test_corpus_r1 precedent): adjacencies and the
+pinned regeneration invariants are in-file literals; no cross-test imports.
+Trust-root calls are made OUTSIDE any test truth-expression — call, bind k,
+then compare — so the verification itself is never an optimization-strippable
+statement.
 """
+import json
+import random
+
 import pytest
 
-from alpha2.corpus.schema import build_record, provenance_params
+from alpha2 import paths
+from alpha2.corpus.schema import build_record, provenance_params, provenance_seed
 from alpha2.corpus.verifier import verify_certificate
+from alpha2.generators.cayley import cayley_adj, random_maximal_symmetric_sumfree
+from alpha2.generators.tfp import triangle_free_process
+from alpha2.invariants.matching import matching_number
 from alpha2.invariants.witness import extract_witness
 from alpha2.solvers.backend import get_backend
 from alpha2.solvers.result import NotProvedOptimal, Status
@@ -177,3 +196,123 @@ def test_decision_mode_both_legs_on_c5():
     with pytest.raises(NotProvedOptimal):
         refused.exact_value()
     _assert_stamp(refused)
+
+
+# --------------------------------------------------------------------------- #
+# 296-lineage every-commit kill panel (ROADMAP SC2, every-commit leg)
+#
+# Decision mode IS the kill path: ~2.5 s per instance vs ~149 s for the
+# optimality proof (60x cheaper), so these run on every commit. The family a
+# kill produces is an UNTRUSTED proposal; it becomes a result only when the
+# frozen trust root verifies it via an in-memory schema-v1 record. NEVER
+# truncated before build_record — schema derives had_2 = len and refuses
+# len < chi.
+# --------------------------------------------------------------------------- #
+
+# Pinned regeneration invariants (embedded literals; live-verified in
+# 04-RESEARCH): (n=31) seed-1 -> |E(H)|=131, nu=15, chi=16;
+# seed-137 -> |E(H)|=177, nu=15, chi=16 (the instance the heuristic misses).
+_TFP_GATES = {1: 131, 137: 177}
+
+
+def _tfp_kill_at_chi(seed):
+    """Regenerate (31, seed), gate invariants, kill at k=16, verify the family.
+
+    The regeneration gate runs BEFORE any solve is trusted (the R2 discipline):
+    a drifted generator must never self-certify through a solver run.
+    """
+    n = 31
+    adj, m = triangle_free_process(n, random.Random(seed))
+    assert m == _TFP_GATES[seed], (seed, m)
+    nu = matching_number(adj, n)
+    assert nu == 15, (seed, nu)
+    chi = n - nu
+    assert chi == 16, (seed, chi)
+
+    out = get_backend("cbc").solve_had2(adj, n, mode="decision", target_k=chi)
+    assert out.status is Status.MODEL_FOUND
+    assert out.family is not None
+    assert len(out.family) >= chi
+    _assert_stamp(out)
+
+    M, U, nu2 = extract_witness(adj, n)
+    rec = build_record(
+        provenance=provenance_seed(
+            "triangle_free_process_complement", n, seed,
+            "Bohman uniform triangle-free process",
+        ),
+        H_edges=_h_edges(adj, n),
+        nu_H=nu,
+        chi_G=chi,
+        model_branch_sets=[list(s) for s in out.family],  # FULL family, never truncated
+        matching_M=M,
+        tutte_berge_U=U,
+        method=f"exact ILP (CBC): decision k={chi}",
+    )
+    k = verify_certificate(rec)  # trust root arbitrates; raises on any defect
+    assert k >= chi
+
+
+def test_seed1_decision_kill_at_chi_every_commit():
+    _tfp_kill_at_chi(1)
+
+
+def test_seed137_decision_kill_at_chi_every_commit():
+    _tfp_kill_at_chi(137)
+
+
+@pytest.mark.slow
+def test_cayley_p31_decision_kill_at_chi():
+    """Cayley p=31 (seed 5310) kill — guards the second generator family.
+
+    Structural gate (the R2 Cayley tripwire) before any solve: adj must be
+    |S|-regular and symmetric, and the regenerated S must match the committed
+    cayley:p31:s5310 record's stored params (read-only via paths.CORPUS).
+    """
+    p = 31
+    seed = 5000 + 10 * p + 0  # seed convention: 5000 + 10*p + k -> 5310
+    S = random_maximal_symmetric_sumfree(p, random.Random(seed))
+    adj = cayley_adj(p, S)
+
+    # Structural gate: |S|-regular, symmetric, no self-loops.
+    assert all(len(adj[u]) == len(S) for u in range(p))
+    assert all(u in adj[v] for u in range(p) for v in adj[u])
+    assert all(u not in adj[u] for u in range(p))
+
+    # Provenance-shape anchor: the committed record (READ-ONLY) pins S and chi.
+    with open(paths.CORPUS) as fh:
+        records = json.load(fh)
+    stored = [
+        r for r in records
+        if r["provenance"].get("family") == "cayley_maximal_sumfree_Zp"
+        and r["provenance"].get("n") == p
+        and r["provenance"].get("seed") == seed
+    ]
+    assert len(stored) == 1, len(stored)
+    assert sorted(S) == stored[0]["provenance"]["params"]["S"]
+
+    nu = matching_number(adj, p)
+    chi = p - nu
+    assert chi == stored[0]["invariants"]["chi_G"]
+
+    out = get_backend("cbc").solve_had2(adj, p, mode="decision", target_k=chi)
+    assert out.status is Status.MODEL_FOUND
+    assert out.family is not None
+    assert len(out.family) >= chi
+    _assert_stamp(out)
+
+    M, U, nu2 = extract_witness(adj, p)
+    rec = build_record(
+        provenance=provenance_params(
+            "cayley_maximal_sumfree_Zp", p, {"S": sorted(S)}, seed=seed,
+        ),
+        H_edges=_h_edges(adj, p),
+        nu_H=nu,
+        chi_G=chi,
+        model_branch_sets=[list(s) for s in out.family],  # FULL family, never truncated
+        matching_M=M,
+        tutte_berge_U=U,
+        method=f"exact ILP (CBC): decision k={chi}",
+    )
+    k = verify_certificate(rec)
+    assert k >= chi
