@@ -49,7 +49,9 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
   2. An adversarial mutant suite passes: the verifier refuses every mutated certificate (overlapping branch sets, H-edge pair, missing cross-adjacency, truncated family, wrong χ).
   3. Schema v1 + append-only atomic store round-trip full certificates: provenance for all three generator shapes (optional `seed` / required `params` / `graph6`), inline `H_edges` + sha256, invariants, FULL optimal families (never `fam[:χ]`), Tutte–Berge witness fields (M + U) making χ = n − ν hand-checkable both directions, verified flag, method, backend statuses + versions.
   4. The reproduction contract is encoded and documented: byte-exact (seed-derived heuristic) vs semantic (exact-method) reproduction distinguished, solver/platform versions recorded per certificate, Linux x86_64 designated the canonical reference-regeneration platform.
-**Plans**: TBD
+**Plans**: 2 plans
+- [ ] 02-01-PLAN.md — Trust root: independent stdlib-only verifier (VRF-01) + Tutte-Berge witness verification & extractor (CHI-02), proven by mutant suite + `-O` canary + import-boundary
+- [ ] 02-02-PLAN.md — Schema v1 + append-only atomic store with verify-at-append gate (VRF-02) + reproduction contract byte-exact/semantic + version/platform stamps (ENV-05)
 
 ### Phase 3: Corpus Reproduction & CI (First Blood)
 **Goal**: The full 296-instance corpus regenerates and independently re-verifies, and that reproduction runs as the permanent test suite — the trust anchor and regression harness for everything downstream.
