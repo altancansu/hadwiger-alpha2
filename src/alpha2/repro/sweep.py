@@ -48,6 +48,12 @@ def run_instance(n, seed, path):
     nu = matching_number(adj, n)
     chi = n - nu
     sets, init_conf, moves, restarts, tsolve = solve(adj, n, chi, rng)  # SAME rng, next
+    if sets is None:
+        # Wall-clock timeout: solve() found no model. Fail loudly and deterministically
+        # (WR-02) — never fall through to an opaque TypeError downstream.
+        raise RuntimeError(
+            f"heuristic search timed out for n={n} seed={seed} "
+            f"(restarts={restarts}, elapsed={tsolve:.1f}s) — no model found")
     M, U, nu2 = extract_witness(adj, n)                         # emission-time witness
     H_edges = sorted([min(u, v), max(u, v)] for u in range(n) for v in adj[u] if u < v)
     rec = schema.build_record(
