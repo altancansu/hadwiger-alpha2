@@ -12,7 +12,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 
 - [x] **Phase 1: Pinned Environment & Verbatim Port** - uv-locked CPython 3.12.x stack; Appendix C ported byte-preserved; fingerprint test green
 - [x] **Phase 2: Trust Root & Corpus Schema** - independent stdlib-only verifier (fails closed under `python -O`); witness-complete append-only schema v1
-- [ ] **Phase 3: Corpus Reproduction & CI (First Blood)** - 296/296 regenerated and independently re-verified; golden manifest frozen; verifier + reproduction run as CI on every commit
+- [x] **Phase 3: Corpus Reproduction & CI (First Blood)** - 296/296 regenerated and independently re-verified; golden manifest frozen; verifier + reproduction run as CI on every commit (completed 2026-07-22)
 - [ ] **Phase 4: ExactBackend & CBC Reference** - status-honest exact had₂ (PROVED_OPTIMAL vs INCUMBENT_ONLY); obstruction-based encoding; seed-137 regression
 - [ ] **Phase 5: CP-SAT, Differential Gate & had₃** - second engine; dual-backend agreement gates any SHC-CANDIDATE; had₃ tier proven on synthetics; assume-and-verify symmetry breaking
 - [ ] **Phase 6: Kill Battery CLI (Gate, Search, Statuses)** - one tested CLI runs the 7-step runbook; author-pinned G1–G6; profile-general heuristic; derived statuses + results log
@@ -66,7 +66,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 - [x] 03-01-PLAN.md — MVP slice: finalize TFP baseline driver → schema-v1 store; R1 re-verify green (ENV-04)
 - [x] 03-02-PLAN.md — Scale to 296: Cayley generator port + sweep/cayley/seed137 drivers + ordered freeze (ENV-04)
 - [x] 03-03-PLAN.md — Freeze golden manifest + R2/R3 determinism tests + strict R1 296/(284,12) count (ENV-04, ENV-06)
-- [ ] 03-04-PLAN.md — CI: R1/R2/fingerprint/python -O every commit + R3/full-296/3.13 drift canary (ENV-06)
+- [x] 03-04-PLAN.md — CI: R1/R2/fingerprint/python -O every commit + R3/full-296/3.13 drift canary (ENV-06)
 
 ### Phase 4: ExactBackend & CBC Reference
 **Goal**: Exact had₂ solving lives behind a status-honest interface with CBC as the reference engine — the incumbent-as-optimum soundness hole is closed before any second engine exists.
@@ -187,7 +187,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 |-------|----------------|--------|-----------|
 | 1. Pinned Environment & Verbatim Port | 2/2 | Complete    | 2026-07-22 |
 | 2. Trust Root & Corpus Schema | 2/2 | Complete    | 2026-07-22 |
-| 3. Corpus Reproduction & CI (First Blood) | 3/4 | In Progress|  |
+| 3. Corpus Reproduction & CI (First Blood) | 4/4 | Complete   | 2026-07-22 |
 | 4. ExactBackend & CBC Reference | 0/TBD | Not started | - |
 | 5. CP-SAT, Differential Gate & had₃ | 0/TBD | Not started | - |
 | 6. Kill Battery CLI (Gate, Search, Statuses) | 0/TBD | Not started | - |
