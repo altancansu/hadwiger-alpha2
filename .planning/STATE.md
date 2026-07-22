@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-01-PLAN.md — pinned uv env + verbatim Appendix C port; invariant fingerprint GREEN
-last_updated: "2026-07-22T01:07:00.000Z"
-last_activity: 2026-07-22 -- Completed Phase 01 Plan 01
+stopped_at: Completed 01-02-PLAN.md — golden fingerprint frozen (gated), stored D.2 model re-verified, CHI-01 AST guard; Phase 01 complete (2/2)
+last_updated: "2026-07-22T01:15:08.000Z"
+last_activity: 2026-07-22 -- Completed Phase 01 Plan 02 (Phase 01 complete)
 progress:
   total_phases: 12
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
-  percent: 4
+  completed_plans: 2
+  percent: 8
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-07-21)
 
 ## Current Position
 
-Phase: 01 (pinned-environment-verbatim-port) — EXECUTING
-Plan: 2 of 2
-Status: Plan 01-01 complete; ready for Plan 01-02
-Last activity: 2026-07-22 -- Completed Phase 01 Plan 01
+Phase: 01 (pinned-environment-verbatim-port) — COMPLETE (2/2 plans)
+Plan: 2 of 2 complete
+Status: Phase 01 complete; ready for Phase 02 (Trust Root & Corpus Schema)
+Last activity: 2026-07-22 -- Completed Phase 01 Plan 02 (Phase 01 complete)
 
-Progress: [░░░░░░░░░░] 4%
+Progress: [█░░░░░░░░░] 8%
 
 ## Performance Metrics
 
@@ -44,7 +44,7 @@ Progress: [░░░░░░░░░░] 4%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01 | 1 | ~5 min | ~5 min |
+| 01 | 2 | ~18 min | ~9 min |
 
 **Recent Trend:**
 
@@ -71,6 +71,13 @@ Execution decisions (Phase 01 Plan 01):
 - pynauty stays an optional `[nauty]` extra so a compiler-less `uv sync` passes; dev tools via `uv sync --extra dev`. hatchling is the src-layout build backend.
 - Verbatim port confirmed byte-exact: n=31 seed=1 `H_edges` sha256 == research golden `3c953d90…41e2`; fingerprint invariants (131/15/16) GREEN.
 
+Execution decisions (Phase 01 Plan 02):
+
+- Gated golden freeze: doc-derived Appendix-D invariants (131/15/16/tf/maxTF; seed-137 m=177) asserted FIRST; the self-generated sha256 is trusted and frozen into `data/manifests/fingerprint.json` only after the gate — a porting bug cannot self-certify.
+- Tests load `h_edges_sha256` FROM the manifest (never a duplicated literal), so the manifest is the authority the byte-exact tripwire guards. seed-137 hash = `c3e7540f…cb13` (H-only; no model/ILP until Phase 4).
+- Exact-match heuristic tier uses the single-RNG contract v1 (one `random.Random(1)` feeds `triangle_free_process` THEN `solve`) — the only path reproducing Appendix D.2 byte-exactly; the plan's literal fresh-`Random(1)` snippet was superseded.
+- CHI-01 guard is AST/mechanism-based (Call/Import inspection), not a prose grep — verified non-vacuous by an injected `greedy_color` that trips it; `invariants/matching.py` confirmed the sole chi path via `max_weight_matching(maxcardinality=True)`.
+
 ### Pending Todos
 
 None yet.
@@ -92,5 +99,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-07-22
-Stopped at: Completed 01-01-PLAN.md — pinned uv env + verbatim Appendix C port; invariant fingerprint GREEN
+Stopped at: Completed 01-02-PLAN.md — golden fingerprint frozen (gated), stored D.2 model re-verified, CHI-01 AST guard; Phase 01 complete (2/2)
 Resume file: None

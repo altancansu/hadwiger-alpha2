@@ -10,7 +10,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Pinned Environment & Verbatim Port** - uv-locked CPython 3.12.x stack; Appendix C ported byte-preserved; fingerprint test green
+- [x] **Phase 1: Pinned Environment & Verbatim Port** - uv-locked CPython 3.12.x stack; Appendix C ported byte-preserved; fingerprint test green
 - [ ] **Phase 2: Trust Root & Corpus Schema** - independent stdlib-only verifier (fails closed under `python -O`); witness-complete append-only schema v1
 - [ ] **Phase 3: Corpus Reproduction & CI (First Blood)** - 296/296 regenerated and independently re-verified; golden manifest frozen; verifier + reproduction run as CI on every commit
 - [ ] **Phase 4: ExactBackend & CBC Reference** - status-honest exact had₂ (PROVED_OPTIMAL vs INCUMBENT_ONLY); obstruction-based encoding; seed-137 regression
@@ -37,7 +37,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
   4. χ(G) is computed only as n − ν(H) via Edmonds blossom (values asserted by the fingerprint test); no estimate exists anywhere in control flow.
 **Plans**: 2 plans
 - [x] 01-01-PLAN.md — Pinned uv env + verbatim Appendix C port (Walking Skeleton spine; invariant fingerprint green)
-- [ ] 01-02-PLAN.md — Golden byte-exact fingerprint + stored-model re-verify + CHI-01 no-estimate guard
+- [x] 01-02-PLAN.md — Golden byte-exact fingerprint + stored-model re-verify + CHI-01 no-estimate guard
 
 ### Phase 2: Trust Root & Corpus Schema
 **Goal**: An independently implemented verifier and a witness-complete certificate schema exist and are proven adversarially — before any record is ever written.
@@ -179,7 +179,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Pinned Environment & Verbatim Port | 1/2 | In progress | - |
+| 1. Pinned Environment & Verbatim Port | 2/2 | Complete | 2026-07-22 |
 | 2. Trust Root & Corpus Schema | 0/TBD | Not started | - |
 | 3. Corpus Reproduction & CI (First Blood) | 0/TBD | Not started | - |
 | 4. ExactBackend & CBC Reference | 0/TBD | Not started | - |
