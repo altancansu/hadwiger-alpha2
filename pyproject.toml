@@ -11,7 +11,7 @@ dependencies = [
 
 [project.optional-dependencies]
 nauty = ["pynauty==2.8.8.1"]
-dev = ["pytest", "ruff"]
+dev = ["pytest==8.3.4", "ruff"]
 
 [build-system]
 requires = ["hatchling"]
@@ -23,6 +23,7 @@ packages = ["src/alpha2"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+markers = ["slow: release/nightly replay gate"]
 
 [tool.ruff]
 # Determinism-sensitive modules must never be auto-rewritten (byte-reproduction

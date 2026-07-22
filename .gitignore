@@ -2,3 +2,7 @@
 __pycache__/
 *.pyc
 data/corpus/*.json
+# ENV-04: the canonical regenerated corpus is the git-committed immutability anchor
+# (store.py: git history is the external anchor against a wholesale rewrite). Other
+# generated/tmp corpus JSON stays ignored; this one file is tracked forever.
+!data/corpus/hadwiger_alpha2_certificates.json
