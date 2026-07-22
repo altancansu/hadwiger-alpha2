@@ -98,7 +98,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 - [x] 05-01-PLAN.md — CP-SAT backend MVP slice: C5 had_2=3 PROVED_OPTIMAL through the trust root + status honesty (EXACT-03)
 - [x] 05-02-PLAN.md — had_3 backend-neutral model: seagull triple index (<=1 H-edge) + common-neighborhood conflicts + checksum (EXACT-05)
 - [x] 05-03-PLAN.md — Trust-root widening: verifier size gate {1,2}->{1,2,3} with size-3 connectivity + size-3 mutants + -O canary (EXACT-05)
-- [ ] 05-04-PLAN.md — Differential agreement gate: CriticalDisagreement/SHC-CANDIDATE licensing + metamorphic guard + solver-path -O canary (EXACT-04)
+- [x] 05-04-PLAN.md — Differential agreement gate: CriticalDisagreement/SHC-CANDIDATE licensing + metamorphic guard + solver-path -O canary (EXACT-04)
 - [ ] 05-05-PLAN.md — had_3 on both backends: solve_had3 on CBC+CP-SAT, synthetic size-3-forced instance had_2<chi then had_3==chi, verified (EXACT-05, EXACT-03)
 - [ ] 05-06-PLAN.md — Assume-and-verify symmetry: C5 "vertex unused" disaster regression + SBContaminationError + on/off differential (EXACT-06)
 - [ ] 05-07-PLAN.md — Dual-backend agreement panel + seed-137=17 both PROVED_OPTIMAL through the gate (slow) + CP-SAT timing (EXACT-04, EXACT-03)
@@ -200,7 +200,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 | 2. Trust Root & Corpus Schema | 2/2 | Complete    | 2026-07-22 |
 | 3. Corpus Reproduction & CI (First Blood) | 4/4 | Complete   | 2026-07-22 |
 | 4. ExactBackend & CBC Reference | 4/4 | Complete   | 2026-07-22 |
-| 5. CP-SAT, Differential Gate & had₃ | 3/7 | In Progress|  |
+| 5. CP-SAT, Differential Gate & had₃ | 4/7 | In Progress|  |
 | 6. Kill Battery CLI (Gate, Search, Statuses) | 0/TBD | Not started | - |
 | 7. P0 — CDM Frontier | 0/TBD | Not started | - |
 | 8. P1 & P2 — Seeded Families at Scale | 0/TBD | Not started | - |
