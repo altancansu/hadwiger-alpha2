@@ -94,7 +94,14 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
   2. The differential harness makes backend disagreement release-blocking: unequal proven optima → CRITICAL, instance quarantined, batch halted; SHC-CANDIDATE is assignable only when BOTH backends prove optimality with equal had₂ < χ.
   3. had₃ works behind a flag on both backends — seagull-tier triples (⟺ ≤ 1 H-edge) first, pruned by empty common H-neighborhood, firing only on had₂ < χ — proven on synthetic size-3-forced instances; the verifier is extended to size-3 branch sets with explicit connectivity checks.
   4. Symmetry-breaking is assume-and-verify: the H=C₅ "WLOG vertex unused" disaster is a passing regression test, and every impossibility-direction run re-executes without SB.
-**Plans**: TBD
+**Plans**: 7 plans
+- [ ] 05-01-PLAN.md — CP-SAT backend MVP slice: C5 had_2=3 PROVED_OPTIMAL through the trust root + status honesty (EXACT-03)
+- [ ] 05-02-PLAN.md — had_3 backend-neutral model: seagull triple index (<=1 H-edge) + common-neighborhood conflicts + checksum (EXACT-05)
+- [ ] 05-03-PLAN.md — Trust-root widening: verifier size gate {1,2}->{1,2,3} with size-3 connectivity + size-3 mutants + -O canary (EXACT-05)
+- [ ] 05-04-PLAN.md — Differential agreement gate: CriticalDisagreement/SHC-CANDIDATE licensing + metamorphic guard + solver-path -O canary (EXACT-04)
+- [ ] 05-05-PLAN.md — had_3 on both backends: solve_had3 on CBC+CP-SAT, synthetic size-3-forced instance had_2<chi then had_3==chi, verified (EXACT-05, EXACT-03)
+- [ ] 05-06-PLAN.md — Assume-and-verify symmetry: C5 "vertex unused" disaster regression + SBContaminationError + on/off differential (EXACT-06)
+- [ ] 05-07-PLAN.md — Dual-backend agreement panel + seed-137=17 both PROVED_OPTIMAL through the gate (slow) + CP-SAT timing (EXACT-04, EXACT-03)
 
 ### Phase 6: Kill Battery CLI (Gate, Search, Statuses)
 **Goal**: One tested CLI runs the full 7-step runbook per candidate — author-pinned gate, profile-general heuristic, dual-backend exact steps, independent verification, corpus append — with derived statuses and an append-only results log.
