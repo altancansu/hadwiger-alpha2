@@ -64,7 +64,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
   3. CI runs on every commit: R1 certificate validity over the full stored corpus + fingerprint test + `python -O` assert-stripping canary; R2 generator-determinism panel; R3 full pipeline replay as the release gate; a newer-Python canary catches drift on purpose.
 **Plans**: 4 plans
 - [x] 03-01-PLAN.md — MVP slice: finalize TFP baseline driver → schema-v1 store; R1 re-verify green (ENV-04)
-- [ ] 03-02-PLAN.md — Scale to 296: Cayley generator port + sweep/cayley/seed137 drivers + ordered freeze (ENV-04)
+- [x] 03-02-PLAN.md — Scale to 296: Cayley generator port + sweep/cayley/seed137 drivers + ordered freeze (ENV-04)
 - [ ] 03-03-PLAN.md — Freeze golden manifest + R2/R3 determinism tests + strict R1 296/(284,12) count (ENV-04, ENV-06)
 - [ ] 03-04-PLAN.md — CI: R1/R2/fingerprint/python -O every commit + R3/full-296/3.13 drift canary (ENV-06)
 
@@ -187,7 +187,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 |-------|----------------|--------|-----------|
 | 1. Pinned Environment & Verbatim Port | 2/2 | Complete    | 2026-07-22 |
 | 2. Trust Root & Corpus Schema | 2/2 | Complete    | 2026-07-22 |
-| 3. Corpus Reproduction & CI (First Blood) | 1/4 | In Progress|  |
+| 3. Corpus Reproduction & CI (First Blood) | 2/4 | In Progress|  |
 | 4. ExactBackend & CBC Reference | 0/TBD | Not started | - |
 | 5. CP-SAT, Differential Gate & had₃ | 0/TBD | Not started | - |
 | 6. Kill Battery CLI (Gate, Search, Statuses) | 0/TBD | Not started | - |
