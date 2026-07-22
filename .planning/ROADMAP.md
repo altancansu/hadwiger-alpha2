@@ -95,7 +95,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
   3. had₃ works behind a flag on both backends — seagull-tier triples (⟺ ≤ 1 H-edge) first, pruned by empty common H-neighborhood, firing only on had₂ < χ — proven on synthetic size-3-forced instances; the verifier is extended to size-3 branch sets with explicit connectivity checks.
   4. Symmetry-breaking is assume-and-verify: the H=C₅ "WLOG vertex unused" disaster is a passing regression test, and every impossibility-direction run re-executes without SB.
 **Plans**: 7 plans
-- [ ] 05-01-PLAN.md — CP-SAT backend MVP slice: C5 had_2=3 PROVED_OPTIMAL through the trust root + status honesty (EXACT-03)
+- [x] 05-01-PLAN.md — CP-SAT backend MVP slice: C5 had_2=3 PROVED_OPTIMAL through the trust root + status honesty (EXACT-03)
 - [ ] 05-02-PLAN.md — had_3 backend-neutral model: seagull triple index (<=1 H-edge) + common-neighborhood conflicts + checksum (EXACT-05)
 - [ ] 05-03-PLAN.md — Trust-root widening: verifier size gate {1,2}->{1,2,3} with size-3 connectivity + size-3 mutants + -O canary (EXACT-05)
 - [ ] 05-04-PLAN.md — Differential agreement gate: CriticalDisagreement/SHC-CANDIDATE licensing + metamorphic guard + solver-path -O canary (EXACT-04)
@@ -200,7 +200,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 | 2. Trust Root & Corpus Schema | 2/2 | Complete    | 2026-07-22 |
 | 3. Corpus Reproduction & CI (First Blood) | 4/4 | Complete   | 2026-07-22 |
 | 4. ExactBackend & CBC Reference | 4/4 | Complete   | 2026-07-22 |
-| 5. CP-SAT, Differential Gate & had₃ | 0/TBD | Not started | - |
+| 5. CP-SAT, Differential Gate & had₃ | 1/7 | In Progress|  |
 | 6. Kill Battery CLI (Gate, Search, Statuses) | 0/TBD | Not started | - |
 | 7. P0 — CDM Frontier | 0/TBD | Not started | - |
 | 8. P1 & P2 — Seeded Families at Scale | 0/TBD | Not started | - |

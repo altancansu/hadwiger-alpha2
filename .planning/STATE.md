@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-02-PLAN.md — schema v1 + append-only atomic store (verify-at-append + os.replace) + reproduction contract; Phase 02 complete (2/2)
-last_updated: "2026-07-22T08:35:48.880Z"
-last_activity: 2026-07-22 -- Phase 5 planning complete
+stopped_at: "Completed 05-01-PLAN.md — CP-SAT second exact backend (EXACT-03): C5->PROVED_OPTIMAL had_2=3 through trust root; FEASIBLE!=OPTIMAL status honesty; num_workers=1+seed determinism (1/7)"
+last_updated: "2026-07-22T08:59:00.131Z"
+last_activity: 2026-07-22
 progress:
   total_phases: 12
   completed_phases: 4
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-21)
 
 **Core value:** Reconstruct the *attempt* under discipline — build the adversary so that anything surviving it is a correct road to a disproof, and anything dying leaves a machine-verified result; never invent the missing hour. Epistemic integrity (verified existence, radioactive impossibility) wins over speed, coverage, or narrative.
-**Current focus:** Phase 5 — cp sat, differential gate & had₃
+**Current focus:** Phase 05 — cp-sat-differential-gate-had
 
 ## Current Position
 
-Phase: 5
-Plan: Not started
+Phase: 05 (cp-sat-differential-gate-had) — EXECUTING
+Plan: 2 of 7
 Status: Ready to execute
-Last activity: 2026-07-22 -- Phase 5 planning complete
+Last activity: 2026-07-22
 
-Progress: [██████████] 100% (Phase 02)
+Progress: [██████░░░░] 63%
 
 ## Performance Metrics
 
@@ -58,6 +58,7 @@ Progress: [██████████] 100% (Phase 02)
 *Updated after each plan completion*
 | Phase 02 P01 | 12min | 3 tasks | 8 files |
 | Phase 02 P02 | 14min | 3 tasks | 5 files |
+| Phase 05 P01 | 12min | 3 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -94,6 +95,9 @@ Execution decisions (Phase 02 Plan 02):
 - Atomic write = tempfile(dir=path.parent)→flush→os.fsync→os.replace, temp unlinked on failure; append_certificate gates on BOTH verify_model_record AND verify_chi_witness AND verified=True (no has_witness opt-out).
 - backends version stamps use importlib.metadata.version() (stdlib) so schema.py imports no networkx/pulp/ortools — same stdlib-only trust boundary as the verifier; reproduction.kind=byte_exact iff method mentions 'heuristic', canonical_platform always linux-x86_64.
 - D.3 seed-137 stored as the 16-set K16 INTERIM (had_2=16); backends.cbc = bundled-with-pulp provenance — exact CBC binary version stamped at ILP-solve time in Phase 4.
+- [Phase ?]: Phase 05 Plan 01: CP-SAT recorded-mode determinism is num_workers=1 + a pinned module-constant random_seed (137), resolving RESEARCH Open-Q4; interleave_search deliberately NOT used.
+- [Phase ?]: Phase 05 Plan 01: cpsat.py is the ONLY ortools importer; reuses the frozen build_had2_problem (no re-enumeration), mirrors cbc.py swapping pulp->cp_model.
+- [Phase ?]: Phase 05 Plan 01: CP-SAT non-optimal optimize bound = round(best_objective_bound) if finite else n, always bound_source='trivial_n' (no cbc_log analog invented).
 
 ### Pending Todos
 
@@ -115,6 +119,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-22T03:00:00.000Z
-Stopped at: Completed 02-02-PLAN.md — schema v1 + append-only atomic store (verify-at-append + os.replace) + reproduction contract; Phase 02 complete (2/2)
+Last session: 2026-07-22T08:59:00.122Z
+Stopped at: Completed 05-01-PLAN.md — CP-SAT second exact backend (EXACT-03): C5->PROVED_OPTIMAL had_2=3 through trust root; FEASIBLE!=OPTIMAL status honesty; num_workers=1+seed determinism (1/7)
 Resume file: None
