@@ -294,16 +294,18 @@ dev   = ["pytest", "ruff", "hypothesis", "pytest-xdist"]
 | A3 | `requires-python = ">=3.12,<3.13"` with exact patch in `.python-version` is the intended pin granularity (vs `==3.12.13` in pyproject) | Code Examples | Low — both reproduce; `==3.12.13` is stricter but blocks patch bumps. Planner's call unless user prefers the tighter pin. |
 | A4 | Duplicating `is_conflict` into `verify/` in Phase 1 (vs deferring to Phase 2) is consistent with "algorithms unchanged" | Architecture Pattern 3 | Low — it is literally the same code; if a reviewer reads "only paths and imports change" maximally strictly, import-from-search in P1 and duplicate in P2 instead. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Does ENV-01's "committed lockfile reproduces the environment" require a `uv sync` that includes pynauty by default?**
    - What we know: default `uv sync` installs core only and excludes the pynauty extra (verified); pynauty has no macOS wheel.
    - What's unclear: whether the acceptance test wants pynauty present after the *default* sync.
    - Recommendation: keep pynauty an extra; make CI run `uv sync --extra nauty` on Linux (wheel) and, if desired, macOS-with-CLT — but keep the fingerprint job on the core sync so it never depends on a compiler.
+   - **RESOLVED (2026-07-21):** pynauty stays an optional `nauty` extra; default `uv sync` excludes it. See `01-01-PLAN.md` packaging_contract + critical_constraints (Assumption A2 accepted). ENV-01 acceptance = core `uv sync` reproduces the locked env; the extra is exercised in CI on Linux via the wheel.
 
 2. **Should the fingerprint also pin seed-137's H (graph identity only)?**
    - What we know: `seed=137 → |E(H)|=177` reproduces (stdlib-only; matches the doc). Its *model* needs CBC (Phase 3/4).
    - Recommendation: optionally add a cheap seed-137 **H-only** fingerprint (assert `|E(H)|=177` + freeze its `H_edges` hash) now — it costs nothing and pre-locks the graph the Phase-4 regression depends on. The model/ILP assertion stays out of Phase 1.
+   - **RESOLVED (2026-07-21):** adopted. Seed-137 H-only fingerprint added in `01-02-PLAN.md` Task 2 (`test_seed137_h_only`, gated on `m==177`); the model/ILP assertion remains out of Phase 1.
 
 ## Environment Availability
 
