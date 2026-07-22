@@ -31,10 +31,15 @@ jobs:
           cache-dependency-glob: "uv.lock"
       - name: Install dependencies (lockfile-authoritative)
         run: uv sync --locked --extra dev
-      - name: R1 + R2 (fast slice) + fingerprint (verifier over stored corpus)
-        # -m "not slow" keeps the release/nightly full-296 R2 panel on the
-        # scheduled release-gate job only (WR-01) — per-commit runs the fast slice.
-        run: uv run --frozen pytest tests/test_corpus_r1.py tests/test_corpus_r2.py tests/test_fingerprint.py -m "not slow" -q
+      - name: R1 + R2 (fast slice) + fingerprint + Phase-4 solver soundness panel
+        # -m "not slow" keeps the release/nightly full-296 R2 panel AND the
+        # ~149 s seed-137 optimize proof on the scheduled release-gate job only —
+        # per-commit runs the fast slice. The Phase-4 solver tests (status
+        # contract, decision-kill panel, SC1 incumbent-never-reads-as-exact,
+        # checksum/enumeration set-equality, isolation guards) run on EVERY
+        # commit (04-REVIEW WR-01): a map_status/extraction/enumeration
+        # regression must never sail through CI green.
+        run: uv run --frozen pytest tests/test_corpus_r1.py tests/test_corpus_r2.py tests/test_fingerprint.py tests/test_solver_result.py tests/test_cbc_backend.py tests/test_cbc_status_honesty.py tests/test_had2_problem.py tests/test_solver_isolation.py -m "not slow" -q
       - name: python -O assert-stripping canary
         # The trust root + corpus R1 must stay meaningful with asserts stripped
         # (Pitfall 6 / T-3-03): a rubber-stamp verifier would pass here otherwise.
