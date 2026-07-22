@@ -9,6 +9,9 @@ dependencies = [
     "ortools==9.15.6755",
 ]
 
+[project.scripts]
+alpha2 = "alpha2.cli:main"
+
 [project.optional-dependencies]
 nauty = ["pynauty==2.8.8.1"]
 dev = ["pytest==8.3.4", "ruff"]

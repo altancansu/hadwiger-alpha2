@@ -11,6 +11,13 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 CORPUS = REPO_ROOT / "data" / "corpus" / "hadwiger_alpha2_certificates.json"
 
+# Append-only battery results log (CLI-02) — a SEPARATE contract from the corpus:
+# the corpus is the hash-chained FACT authority; this is the event stream (every
+# terminal state + method + reason). Same REPO_ROOT / "data" / ... shape as CORPUS;
+# `ensure_parent` already generalizes over any path. Sole path authority — no other
+# module embeds this literal.
+RESULTS_LOG = REPO_ROOT / "data" / "results" / "battery_results.jsonl"
+
 
 def ensure_parent(path=CORPUS):
     """Ensure the parent directory of ``path`` exists; return the path."""
