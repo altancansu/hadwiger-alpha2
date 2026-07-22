@@ -11,7 +11,13 @@
 # authoritative.
 name: ci
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  # Nightly release gate (R3 replay + full-296 R2). Also reachable on tag pushes
+  # above; the release-gate job additionally guards on the event name.
+  schedule:
+    - cron: "0 6 * * *"
 
 jobs:
   # Every-commit trust checks: R1 + R2 + fingerprint + the python -O canary.
@@ -31,3 +37,49 @@ jobs:
         # The trust root + corpus R1 must stay meaningful with asserts stripped
         # (Pitfall 6 / T-3-03): a rubber-stamp verifier would pass here otherwise.
         run: uv run --frozen python -O -m pytest tests/test_verifier_dash_O.py tests/test_corpus_r1.py -q
+
+  # Scheduled/release gate: R3 replay (slow) + the full-296 R2 panel, on the
+  # pinned 3.12.13 byte-reproduction interpreter (setup-uv reads .python-version).
+  # Guarded to scheduled runs and tag pushes so R3's heavy replay never blocks a
+  # routine commit.
+  release-gate:
+    runs-on: ubuntu-latest # canonical reference platform, pinned 3.12.13
+    if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      - name: Install dependencies (lockfile-authoritative)
+        run: uv sync --locked --extra dev
+      - name: R3 replay + slow full-296 R2 panel
+        run: uv run --frozen pytest -q -m slow
+      - name: Full-296 R2 determinism panel
+        run: uv run --frozen pytest tests/test_corpus_r2.py -q
+
+  # Newer-Python (3.13) drift canary — non-blocking, informational.
+  #
+  # DESIGN (B1, isolated bypass — NOT a requires-python bump): pyproject pins
+  # `requires-python = ">=3.12,<3.13"` and byte-reproduction depends on the exact
+  # 3.12.13 interpreter, so that pin stays UNCHANGED and every required job stays
+  # on 3.12.13. `uv run`/`uv sync` enforce requires-python, so a plain
+  # `uv run --python 3.13` would fail at RESOLUTION (an interpreter-incompatibility
+  # error thrown BEFORE any test runs) and continue-on-error would mask it as a
+  # false "informational pass". Instead the canary runs in an ISOLATED ephemeral
+  # env (`--no-project --isolated`) that does not read the project's
+  # requires-python: uv fetches a 3.13 interpreter on demand and the tests
+  # GENUINELY EXECUTE under 3.13 — so a real CPython set-iteration / random drift
+  # produces a hash MISMATCH that turns the canary red (not a resolution error).
+  # continue-on-error keeps this non-blocking; it is NOT part of the required
+  # `test` job, so 3.13 drift can never block a commit (Pitfall 4 / SC3).
+  canary:
+    runs-on: ubuntu-latest
+    continue-on-error: true # catches random/set-order drift ON PURPOSE
+    env:
+      PYTHONPATH: src # import alpha2 without a project install
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+      - name: Newer-Python (3.13) drift canary — isolated, requires-python bypassed
+        run: uv run --no-project --isolated --python 3.13 --with networkx==3.6.1 --with pytest==8.3.4 pytest tests/test_corpus_r2.py tests/test_fingerprint.py -q
