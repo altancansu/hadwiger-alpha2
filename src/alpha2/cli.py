@@ -48,6 +48,13 @@ def build_parser():
         help="step-5 had_3 escalation time budget in seconds",
     )
     battery.set_defaults(func=_run_battery)
+
+    status = sub.add_parser(
+        "status",
+        help="print the DERIVED KILLED/SHC-CANDIDATE/RESISTANT view (read-only over the "
+             "immutable corpus + append-only results log)",
+    )
+    status.set_defaults(func=_run_status)
     return parser
 
 
@@ -63,6 +70,16 @@ def _run_battery(args):
     result = pipeline.run_candidate(args.family, args.n, args.seed, budgets=budgets)
     print(json.dumps(result, sort_keys=True))
     return result
+
+
+def _run_status(args):
+    """Dispatch the `status` subcommand: derive the read-only view, print a JSON summary."""
+    from alpha2.status import views
+
+    view = views.load_status_view()   # READS the corpus + results log; writes NOTHING
+    summary = views.summarize(view)
+    print(json.dumps(summary, sort_keys=True))
+    return summary
 
 
 def main(argv=None):
