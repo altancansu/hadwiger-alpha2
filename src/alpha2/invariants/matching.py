@@ -3,8 +3,8 @@
 Verbatim port of matching_number from Appendix C.1. This is the ONLY chi
 computation path: chi(G) = n - matching_number(adj, n), where matching_number is
 nu(H) = maximum matching computed by Edmonds blossom
-(networkx.max_weight_matching, maxcardinality=True). There is no coloring / greedy
-/ chromatic estimate anywhere. networkx is confined to this module.
+(networkx.max_weight_matching, maxcardinality=True). chi is computed exactly and is
+never estimated or approximated. networkx is confined to this module.
 """
 
 # ---------- exact chromatic number of G = complement(H) ----------
