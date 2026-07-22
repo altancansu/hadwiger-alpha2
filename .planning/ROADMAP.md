@@ -78,7 +78,11 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
   2. The CBC adapter passes the seed-137 regression — had₂ = 17, PROVED_OPTIMAL, full 17-set family extracted and independently verified — and reproduces 296-lineage exact values on the CI panel.
   3. Obstruction-based constraint generation (C₄s/cherries/H-edges of triangle-free H) replaces the O(|E_G|²) loop with an equal-count assert vs the naive loop at n=31; the structural checksum (single–single = |E(H)|, single–pair = Σ C(deg,2), pair–pair = ½ Σ C(codeg,2)) validates every model build.
   4. Decision and optimize modes both work; value and bound are always recorded with backend version.
-**Plans**: TBD
+**Plans**: 4 plans
+- [ ] 04-01-PLAN.md — MVP slice: status-honest contracts (Status/ExactOutcome/Protocol) + obstruction enumeration + CBC adapter; C₅ solved PROVED_OPTIMAL end-to-end through the trust root (EXACT-01, EXACT-02)
+- [ ] 04-02-PLAN.md — Status-honesty proof: live seed-137 timeout test (incumbent can never read as exact) + bound-parse fixture + AST pulp-confinement/zero-assert guard + `python -O` solver canary in CI (EXACT-01)
+- [ ] 04-03-PLAN.md — Obstruction battery: set-equality vs naive loop at n=31 seeds 1 & 137, checksum literals (131/998/726, 177/1913/3782), mutation-raises gate proof, brute-force n≤8 differential (EXACT-02)
+- [ ] 04-04-PLAN.md — Capstone: seed-137 had₂=17 PROVED_OPTIMAL regression via in-memory record through the trust root (corpus byte-untouched) + 296-lineage decision-kill CI panel (EXACT-01, EXACT-02)
 
 ### Phase 5: CP-SAT, Differential Gate & had₃
 **Goal**: The complete exact-arbitration stack: a second independent engine, the cross-examination that gates every SHC-CANDIDATE, the had₃ escalation tier ready to fire same-day, and symmetry-breaking that can never contaminate an impossibility branch.
@@ -188,7 +192,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 | 1. Pinned Environment & Verbatim Port | 2/2 | Complete    | 2026-07-22 |
 | 2. Trust Root & Corpus Schema | 2/2 | Complete    | 2026-07-22 |
 | 3. Corpus Reproduction & CI (First Blood) | 4/4 | Complete   | 2026-07-22 |
-| 4. ExactBackend & CBC Reference | 0/TBD | Not started | - |
+| 4. ExactBackend & CBC Reference | 0/4 | Planned | - |
 | 5. CP-SAT, Differential Gate & had₃ | 0/TBD | Not started | - |
 | 6. Kill Battery CLI (Gate, Search, Statuses) | 0/TBD | Not started | - |
 | 7. P0 — CDM Frontier | 0/TBD | Not started | - |
