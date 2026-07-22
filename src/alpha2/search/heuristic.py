@@ -66,6 +66,31 @@ def initial_state(adj, n, p, s, rng, tries=500):
             return sets
     return None
 
+def initial_state_profile(adj, n, p, s, rng, tries=500):
+    # Profile-general initial state: p pairs + s singletons using 2*p + s <= n
+    # vertices, leaving n - 2*p - s UNUSED (the seed-137 non-spanning fix, SRCH-01).
+    # Unlike initial_state, this does NOT pair the entire pool: it stops at p pairs
+    # and drops an unpairable vertex (leaving it unused) rather than failing the try,
+    # so it can represent the D.3 optimum (9 pairs + 7 singletons = 25 of 31 verts).
+    for _ in range(tries):
+        verts = list(range(n)); rng.shuffle(verts)
+        singles = verts[:s]; pool = verts[s:]
+        pairs = []
+        while pool and len(pairs) < p:
+            a = pool.pop()
+            idx = -1
+            for i in range(len(pool)):
+                if pool[i] not in adj[a]:
+                    idx = i; break
+            if idx < 0:
+                continue
+            b = pool.pop(idx); pairs.append((a, b))
+        if len(pairs) == p:
+            sets = [(v,) for v in singles] + [tuple(pr) for pr in pairs]
+            rng.shuffle(sets)
+            return sets
+    return None
+
 def assignments(verts, sizes):
     if not sizes:
         yield (); return
@@ -96,22 +121,48 @@ def cand_energy(sets, idxs, cand, adj):
             if is_conflict(A, sets[j2], adj): e += 1
     return e
 
+# Per-restart cap on inner local-search iterations, so restarts CYCLE across the
+# profile list instead of one restart consuming the whole time budget (a spanning
+# restart on seed-137 never stalls out — moves keep resetting `stall` — so without
+# this cap round-robin never reaches the profile that holds the model). The cap is a
+# deterministic count (not a wall-clock slice), and is large enough that the byte-exact
+# D.2 reproduction (seed=1 solves the spanning profile in 3 iterations on restart 1)
+# is never truncated by it.
+PER_RESTART_ITERS = 1000
+
 def solve(adj, n, k, rng, time_budget=90.0):
-    p = n - k; s = 2 * k - n
-    assert p >= 0 and s >= 0 and 2 * p + s == n
+    # PROFILE-GENERAL head (SRCH-01): iterate (p', s') with p' + s' = k and
+    # 2*p' + s' <= n (i.e. s' from max(0, 2*k - n) up to k, p' = k - s'), allowing
+    # UNUSED vertices — never an `assert` (the old spanning-only assert crashed on
+    # pool instances with k < n/2). The spanning profile (2*p' + s' == n) is first and
+    # uses the byte-exact initial_state; non-spanning profiles use initial_state_profile.
+    # Restarts round-robin across the profiles; a single rng is threaded through, so the
+    # searcher stays deterministic in (n, seed).
+    profiles = []
+    for s in range(max(0, 2 * k - n), k + 1):
+        p = k - s
+        if p >= 0 and 2 * p + s <= n:
+            profiles.append((p, s))
     start = time.time()
     restarts = 0
     best_init = None
-    while time.time() - start < time_budget:
+    pidx = 0
+    while profiles and time.time() - start < time_budget:
+        p, s = profiles[pidx % len(profiles)]
+        pidx += 1
         restarts += 1
-        sets = initial_state(adj, n, p, s, rng)
+        if 2 * p + s == n:
+            sets = initial_state(adj, n, p, s, rng)
+        else:
+            sets = initial_state_profile(adj, n, p, s, rng)
         if sets is None:
             continue
         conf = full_conflicts(sets, adj)
         if best_init is None:
             best_init = len(conf)
-        moves = 0; stall = 0
-        while conf and time.time() - start < time_budget:
+        moves = 0; stall = 0; iters = 0
+        while conf and time.time() - start < time_budget and iters < PER_RESTART_ITERS:
+            iters += 1
             pr = tuple(conf)[rng.randrange(len(conf))]
             i, j = pr
             applied = False
