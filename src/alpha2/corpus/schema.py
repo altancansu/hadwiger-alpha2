@@ -56,7 +56,9 @@ def canonical_edges(H_edges):
         if len(e) != 2:
             raise ValueError(f"malformed H_edge {e!r} (len != 2)")
         a, b = e
-        out.append([min(a, b), max(a, b)])
+        # WR-05: int()-coerce, matching _as_int_pairs / _as_branch_sets, so a
+        # non-native numeric type (e.g. numpy.int64) can't leak into the record.
+        out.append([int(min(a, b)), int(max(a, b))])
     return sorted(out)
 
 

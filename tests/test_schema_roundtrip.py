@@ -22,6 +22,7 @@ import pytest
 from alpha2.corpus.schema import (
     SCHEMA_VERSION,
     build_record,
+    canonical_edges,
     provenance_graph6,
     provenance_params,
     provenance_seed,
@@ -160,6 +161,19 @@ def test_graph6_kind_missing_graph6_raises():
 def test_seed_kind_missing_seed_raises():
     with pytest.raises((ValueError, VerificationError)):
         validate_provenance({"kind": "seed", "family": "x", "n": 5, "process": "p"})
+
+
+def test_canonical_edges_coerces_endpoints_to_native_int():
+    """WR-05: canonical_edges must int()-coerce endpoints (like _as_int_pairs /
+    _as_branch_sets), so a non-native numeric type (e.g. numpy.int64) can't leak
+    into the record and break the JSON-native round-trip guarantee.
+    """
+    class FakeInt(int):  # stand-in for numpy.int64 etc. (an int subclass)
+        pass
+
+    out = canonical_edges([[FakeInt(2), FakeInt(0)], [FakeInt(1), FakeInt(3)]])
+    for a, b in out:
+        assert type(a) is int and type(b) is int, (type(a), type(b))
 
 
 def test_seed_kind_missing_process_raises():
