@@ -97,3 +97,79 @@ class GateResult:
     @property
     def flag_names(self):
         return tuple(name for name, _ in self.flags)
+
+
+# ---------- cost-ordered chain (D-01 Role B: hard vs flag_only tiers, LOCKED) ----------
+def default_chain():
+    """The canonical cost-ordered chain `((name, tier, check_fn), ...)`.
+
+    Resolved lazily (checks imported inside) so `checks.py` -> `runner.py` (for the outcome
+    types) is a clean one-directional import; the chain never forms an import cycle.
+
+    Hard set (the ONLY checks that may KILL) = {g1_criticality, g2_triangle_free_diam2,
+    g_connectivity}. Everything deeper (g3_deep, g4_omega_window, g5, g6) is flag_only:
+    it records regime + reason + witness but never terminates the runbook (Role B). Order
+    is cost-increasing — cheap criticality/connectivity before expensive kappa/omega.
+    """
+    from alpha2.gate import checks
+    return (
+        ("g1_criticality",         "hard",      checks.g1_criticality),
+        ("g2_triangle_free_diam2", "hard",      checks.g2_triangle_free_diam2),
+        ("g_connectivity",         "hard",      checks.g_connectivity),
+        ("g3_deep",                "flag_only", checks.g3_deep),
+        ("g4_omega_window",        "flag_only", checks.g4_omega_window),
+        ("g5_unavoidables",        "flag_only", checks.g5_unavoidables),
+        ("g6_safe_families",       "flag_only", checks.g6_safe_families),
+    )
+
+
+def __getattr__(name):
+    # PEP 562 lazy attribute: `runner.DEFAULT_CHAIN` (and `from ... import DEFAULT_CHAIN`)
+    # resolve the chain on demand, keeping module import strictly one-directional.
+    if name == "DEFAULT_CHAIN":
+        return default_chain()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+def run_gate(adj, n, inv, chain=None):
+    """Walk `chain` in cost order; return a `GateResult` (D-01 Role B).
+
+    - a HARD `Fail` stops immediately -> KILLED (no later check runs);
+    - a FLAG_ONLY `Fail` is appended to `flags` and execution CONTINUES;
+    - an `Error` quarantines -> ERROR (NEVER a kill), stopping the chain;
+    - all checks passing (modulo flags) -> PASS.
+
+    Guards RAISE (malformed tier / non-outcome return); no `assert` (python -O safe).
+    """
+    if chain is None:
+        chain = default_chain()
+    flags = []
+    passed = []
+    for entry in chain:
+        if len(entry) != 3:
+            raise ValueError(f"chain entry must be (name, tier, check_fn), got {entry!r}")
+        name, tier, check_fn = entry
+        if tier not in TIERS:
+            raise ValueError(f"check {name!r} has unknown tier {tier!r}; expected {TIERS}")
+        outcome = check_fn(adj, n, inv)
+        if isinstance(outcome, Error):
+            return GateResult(
+                verdict=Verdict.ERROR, error=outcome,
+                flags=tuple(flags), passed=tuple(passed),
+            )
+        if isinstance(outcome, Pass):
+            passed.append(name)
+            continue
+        if isinstance(outcome, Fail):
+            if tier == "hard":
+                return GateResult(
+                    verdict=Verdict.KILLED, killing=name, witness=outcome.witness,
+                    flags=tuple(flags), passed=tuple(passed),
+                )
+            flags.append((name, outcome))
+            continue
+        raise TypeError(
+            f"check {name!r} returned a non-outcome {type(outcome).__name__}; "
+            "expected Pass | Fail | Error"
+        )
+    return GateResult(verdict=Verdict.PASS, flags=tuple(flags), passed=tuple(passed))
