@@ -121,9 +121,14 @@ def _guarded_extract(prob, mv, sv, Gedges, n, mode, target_k):
 
     Guards (each maps the whole outcome to Status.ERROR at the caller):
       (a) integrality — every binary within 1e-6 of {0, 1} (pulp#517 defense);
-      (b) recompute — optimize: count of extracted sets equals the reported
-          objective within 1e-6; decision: count >= target_k (the objective is
-          the constant 0 there, so the target constraint is the recompute);
+      (b) recompute — optimize: the reported objective, rounded to the nearest
+          integer, equals the count of extracted sets EXACTLY, and the
+          sub-integer drift stays within #vars * 1e-6 (per-variable drift up
+          to the integrality tolerance accumulates across the sum, so a flat
+          1e-6 gate would spuriously ERROR a genuine optimum at scaled n —
+          04-REVIEW WR-03; a real count mismatch is >= 1 - #vars*1e-6 and
+          always trips). Decision: count >= target_k (the objective is the
+          constant 0 there, so the target constraint is the recompute);
       (c) internal disjointness of the extracted sets.
     """
     for var in list(mv.values()) + list(sv.values()):
@@ -137,7 +142,19 @@ def _guarded_extract(prob, mv, sv, Gedges, n, mode, target_k):
     ]
     if mode == "optimize":
         reported = pulp.value(prob.objective)
-        if reported is None or abs(len(fam) - reported) > _INTEGRALITY_TOL:
+        if reported is None:
+            return None
+        # Scale-robust count comparison (WR-03): every binary already passed
+        # the per-variable integrality gate above, so compare at count
+        # resolution — round the reported sum to the nearest integer and
+        # require EXACT equality with the extracted count — while keeping
+        # sub-integer drift fatal beyond the accumulated per-variable budget
+        # (#vars * _INTEGRALITY_TOL). Fail-closed: a genuine count mismatch
+        # shifts the sum by >= 1 - #vars*tol and trips the round check.
+        nvars = len(mv) + len(sv)
+        if round(reported) != len(fam):
+            return None
+        if abs(reported - round(reported)) > nvars * _INTEGRALITY_TOL:
             return None
     else:
         if len(fam) < target_k:

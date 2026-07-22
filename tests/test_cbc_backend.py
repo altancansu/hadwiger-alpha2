@@ -199,6 +199,60 @@ def test_decision_mode_both_legs_on_c5():
 
 
 # --------------------------------------------------------------------------- #
+# Test 9 — WR-03 regression: the recompute guard is scale-robust (no solve).
+#
+# Per-variable drift up to _INTEGRALITY_TOL accumulates across the objective
+# sum, so the old flat 1e-6 gate on |count - reported| spuriously ERRORed a
+# genuine integral optimum once #vars * 1e-6 exceeded 1e-6 (~0.125 at n=501).
+# Drive _guarded_extract directly with real pulp objects and hand-set
+# varValues: deterministic, milliseconds, no CBC invocation.
+# --------------------------------------------------------------------------- #
+def _drifted_singleton_model(n_vars, per_var_value, objective_shift=0.0):
+    import pulp
+
+    prob = pulp.LpProblem("wr03", pulp.LpMaximize)
+    sv = {v: pulp.LpVariable(f"s_{v}", cat="Binary") for v in range(n_vars)}
+    prob += pulp.lpSum(sv.values()) + objective_shift
+    for var in sv.values():
+        var.varValue = per_var_value
+    return prob, {}, sv  # mv empty: singletons keep the family disjoint
+
+
+def test_recompute_guard_accepts_accumulated_per_variable_drift():
+    from alpha2.solvers.cbc import _guarded_extract
+
+    # 100 binaries each 9e-7 below 1.0 — every one passes the per-variable
+    # integrality gate, but the summed objective is 9e-5 off the count, far
+    # above the old flat 1e-6 gate. A genuine integral optimum must extract.
+    prob, mv, sv = _drifted_singleton_model(100, 1.0 - 9e-7)
+    fam = _guarded_extract(prob, mv, sv, [], 100, "optimize", None)
+    assert fam is not None, "accumulated float drift spuriously tripped the guard"
+    assert len(fam) == 100
+    assert all(len(s) == 1 for s in fam)
+
+
+def test_recompute_guard_stays_fail_closed_on_count_mismatch():
+    from alpha2.solvers.cbc import _guarded_extract
+
+    # A true count mismatch (reported objective a full unit off the extracted
+    # count) must still trip the guard — fail-closed is non-negotiable.
+    prob, mv, sv = _drifted_singleton_model(100, 1.0, objective_shift=1.0)
+    fam = _guarded_extract(prob, mv, sv, [], 100, "optimize", None)
+    assert fam is None, "unit-level count mismatch crossed the recompute guard"
+
+
+def test_recompute_guard_stays_fail_closed_on_excess_subunit_drift():
+    from alpha2.solvers.cbc import _guarded_extract
+
+    # Sub-unit drift beyond the accumulated per-variable budget
+    # (#vars * 1e-6 = 1e-4 here) is still fatal: 0.4 rounds back to the
+    # count, but exceeds any legitimate accumulation.
+    prob, mv, sv = _drifted_singleton_model(100, 1.0, objective_shift=0.4)
+    fam = _guarded_extract(prob, mv, sv, [], 100, "optimize", None)
+    assert fam is None, "excess sub-unit drift crossed the recompute guard"
+
+
+# --------------------------------------------------------------------------- #
 # 296-lineage every-commit kill panel (ROADMAP SC2, every-commit leg)
 #
 # Decision mode IS the kill path: ~2.5 s per instance vs ~149 s for the
