@@ -62,11 +62,16 @@ def run_instance(n, seed, path):
     return rec
 
 
-def main():
+def main(path=None):
     instances = [(31, 1), (31, 2), (31, 3), (32, 4), (51, 5), (51, 6),
                  (76, 7), (101, 8), (101, 9), (151, 10), (200, 11), (201, 12),
                  (301, 13), (501, 14)]
-    path = paths.ensure_parent(paths.CORPUS)
+    # Same `path=None` contract as the sibling drivers (sweep/cayley_run/seed137):
+    # the default resolves to paths.CORPUS exactly as before; a caller-supplied
+    # path is honored END-TO-END (empty + write + report all target the SAME path),
+    # so `freeze(path=...)` can never destroy the committed corpus (CR-01).
+    if path is None:
+        path = paths.ensure_parent(paths.CORPUS)
     # Begin from an EMPTY corpus: the store is append-only and refuses a reorder, so
     # a re-run must not double-append onto a non-empty corpus.
     if os.path.exists(path):

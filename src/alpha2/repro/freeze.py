@@ -47,7 +47,7 @@ def freeze(path=None):
         json.dump([], fh)
 
     print("=== FREEZE: rebuilding the 296-record corpus from empty ===\n", flush=True)
-    baseline.main()                 # 14 TFP (baseline.main empties+writes to paths.CORPUS)
+    baseline.main(path=path)        # 14 TFP (empties+writes to the SAME caller path)
     sweep.main(path=path)           # +269 TFP
     cayley_run.main(path=path)      # +12 Cayley
     seed137.main(path=path)         # +1 TFP (D.3 literal, solver-free)
