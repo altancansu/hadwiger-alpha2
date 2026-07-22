@@ -115,7 +115,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
   4. The heuristic iterates non-spanning profiles (p′+s′=χ, 2p′+s′≤n) and finds the seed-137-class model the spanning profile misses; restarts-to-solution and initial-conflict instrumentation are exposed for P7 fitness.
   5. Statuses (KILLED / SHC-CANDIDATE / RESISTANT) are derived views over the immutable corpus + append-only results log — every instance's terminal state carries method + certificate reference + reason + seed/provenance, transitions never edit stored records, and RESISTANT is reachable only via exact-method timeout.
 **Plans**: 5 plans
-- [ ] 06-01-PLAN.md — Gate mechanism (G1–G6 cost-ordered chain, Role B tiers) + invariants/cliques (ω, κ); seed-137 passes the hard-set (GATE-01, GATE-02)
+- [x] 06-01-PLAN.md — Gate mechanism (G1–G6 cost-ordered chain, Role B tiers) + invariants/cliques (ω, κ); seed-137 passes the hard-set (GATE-01, GATE-02)
 - [ ] 06-02-PLAN.md — MVP e2e slice: `alpha2 battery` 7-step runbook + append-only JSONL results log; seed-137 in-memory had₂=17 verified kill (CLI-01, CLI-02)
 - [ ] 06-03-PLAN.md — Profile-general heuristic: non-spanning (p′,s′) iteration + instrumentation; finds the seed-137-class model (SRCH-01, SRCH-02)
 - [ ] 06-04-PLAN.md — Derived statuses (KILLED/SHC-CANDIDATE/RESISTANT, read-only) + G5/G6 safe-family map (VRF-03, GATE-03)
@@ -206,7 +206,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 | 3. Corpus Reproduction & CI (First Blood) | 4/4 | Complete   | 2026-07-22 |
 | 4. ExactBackend & CBC Reference | 4/4 | Complete   | 2026-07-22 |
 | 5. CP-SAT, Differential Gate & had₃ | 7/7 | Complete    | 2026-07-22 |
-| 6. Kill Battery CLI (Gate, Search, Statuses) | 0/5 | Planned    |  |
+| 6. Kill Battery CLI (Gate, Search, Statuses) | 1/5 | In Progress|  |
 | 7. P0 — CDM Frontier | 0/TBD | Not started | - |
 | 8. P1 & P2 — Seeded Families at Scale | 0/TBD | Not started | - |
 | 9. P3 & P6 — Inflation Pools | 0/TBD | Not started | - |

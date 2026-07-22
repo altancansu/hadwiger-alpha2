@@ -53,8 +53,8 @@ Broad scope: the full program except Lean formalization (milestone 2). Each requ
 
 ### CLI & results log (CLI)
 
-- [ ] **CLI-01**: One tested CLI runs the 7-step runbook per candidate (gate → exact χ → heuristic → had₂ → had₃ → verify → corpus append), deterministic in (n, seed), with per-step budgets and structured JSON logging; `--family` selects the pool.
-- [ ] **CLI-02**: An append-only results log records every instance's terminal state with method + certificate reference + reason + seed/provenance.
+- [x] **CLI-01**: One tested CLI runs the 7-step runbook per candidate (gate → exact χ → heuristic → had₂ → had₃ → verify → corpus append), deterministic in (n, seed), with per-step budgets and structured JSON logging; `--family` selects the pool.
+- [x] **CLI-02**: An append-only results log records every instance's terminal state with method + certificate reference + reason + seed/provenance.
 
 ### Candidate pools (POOL)
 
@@ -128,8 +128,8 @@ Which phases cover which requirements. Populated during roadmap creation.
 | VRF-01 | Phase 2 | Complete |
 | VRF-02 | Phase 2 | Complete |
 | VRF-03 | Phase 6 | Pending |
-| CLI-01 | Phase 6 | Pending |
-| CLI-02 | Phase 6 | Pending |
+| CLI-01 | Phase 6 | Complete |
+| CLI-02 | Phase 6 | Complete |
 | POOL-0 | Phase 7 | Pending |
 | POOL-1 | Phase 8 | Pending |
 | POOL-2 | Phase 8 | Pending |
