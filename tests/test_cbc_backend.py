@@ -199,6 +199,23 @@ def test_decision_mode_both_legs_on_c5():
 
 
 # --------------------------------------------------------------------------- #
+# Test 8b — WR-04 regression: bool target_k must raise, never mean k=1.
+# isinstance(True, int) is True, so without the explicit bool rejection a
+# caller bug passing a comparison result runs a k=1 decision solve and
+# returns an honest-looking MODEL_FOUND (wrong question, right answer).
+# --------------------------------------------------------------------------- #
+def test_decision_mode_rejects_bool_target_k():
+    backend = get_backend("cbc")
+    for bad in (True, False):
+        with pytest.raises(ValueError):
+            backend.solve_had2(_c5_adj(), 5, mode="decision", target_k=bad)
+    # Non-int and non-positive targets stay rejected too.
+    for bad in (0, -1, None, 3.0, "3"):
+        with pytest.raises(ValueError):
+            backend.solve_had2(_c5_adj(), 5, mode="decision", target_k=bad)
+
+
+# --------------------------------------------------------------------------- #
 # Test 9 — WR-03 regression: the recompute guard is scale-robust (no solve).
 #
 # Per-variable drift up to _INTEGRALITY_TOL accumulates across the objective

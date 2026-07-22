@@ -180,9 +180,20 @@ class CBCBackend:
         if mode not in ("optimize", "decision"):
             raise ValueError(f"mode must be 'optimize' or 'decision', got {mode!r}")
         if mode == "decision":
-            if not isinstance(target_k, int) or target_k < 1:
+            # bool subclasses int (isinstance(True, int) is True), so a caller
+            # bug passing a comparison result would silently run a k=1
+            # decision solve and return an honest-looking MODEL_FOUND — a
+            # wrong-question-right-answer failure the status discipline
+            # cannot catch (04-REVIEW WR-04). Reject bool explicitly.
+            if (
+                not isinstance(target_k, int)
+                or isinstance(target_k, bool)
+                or target_k < 1
+            ):
                 raise ValueError(
-                    f"decision mode requires a positive int target_k, got {target_k!r}"
+                    f"decision mode requires a positive int target_k "
+                    f"(bool rejected: True would silently mean k=1), "
+                    f"got {target_k!r}"
                 )
         elif target_k is not None:
             raise ValueError("target_k is only meaningful in decision mode")

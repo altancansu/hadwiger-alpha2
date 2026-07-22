@@ -96,6 +96,8 @@ reachable only by future backends/callers, WR-03 fails in the safe direction.
 
 ### WR-01: Phase-4 functional solver tests never run in CI — the "every-commit kill panel" exists only locally
 
+**Status:** FIXED — commit e2e2c4b (`ci(04): run solver soundness tests on every commit`): the five solver test files added to the every-commit `test` job under `-m "not slow"`; release-gate/-O canary/3.13 canary/SHA pins unchanged.
+
 **File:** `.github/workflows/ci.yml:37,43,61`
 **Issue:** The every-commit `test` job runs a fixed file list
 (`test_corpus_r1.py test_corpus_r2.py test_fingerprint.py`) plus the `-O` canary
@@ -120,6 +122,8 @@ run: uv run --frozen pytest tests/test_corpus_r1.py tests/test_corpus_r2.py test
 seconds-scale).
 
 ### WR-02: `ExactOutcome` under-enforces its own invariants — PROVED_OPTIMAL with `value=None` constructs, and `exact_value()` silently returns `None`
+
+**Status:** FIXED — commit aad5741 (`fix(04): enforce ExactOutcome status-honesty invariants`): valued statuses require a genuine int (bool/float/None raise); PROVED_INFEASIBLE joins UNKNOWN/ERROR on value=None; PROVED_OPTIMAL requires a non-None family; non-valued statuses require family=None; bound_source restricted to the four documented provenances. Raise-based; regression tests cover all three live-probed inconsistencies.
 
 **File:** `src/alpha2/solvers/result.py:73-95`
 **Issue:** `__post_init__` rejects a value only for UNKNOWN/ERROR and checks
@@ -149,6 +153,8 @@ if self.bound_source not in ("definition", "cbc_log", "trivial_n", "none"):
 
 ### WR-03: Recompute-guard tolerance mis-scaled — accumulated per-variable drift can spuriously downgrade a genuine optimum to ERROR at larger n
 
+**Status:** FIXED — commit 328c352 (`fix(04): scale-robust integrality recompute guard`): count compared via `round(reported) == len(fam)` (exact) plus a sub-integer drift budget of `#vars * _INTEGRALITY_TOL`. Fail-closed preserved (unit-level mismatch and excess sub-unit drift still ERROR); solve-free regression tests drive `_guarded_extract` with hand-set varValues.
+
 **File:** `src/alpha2/solvers/cbc.py:140`
 **Issue:** `_guarded_extract` accepts each binary within `1e-6` of {0,1}
 (cbc.py:133), then requires `abs(len(fam) - reported) <= 1e-6` where `reported =
@@ -170,6 +176,8 @@ if reported is None or abs(len(fam) - reported) > 0.5:
 `len(mv) * _INTEGRALITY_TOL` if sub-unit drift itself should stay fatal).
 
 ### WR-04: `target_k` accepts `bool` — `solve_had2(..., mode="decision", target_k=True)` silently means k=1
+
+**Status:** FIXED — committed with this review update (`fix(04): reject bool target_k in CBC decision mode`): explicit `isinstance(target_k, bool)` rejection alongside the int/positivity check; regression test asserts True/False/0/-1/None/3.0/"3" all raise.
 
 **File:** `src/alpha2/solvers/cbc.py:166`
 **Issue:** `isinstance(target_k, int)` is `True` for `bool` (`isinstance(True, int)`
