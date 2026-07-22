@@ -76,6 +76,15 @@ class ExactOutcome:
     backend_version: str
     params: SolveParams = field(default_factory=SolveParams)
     wall_time_s: float = 0.0
+    # WR-01 (05-REVIEW): the had_3 Tier-1 model OMITS triple-triple conflicts, so
+    # its feasible region is a SUPERSET of the true size-3 model — solve_had3's
+    # proven optimum is an UPPER BOUND on the true had_3, never the exact size-3
+    # Hadwiger number. This flag travels with the outcome so a Tier-1 value can
+    # NEVER be silently read as an exact had_3 optimum. Sound in the impossibility
+    # direction (value < chi => true had_3 <= value < chi); UNSOUND as a kill
+    # (value >= chi does NOT prove a K_chi minor — the winning family may hold two
+    # mutually non-adjacent triples). had_2 outcomes leave it False.
+    value_is_upper_bound: bool = False
 
     # Statuses that carry a value (04-RESEARCH: value is populated ONLY for
     # these three) vs statuses whose solver-side numbers are garbage or

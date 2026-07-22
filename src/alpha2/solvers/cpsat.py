@@ -376,6 +376,11 @@ class CPSATBackend:
             backend_version=self.backend_version(),
             params=p,
             wall_time_s=time.monotonic() - t0,
+            # Tier-1 seagull model omits triple-triple conflicts -> the proven
+            # optimum is an UPPER BOUND on true had_3, never the exact size-3
+            # value (WR-01). The flag travels with the outcome so the value can
+            # never be silently read as exact / license a kill from its number.
+            value_is_upper_bound=True,
         )
 
 

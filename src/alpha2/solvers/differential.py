@@ -42,6 +42,18 @@ class CriticalDisagreement(Exception):
     a winner between backends."""
 
 
+class UnverifiedKill(Exception):
+    """Raised when an UPPER-BOUND outcome (the Tier-1 had_3 seagull model, which
+    omits triple-triple conflicts) would otherwise read as an AGREED_KILL from
+    its value alone (WR-01). An upper bound U on had_3 with U >= chi does NOT
+    prove had_3 >= chi; and even a proven had_3 >= chi does not prove a K_chi
+    minor — the winning size-3 family may hold two mutually non-adjacent triples.
+    A kill from a had_3 result is licensable ONLY after the extracted family
+    passes the frozen trust root (`corpus/verifier.verify_certificate`). The
+    impossibility direction stays sound (U < chi => true had_3 <= U < chi), so
+    only the kill (value >= chi) branch is gated."""
+
+
 def differential_verdict(a, b, chi):
     """Cross-examine two optimize outcomes for one instance; return the verdict.
 
@@ -79,8 +91,21 @@ def differential_verdict(a, b, chi):
         # A timeout/incumbent/unknown on either side: no impossibility claim,
         # no SHC-CANDIDATE from a single proof.
         return "INSUFFICIENT"
-    # Both proved and equal: the value is now a FACT for this instance.
-    return "SHC_CANDIDATE" if a.exact_value() < chi else "AGREED_KILL"
+    # Both proved and equal. The value < chi branch (SHC-CANDIDATE / escalation
+    # not yet resolved) is sound even for an UPPER BOUND U: U < chi proves the
+    # true optimum <= U < chi. The value >= chi branch is a KILL — an existence
+    # claim — and an upper-bound value cannot license it from its number alone
+    # (WR-01): route the family through verify_certificate first.
+    if a.exact_value() < chi:
+        return "SHC_CANDIDATE"
+    if a.value_is_upper_bound or b.value_is_upper_bound:
+        raise UnverifiedKill(
+            f"AGREED upper-bound value {a.exact_value()} >= chi={chi} cannot "
+            "license a kill: the Tier-1 had_3 optimum is only an upper bound; "
+            "verify the extracted family via verify_certificate before recording "
+            "a kill (value >= chi does not by itself prove a K_chi minor)"
+        )
+    return "AGREED_KILL"
 
 
 def assert_not_below_verified(outcome, verified_k):

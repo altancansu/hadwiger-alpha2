@@ -41,6 +41,7 @@ from alpha2.invariants.witness import extract_witness
 from alpha2.solvers.backend import get_backend
 from alpha2.solvers.differential import (
     CriticalDisagreement,
+    UnverifiedKill,
     assert_not_below_verified,
     differential_verdict,
 )
@@ -295,4 +296,52 @@ def test_no_solver_import():
     )
     assert r.returncode == 0, (
         "differential.py loaded a solver library: " + r.stderr.decode()
+    )
+
+
+# --------------------------------------------------------------------------- #
+# WR-01: Tier-1 had_3 outcomes are UPPER BOUNDS — un-mislabelable as kills.
+# --------------------------------------------------------------------------- #
+def _proved_had3_ub(value, family=((0, 1),)):
+    """A PROVED_OPTIMAL Tier-1 had_3 outcome: value is an UPPER BOUND on had_3
+    (triple-triple conflicts omitted), so `value_is_upper_bound` is True — the
+    shape `solve_had3` actually returns on both backends."""
+    return ExactOutcome(
+        problem="had3",
+        mode="optimize",
+        status=Status.PROVED_OPTIMAL,
+        value=value,
+        bound=value,
+        bound_source="definition",
+        family=family,
+        backend="synthetic",
+        backend_version="test",
+        value_is_upper_bound=True,
+    )
+
+
+def test_solve_had3_outcomes_are_flagged_upper_bounds():
+    """Both backends' real solve_had3 outcomes must carry value_is_upper_bound."""
+    adj, n = _c5_adj(), 5  # any instance; the flag is a property of the Tier-1 model
+    for name in ("cbc", "cpsat"):
+        out = get_backend(name).solve_had3(adj, n, mode="optimize")
+        assert out.value_is_upper_bound is True, name
+    # had_2 outcomes are exact — the flag must stay False (default).
+    assert get_backend("cbc").solve_had2(adj, n, mode="optimize").value_is_upper_bound is False
+
+
+def test_upper_bound_kill_is_refused():
+    """value >= chi from an UPPER BOUND cannot license an AGREED_KILL (WR-01):
+    U >= chi does not prove had_3 >= chi, and even that would not prove a K_chi
+    minor. The gate must raise, forcing the family through verify_certificate."""
+    with pytest.raises(UnverifiedKill):
+        differential_verdict(_proved_had3_ub(5), _proved_had3_ub(5), chi=4)
+
+
+def test_upper_bound_below_chi_is_sound_shc_candidate():
+    """The impossibility direction stays sound for an upper bound: U < chi proves
+    the true had_3 <= U < chi, so SHC_CANDIDATE is still licensed (no raise)."""
+    assert (
+        differential_verdict(_proved_had3_ub(3), _proved_had3_ub(3), chi=5)
+        == "SHC_CANDIDATE"
     )
