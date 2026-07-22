@@ -527,16 +527,18 @@ def append_certificate(rec, path=None):
 | A4 | `omega_G` is optional/null unless a clique method already computed it (D.3 has 14; D.2 unknown) | Pattern 3 | Low — schema marks it nullable; ω computation is a later-phase concern. |
 | A5 | No corpus data migration needed (repo corpus is empty) | Runtime State Inventory | Low — verified `find data`; if a corpus JSON is committed before Phase 2 executes, add a one-time v0→v1 upgrade (out of current scope). |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **JSON array vs JSON Lines for the append-only substrate.**
    - What we know: array + `os.replace` + prefix guard is crash-safe and immutability-checkable with no deps.
    - What's unclear: at 296+ records with full n=501 `H_edges`, whole-file rewrite per append is O(corpus) per write. Fine for 296; revisit if the corpus grows to 10⁴+ (Phases 7/9 ingest 477k Ramsey graphs — though those may live in a separate ingested store, not the certificate corpus).
    - Recommendation: JSON array now (matches existing `baseline.py`); flag a possible JSONL/segmented migration for large-ingest phases.
+   - **RESOLVED (2026-07-21):** JSON array + `os.replace` adopted for Phase 2 (see 02-02-PLAN.md store task); JSONL/segmented migration explicitly deferred to the large-ingest phases (7/9), not this phase.
 
 2. **Should `verify_chi_witness` be mandatory on every append, or gated by a `has_witness` flag?**
    - What we know: CHI-02 requires the witness on each certificate.
    - Recommendation: mandatory — refuse to append a certificate lacking a valid M+U witness (enforces CHI-02 at the store boundary).
+   - **RESOLVED (2026-07-21):** mandatory. 02-02-PLAN.md Task 2 gates every append on BOTH verify_model_record AND verify_chi_witness — no `has_witness` opt-out.
 
 ## Environment Availability
 
