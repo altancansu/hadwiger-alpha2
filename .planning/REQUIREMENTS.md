@@ -29,7 +29,7 @@ Broad scope: the full program except Lean formalization (milestone 2). Each requ
 ### Exact chromatic number (CHI)
 
 - [x] **CHI-01**: χ(G) = n − ν(H) is computed exactly via Edmonds blossom, with no estimates anywhere in control flow.
-- [ ] **CHI-02**: Each certificate stores a maximum matching M and a Tutte–Berge witness set U, making χ = n − ν hand-checkable without trusting the matching library (and without formalizing Edmonds in Lean).
+- [x] **CHI-02**: Each certificate stores a maximum matching M and a Tutte–Berge witness set U, making χ = n − ν hand-checkable without trusting the matching library (and without formalizing Edmonds in Lean).
 
 ### Heuristic model search (SRCH)
 
@@ -47,7 +47,7 @@ Broad scope: the full program except Lean formalization (milestone 2). Each requ
 
 ### Verifier & corpus — the trust root (VRF)
 
-- [ ] **VRF-01**: An independent verifier (its own stdlib-only code path, sharing no logic with any searcher) checks disjointness, valid sizes, pairs/triples inducing connected G-subgraphs, and all C(χ,2) cross-adjacencies — using real checks, not `assert` (correct under `python -O`).
+- [x] **VRF-01**: An independent verifier (its own stdlib-only code path, sharing no logic with any searcher) checks disjointness, valid sizes, pairs/triples inducing connected G-subgraphs, and all C(χ,2) cross-adjacencies — using real checks, not `assert` (correct under `python -O`).
 - [ ] **VRF-02**: Nothing enters the corpus unverified; the append-only corpus stores full certificates (family/provenance, invariants ν/χ/ω, Tutte–Berge witness, the FULL optimal branch-set family — never `fam[:χ]`-truncated — verified flag, method, backend statuses + versions).
 - [ ] **VRF-03**: Instance status (KILLED / SHC-CANDIDATE / RESISTANT) is a derived view over the immutable corpus + results log; transitions (e.g., RESISTANT → KILLED after a longer budget) never edit stored records.
 
@@ -116,7 +116,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 | GATE-02 | Phase 6 | Pending |
 | GATE-03 | Phase 6 | Pending |
 | CHI-01 | Phase 1 | Complete |
-| CHI-02 | Phase 2 | Pending |
+| CHI-02 | Phase 2 | Complete |
 | SRCH-01 | Phase 6 | Pending |
 | SRCH-02 | Phase 6 | Pending |
 | EXACT-01 | Phase 4 | Pending |
@@ -125,7 +125,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 | EXACT-04 | Phase 5 | Pending |
 | EXACT-05 | Phase 5 | Pending |
 | EXACT-06 | Phase 5 | Pending |
-| VRF-01 | Phase 2 | Pending |
+| VRF-01 | Phase 2 | Complete |
 | VRF-02 | Phase 2 | Pending |
 | VRF-03 | Phase 6 | Pending |
 | CLI-01 | Phase 6 | Pending |

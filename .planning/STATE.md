@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: ready_to_plan
-stopped_at: Phase 1 complete (2/2) — ready to discuss Phase 2
-last_updated: 2026-07-22T01:28:39.981Z
-last_activity: 2026-07-22 -- Completed Phase 01 Plan 02 (Phase 01 complete)
+status: executing
+stopped_at: Completed 01-02-PLAN.md — golden fingerprint frozen (gated), stored D.2 model re-verified, CHI-01 AST guard; Phase 01 complete (2/2)
+last_updated: "2026-07-22T02:22:28.852Z"
+last_activity: 2026-07-22
 progress:
   total_phases: 12
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 4
+  completed_plans: 3
   percent: 8
 ---
 
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-21)
 
 **Core value:** Reconstruct the *attempt* under discipline — build the adversary so that anything surviving it is a correct road to a disproof, and anything dying leaves a machine-verified result; never invent the missing hour. Epistemic integrity (verified existence, radioactive impossibility) wins over speed, coverage, or narrative.
-**Current focus:** Phase 2 — trust root & corpus schema
+**Current focus:** Phase 02 — trust-root-corpus-schema
 
 ## Current Position
 
-Phase: 2
-Plan: Not started
-Status: Ready to plan
+Phase: 02 (trust-root-corpus-schema) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
 Last activity: 2026-07-22
 
-Progress: [█░░░░░░░░░] 8%
+Progress: [████████░░] 75%
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Progress: [█░░░░░░░░░] 8%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 02 P01 | 12min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -78,6 +79,9 @@ Execution decisions (Phase 01 Plan 02):
 - Tests load `h_edges_sha256` FROM the manifest (never a duplicated literal), so the manifest is the authority the byte-exact tripwire guards. seed-137 hash = `c3e7540f…cb13` (H-only; no model/ILP until Phase 4).
 - Exact-match heuristic tier uses the single-RNG contract v1 (one `random.Random(1)` feeds `triangle_free_process` THEN `solve`) — the only path reproducing Appendix D.2 byte-exactly; the plan's literal fresh-`Random(1)` snippet was superseded.
 - CHI-01 guard is AST/mechanism-based (Call/Import inspection), not a prose grep — verified non-vacuous by an injected `greedy_color` that trips it; `invariants/matching.py` confirmed the sole chi path via `max_weight_matching(maxcardinality=True)`.
+- [Phase ?]: Phase 2 Plan 1: trust root corpus/verifier.py is stdlib-only, zero asserts, own _is_conflict, rebuilds adjacency from stored H_edges; verify/model.py stays byte-verbatim
+- [Phase ?]: matching_edges() added to invariants/matching.py so witness.py obtains M without calling max_weight_matching outside matching.py (CHI-01 guard); extract_witness lives only in invariants/witness.py
+- [Phase ?]: Wrong-chi proven at two boundaries: chi_G=17 trips verify_model_record k<chi; chi_G=15 trips verify_chi_witness n-nu!=chi (not catchable by family-size check)
 
 ### Pending Todos
 
@@ -99,6 +103,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-22
+Last session: 2026-07-22T02:22:22.045Z
 Stopped at: Completed 01-02-PLAN.md — golden fingerprint frozen (gated), stored D.2 model re-verified, CHI-01 AST guard; Phase 01 complete (2/2)
 Resume file: None

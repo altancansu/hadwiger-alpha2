@@ -50,7 +50,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
   3. Schema v1 + append-only atomic store round-trip full certificates: provenance for all three generator shapes (optional `seed` / required `params` / `graph6`), inline `H_edges` + sha256, invariants, FULL optimal families (never `fam[:χ]`), Tutte–Berge witness fields (M + U) making χ = n − ν hand-checkable both directions, verified flag, method, backend statuses + versions.
   4. The reproduction contract is encoded and documented: byte-exact (seed-derived heuristic) vs semantic (exact-method) reproduction distinguished, solver/platform versions recorded per certificate, Linux x86_64 designated the canonical reference-regeneration platform.
 **Plans**: 2 plans
-- [ ] 02-01-PLAN.md — Trust root: independent stdlib-only verifier (VRF-01) + Tutte-Berge witness verification & extractor (CHI-02), proven by mutant suite + `-O` canary + import-boundary
+- [x] 02-01-PLAN.md — Trust root: independent stdlib-only verifier (VRF-01) + Tutte-Berge witness verification & extractor (CHI-02), proven by mutant suite + `-O` canary + import-boundary
 - [ ] 02-02-PLAN.md — Schema v1 + append-only atomic store with verify-at-append gate (VRF-02) + reproduction contract byte-exact/semantic + version/platform stamps (ENV-05)
 
 ### Phase 3: Corpus Reproduction & CI (First Blood)
@@ -182,7 +182,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Pinned Environment & Verbatim Port | 2/2 | Complete    | 2026-07-22 |
-| 2. Trust Root & Corpus Schema | 0/TBD | Not started | - |
+| 2. Trust Root & Corpus Schema | 1/2 | In Progress|  |
 | 3. Corpus Reproduction & CI (First Blood) | 0/TBD | Not started | - |
 | 4. ExactBackend & CBC Reference | 0/TBD | Not started | - |
 | 5. CP-SAT, Differential Gate & had₃ | 0/TBD | Not started | - |
