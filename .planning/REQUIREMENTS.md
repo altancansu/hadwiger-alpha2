@@ -13,7 +13,7 @@ Broad scope: the full program except Lean formalization (milestone 2). Each requ
 
 - [x] **ENV-01**: The project runs on a pinned, uv-managed CPython (3.12.x) with all dependencies version-locked (networkx 3.6.1, `pulp==3.3.2` hard-pin, ortools 9.15.6755, nauty 2.9.3, pynauty 2.8.8.1); a committed lockfile reproduces the environment. *(System Python 3.9.6 is EOL and cannot run this stack.)*
 - [x] **ENV-02**: The Appendix C toolkit is ported into a repo-relative Python package (no `/mnt` paths), deterministic in (n, seed), split into library + thin CLI, with the reference algorithms unchanged.
-- [ ] **ENV-03**: A corpus-fingerprint test asserts canonical generator invariants (n=31 seed 1 → |E(H)|=131, ν=15, χ=16) to guard byte-reproduction across environments.
+- [x] **ENV-03**: A corpus-fingerprint test asserts canonical generator invariants (n=31 seed 1 → |E(H)|=131, ν=15, χ=16) to guard byte-reproduction across environments.
 - [ ] **ENV-04**: The full 296-instance corpus (284 TFP complements n=31–501, 12 sum-free Cayley p≤151, seed-137) is regenerated and independently re-verified; all 27 stored certificates reproduce.
 - [ ] **ENV-05**: A reproduction contract distinguishes byte-exact (heuristic, seed-derived) from semantic (exact-method) reproduction and records solver/platform versions per certificate; Linux x86_64 is the canonical reference-regeneration platform.
 - [ ] **ENV-06**: A test suite + CI run the verifier over the stored corpus on every commit, including a `python -O` job (assert-stripping canary) and the fingerprint test.
