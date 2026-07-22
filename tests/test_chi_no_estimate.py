@@ -31,6 +31,16 @@ BANNED_IMPORT_SUBSTRINGS = ("color", "chromatic", "approximation")
 # The only networkx attribute calls permitted anywhere in src/ (matching-confined surface).
 ALLOWED_NX_ATTRS = {"Graph", "add_nodes_from", "add_edges_from", "max_weight_matching"}
 
+# The networkx clique/connectivity surface permitted ONLY in invariants/cliques.py — the
+# CHI-01 confinement discipline extended: omega/kappa/connectivity live in one module
+# exactly as chi (max_weight_matching) lives only in invariants/matching.py. These attrs
+# stay FORBIDDEN everywhere else; the scope check below keys on cliques.py.
+CLIQUES_NX_ATTRS = {"complement", "max_weight_clique", "node_connectivity", "is_connected"}
+
+
+def _is_cliques_module(path):
+    return path.name == "cliques.py" and path.parent.name == "invariants"
+
 
 def _src_files():
     files = sorted(SRC_ROOT.rglob("*.py"))
@@ -93,11 +103,17 @@ def test_chi_no_estimate():
                 f"{path}: forbidden chromatic-estimate call `{name}`"
 
             # (3) networkx API surface confinement: any nx.<attr>(...) call must be allow-listed.
+            #     The clique/connectivity attrs are permitted ONLY inside invariants/cliques.py
+            #     (scoped exactly like max_weight_matching -> invariants/matching.py below);
+            #     everywhere else the base ALLOWED_NX_ATTRS allow-list still applies.
             f = node.func
             if isinstance(f, ast.Attribute) and isinstance(f.value, ast.Name) \
                     and f.value.id in nx_aliases:
-                assert f.value.id + "." + f.attr in {f.value.id + "." + a for a in ALLOWED_NX_ATTRS}, \
-                    f"{path}: networkx call `{f.value.id}.{f.attr}` outside the matching allow-list"
+                permitted = set(ALLOWED_NX_ATTRS)
+                if _is_cliques_module(path):
+                    permitted |= CLIQUES_NX_ATTRS
+                assert f.attr in permitted, \
+                    f"{path}: networkx call `{f.value.id}.{f.attr}` outside the confined allow-list"
 
             # (4) Positive: confirm the exact blossom matching call with maxcardinality=True.
             if name == "max_weight_matching":
