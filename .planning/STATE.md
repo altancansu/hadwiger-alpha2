@@ -4,8 +4,8 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 02-02-PLAN.md — schema v1 + append-only atomic store (verify-at-append + os.replace) + reproduction contract; Phase 02 complete (2/2)
-last_updated: "2026-07-22T03:49:48.751Z"
-last_activity: 2026-07-22 -- Phase 3 planning complete
+last_updated: "2026-07-22T03:51:21.822Z"
+last_activity: 2026-07-22 -- Phase 03 execution started
 progress:
   total_phases: 12
   completed_phases: 2
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-21)
 
 **Core value:** Reconstruct the *attempt* under discipline — build the adversary so that anything surviving it is a correct road to a disproof, and anything dying leaves a machine-verified result; never invent the missing hour. Epistemic integrity (verified existence, radioactive impossibility) wins over speed, coverage, or narrative.
-**Current focus:** Phase 3 — corpus reproduction & ci (first blood)
+**Current focus:** Phase 03 — corpus-reproduction-ci-first-blood
 
 ## Current Position
 
-Phase: 3
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-07-22 -- Phase 3 planning complete
+Phase: 03 (corpus-reproduction-ci-first-blood) — EXECUTING
+Plan: 1 of 4
+Status: Executing Phase 03
+Last activity: 2026-07-22 -- Phase 03 execution started
 
 Progress: [██████████] 100% (Phase 02)
 
