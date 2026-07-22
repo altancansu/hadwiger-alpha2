@@ -1,0 +1,16 @@
+"""Exact chromatic number of G = complement(H) via matching (CHI-01).
+
+Verbatim port of matching_number from Appendix C.1. This is the ONLY chi
+computation path: chi(G) = n - matching_number(adj, n), where matching_number is
+nu(H) = maximum matching computed by Edmonds blossom
+(networkx.max_weight_matching, maxcardinality=True). There is no coloring / greedy
+/ chromatic estimate anywhere. networkx is confined to this module.
+"""
+
+# ---------- exact chromatic number of G = complement(H) ----------
+def matching_number(adj, n):
+    import networkx as nx
+    Hg = nx.Graph(); Hg.add_nodes_from(range(n))
+    Hg.add_edges_from((u, v) for u in range(n) for v in adj[u] if u < v)
+    M = nx.max_weight_matching(Hg, maxcardinality=True)
+    return len(M)
