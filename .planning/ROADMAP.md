@@ -62,7 +62,11 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
   1. 296/296 regenerated and re-verified by the independent verifier from stored JSON alone (284 TFP complements n=31–501 + 12 sum-free Cayley p≤151, seed-137 included); all 27 stored certificates reproduce; seed-1 and seed-137 models byte-equal to Appendix D; every record carries its Tutte–Berge witness.
   2. The golden-hash manifest (sha256 of canonical `H_edges` per instance) is frozen and committed; the `repro/` drivers are frozen forever after.
   3. CI runs on every commit: R1 certificate validity over the full stored corpus + fingerprint test + `python -O` assert-stripping canary; R2 generator-determinism panel; R3 full pipeline replay as the release gate; a newer-Python canary catches drift on purpose.
-**Plans**: TBD
+**Plans**: 4 plans
+- [ ] 03-01-PLAN.md — MVP slice: finalize TFP baseline driver → schema-v1 store; R1 re-verify green (ENV-04)
+- [ ] 03-02-PLAN.md — Scale to 296: Cayley generator port + sweep/cayley/seed137 drivers + ordered freeze (ENV-04)
+- [ ] 03-03-PLAN.md — Freeze golden manifest + R2/R3 determinism tests + strict R1 296/(284,12) count (ENV-04, ENV-06)
+- [ ] 03-04-PLAN.md — CI: R1/R2/fingerprint/python -O every commit + R3/full-296/3.13 drift canary (ENV-06)
 
 ### Phase 4: ExactBackend & CBC Reference
 **Goal**: Exact had₂ solving lives behind a status-honest interface with CBC as the reference engine — the incumbent-as-optimum soundness hole is closed before any second engine exists.
