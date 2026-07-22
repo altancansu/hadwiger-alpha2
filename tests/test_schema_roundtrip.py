@@ -28,7 +28,12 @@ from alpha2.corpus.schema import (
     provenance_seed,
     validate_provenance,
 )
-from alpha2.corpus.verifier import VerificationError, verify_chi_witness, verify_model_record
+from alpha2.corpus.verifier import (
+    VerificationError,
+    verify_certificate,
+    verify_chi_witness,
+    verify_model_record,
+)
 from alpha2.generators.tfp import triangle_free_process
 from alpha2.invariants.witness import extract_witness
 
@@ -161,6 +166,27 @@ def test_graph6_kind_missing_graph6_raises():
 def test_seed_kind_missing_seed_raises():
     with pytest.raises((ValueError, VerificationError)):
         validate_provenance({"kind": "seed", "family": "x", "n": 5, "process": "p"})
+
+
+def test_verify_certificate_requires_both_model_and_witness():
+    """WR-02: the combined entrypoint rejects a record whose model verifies but
+    whose chi-witness does NOT.
+
+    verify_model_record's k >= chi gate is only sound when chi_G is independently
+    pinned by verify_chi_witness; a caller must never trust the model leg alone.
+    """
+    rec = _seed_record(1, D2_MODEL, "heuristic")
+    assert verify_certificate(rec) == 16  # both legs pass on the good record
+
+    # Break ONLY the witness leg: drop a matching edge so |M| != nu. The model leg
+    # (which never reads matching_M) still passes -- so trusting it alone is unsafe.
+    broken = json.loads(json.dumps(rec))
+    broken["matching_M"] = broken["matching_M"][:-1]
+    assert verify_model_record(broken) == 16  # model leg still fine
+    with pytest.raises(VerificationError):
+        verify_chi_witness(broken)            # witness leg fails
+    with pytest.raises(VerificationError):
+        verify_certificate(broken)            # combined entrypoint must reject
 
 
 def test_canonical_edges_coerces_endpoints_to_native_int():

@@ -208,3 +208,24 @@ def verify_chi_witness(rec):
             f"Tutte-Berge upper bound (n - c_odd + |U|)/2 = {tot / 2} != nu = {nu}"
         )
     return True
+
+
+def verify_certificate(rec):
+    """The single combined trust entry point: verify a FULL certificate record.
+
+    A record is a valid certificate ONLY if it passes BOTH legs:
+      * verify_model_record — the K_k branch-set model exists with k >= chi_G;
+      * verify_chi_witness  — chi_G = n - nu is independently pinned in BOTH
+        directions by the stored Tutte-Berge witness (M + U).
+
+    verify_model_record's `k >= chi` gate is only sound because chi_G is pinned by
+    verify_chi_witness; called alone it would trust an attacker-chosen chi_G. All
+    production call sites (current and future) MUST route through this function and
+    never treat verify_model_record's return value alone as a complete proof. The
+    two individual functions remain available for fine-grained tests.
+
+    Returns k (= demonstrated had_2). Raises VerificationError on any violation.
+    """
+    k = verify_model_record(rec)
+    verify_chi_witness(rec)
+    return k

@@ -4,10 +4,10 @@ The corpus is the program's falsification anchor: it must be impossible to corru
 (crash mid-write) or to silently mutate (edit/reorder a prior record), and NOTHING
 may enter it unverified. `append_certificate` enforces all three:
 
-  1. Verify-at-append gate — EVERY append calls BOTH `verify_model_record` and
-     `verify_chi_witness` on the incoming record and requires `verified is True`.
-     There is no `has_witness` opt-out: a record that does not pass the stdlib-only
-     trust root never reaches the filesystem.
+  1. Verify-at-append gate — EVERY append calls the combined `verify_certificate`
+     (BOTH `verify_model_record` AND `verify_chi_witness`) on the incoming record
+     and requires `verified is True`. There is no `has_witness` opt-out: a record
+     that does not pass the stdlib-only trust root never reaches the filesystem.
 
   2. Append-only prefix-immutability — before writing, every already-stored record
      is re-verified against its OWN frozen H_edges_sha256 (verify_model_record
@@ -46,8 +46,7 @@ from alpha2 import paths
 from alpha2.corpus.schema import CHAIN_FIELD, chain_hash
 from alpha2.corpus.verifier import (
     VerificationError,
-    verify_chi_witness,
-    verify_model_record,
+    verify_certificate,
 )
 
 
@@ -102,8 +101,7 @@ def append_certificate(rec, path=None):
     #     against its own stored integrity. A tampered record fails the re-check.
     for i, prior in enumerate(old):
         try:
-            verify_model_record(prior)
-            verify_chi_witness(prior)
+            verify_certificate(prior)
         except VerificationError as exc:
             raise VerificationError(
                 f"append-only violation: existing record {i} no longer verifies "
@@ -115,9 +113,8 @@ def append_certificate(rec, path=None):
     #      re-verification above cannot (a swapped cert verifies against itself).
     prev_chain = _verify_chain(old)
 
-    # (1) Verify-at-append gate: nothing enters unverified.
-    verify_model_record(rec)
-    verify_chi_witness(rec)
+    # (1) Verify-at-append gate: nothing enters unverified (BOTH legs, always).
+    verify_certificate(rec)
     if not rec.get("verified"):
         raise VerificationError("record is not marked verified=True; refusing to append")
 
