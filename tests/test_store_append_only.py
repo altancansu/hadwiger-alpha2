@@ -123,6 +123,27 @@ def test_prefix_immutability_refuses_tampered_prior_record(tmp_path):
                            path=path)
 
 
+def test_cr02_coherent_record_substitution_refused(tmp_path):
+    """CR-02: swapping a prior record for a DIFFERENT but individually-valid cert
+    must be detected and the next append REFUSED.
+
+    Re-verifying self-consistency alone cannot catch this: the substitute cert
+    re-verifies against itself. The per-record hash chain (chain_sha256) is what
+    makes the substitution detectable -- record 0's recomputed chain diverges from
+    what any subsequent state expects, so the append RAISES.
+    """
+    path = tmp_path / "corpus.json"
+    append_certificate(_record(1, D2_MODEL), path=path)
+
+    # Wholesale-swap record 0 on disk for a different, individually-valid cert
+    # (different seed, graph, model, provenance -- everything).
+    rec137 = _record(137, D3_INTERIM_MODEL, "exact ILP (CBC): had_2(G)=17", omega_G=14)
+    path.write_text(json.dumps([rec137]))
+
+    with pytest.raises(VerificationError):
+        append_certificate(_record(1, D2_MODEL), path=path)
+
+
 def test_atomic_write_leaves_no_temp_and_survives_failure(tmp_path, monkeypatch):
     path = tmp_path / "corpus.json"
     append_certificate(_record(1, D2_MODEL), path=path)

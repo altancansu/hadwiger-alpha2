@@ -60,6 +60,32 @@ def canonical_edges(H_edges):
     return sorted(out)
 
 
+CHAIN_FIELD = "chain_sha256"
+
+
+def canonical_record_json(record):
+    """Compact, key-sorted JSON of a record EXCLUDING its chain field.
+
+    This is the exact byte-string the store's per-record hash chain hashes. Keys
+    are sorted so an in-memory record and its json.load'd copy canonicalize
+    identically (records are JSON-native by construction -- see the int coercions
+    in build_record and canonical_edges).
+    """
+    body = {k: v for k, v in record.items() if k != CHAIN_FIELD}
+    return json.dumps(body, sort_keys=True, separators=(",", ":"))
+
+
+def chain_hash(prev_chain, record):
+    """chain_sha256 = sha256(prev_chain || canonical_record_json(record)).
+
+    Genesis (record 0) uses prev_chain == "". Because each record's chain folds in
+    the previous record's chain, any change to an earlier record's body (or a
+    wholesale substitution) makes its recomputed chain diverge from the stored one
+    and cascades to break every subsequent record's stored chain.
+    """
+    return hashlib.sha256((prev_chain + canonical_record_json(record)).encode()).hexdigest()
+
+
 def h_edges_sha256(H_edges):
     """sha256 hexdigest of the compact canonical H_edges serialization.
 
