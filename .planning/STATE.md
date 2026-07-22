@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 05-01-PLAN.md — CP-SAT second exact backend (EXACT-03): C5->PROVED_OPTIMAL had_2=3 through trust root; FEASIBLE!=OPTIMAL status honesty; num_workers=1+seed determinism (1/7)"
-last_updated: "2026-07-22T09:12:22.513Z"
+stopped_at: Completed 05-03-PLAN.md — trust root widened to size {1,2,3} with size-3 >=2-G-edges connectivity check (EXACT-05); size-3 mutants + full corpus + extended -O canary green (3/7)
+last_updated: "2026-07-22T09:21:00.801Z"
 last_activity: 2026-07-22
 progress:
   total_phases: 12
   completed_phases: 4
   total_plans: 19
-  completed_plans: 14
+  completed_plans: 15
   percent: 33
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-07-21)
 ## Current Position
 
 Phase: 05 (cp-sat-differential-gate-had) — EXECUTING
-Plan: 3 of 7
+Plan: 4 of 7
 Status: Ready to execute
 Last activity: 2026-07-22
 
-Progress: [███████░░░] 74%
+Progress: [████████░░] 79%
 
 ## Performance Metrics
 
@@ -60,6 +60,7 @@ Progress: [███████░░░] 74%
 | Phase 02 P02 | 14min | 3 tasks | 5 files |
 | Phase 05 P01 | 12min | 3 tasks | 2 files |
 | Phase 05 P02 | 18min | 2 tasks | 2 files |
+| Phase 05 P03 | 10min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -101,6 +102,8 @@ Execution decisions (Phase 02 Plan 02):
 - [Phase ?]: Phase 05 Plan 01: CP-SAT non-optimal optimize bound = round(best_objective_bound) if finite else n, always bound_source='trivial_n' (no cbc_log analog invented).
 - [Phase ?]: Phase 05 Plan 02: had3.py checksum is a closed-form degree/codegree recompute independent of the enumeration (n_triples=C(n,3)-sum C(deg,2); n_conflicts=sum C(deg,3)+sum C(codeg,3)); reuses had2.ChecksumError; conflict scope = seagull/Tier-1 (triple-single+triple-pair from W(T)), Tier-2 triple-triple deferred
 - [Phase ?]: Phase 05 Plan 02: size-3-forced test uses a genuine had_2<had_3 (4<5) instance, NOT had_2<chi — no triangle-free H with had_2<chi is known (would be a Hadwiger counterexample); had_2<had_3 is the honest escalation signal
+- [Phase 05]: Plan 05-03: trust root widened to size gate {1,2,3} with an explicit >=2-G-edges size-3 connectivity check; size-<=2 legs + _is_conflict byte-unchanged, raises-only under -O
+- [Phase 05]: Plan 05-03: no schema.py / had_3 invariant change (RESEARCH Open-Q1/A6) — size-3 escalation proven at trust-root level only; had_3 corpus-field naming deferred to first real escalation-certificate consumer (Phase 6/11)
 
 ### Pending Todos
 
@@ -122,6 +125,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-22T09:12:01.003Z
-Stopped at: Completed 05-01-PLAN.md — CP-SAT second exact backend (EXACT-03): C5->PROVED_OPTIMAL had_2=3 through trust root; FEASIBLE!=OPTIMAL status honesty; num_workers=1+seed determinism (1/7)
+Last session: 2026-07-22T09:20:57.469Z
+Stopped at: Completed 05-03-PLAN.md — trust root widened to size {1,2,3} with size-3 >=2-G-edges connectivity check (EXACT-05); size-3 mutants + full corpus + extended -O canary green (3/7)
 Resume file: None

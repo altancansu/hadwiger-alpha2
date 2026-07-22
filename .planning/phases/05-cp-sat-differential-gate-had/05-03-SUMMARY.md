@@ -98,6 +98,10 @@ None - no external service configuration required. nauty/geng not exercised; std
 - The trust root can now arbitrate had_3 escalation models (guard 2 of 3). Ready for Plan 05's CBC-vs-CP-SAT had_3 differential (guard 3) and the battery wiring in Phase 6.
 - No blockers introduced. The deferred `had_3` corpus-field naming remains an open item for the first real escalation-certificate consumer (Phase 6/11).
 
+## Self-Check: PASSED
+
+All created/modified files present on disk; all three commits (6deade1 test, 0a199cd feat, 9b01936 docs) exist in history.
+
 ---
 *Phase: 05-cp-sat-differential-gate-had*
 *Completed: 2026-07-22*
