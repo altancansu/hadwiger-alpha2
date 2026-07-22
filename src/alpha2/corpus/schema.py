@@ -136,6 +136,10 @@ def validate_provenance(prov):
             raise ValueError(f"provenance missing required field {req!r}")
     if kind == "seed" and prov.get("seed") is None:
         raise ValueError("seed-kind provenance requires a `seed`")
+    # WR-04: the documented seed shape is {kind, family, n, seed, process}. Enforce
+    # `process` so validate_provenance is a faithful source of truth for the shape.
+    if kind == "seed" and prov.get("process") is None:
+        raise ValueError("seed-kind provenance requires a `process`")
     if kind == "params" and prov.get("params") is None:
         raise ValueError("params-kind provenance requires `params`")
     if kind == "graph6" and prov.get("graph6") is None:

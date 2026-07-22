@@ -162,6 +162,13 @@ def test_seed_kind_missing_seed_raises():
         validate_provenance({"kind": "seed", "family": "x", "n": 5, "process": "p"})
 
 
+def test_seed_kind_missing_process_raises():
+    # WR-04: the documented seed-provenance shape is {kind, family, n, seed, process}.
+    # A seed record without `process` is a rejected input, not a silent pass.
+    with pytest.raises((ValueError, VerificationError)):
+        validate_provenance({"kind": "seed", "family": "f", "n": 5, "seed": 1})
+
+
 def test_short_family_refused_never_truncated():
     # A family shorter than chi must RAISE (no fam[:chi], no silent truncation).
     with pytest.raises((ValueError, VerificationError)):
