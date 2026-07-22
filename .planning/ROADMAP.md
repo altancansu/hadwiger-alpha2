@@ -13,7 +13,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 - [x] **Phase 1: Pinned Environment & Verbatim Port** - uv-locked CPython 3.12.x stack; Appendix C ported byte-preserved; fingerprint test green
 - [x] **Phase 2: Trust Root & Corpus Schema** - independent stdlib-only verifier (fails closed under `python -O`); witness-complete append-only schema v1
 - [x] **Phase 3: Corpus Reproduction & CI (First Blood)** - 296/296 regenerated and independently re-verified; golden manifest frozen; verifier + reproduction run as CI on every commit (completed 2026-07-22)
-- [ ] **Phase 4: ExactBackend & CBC Reference** - status-honest exact had₂ (PROVED_OPTIMAL vs INCUMBENT_ONLY); obstruction-based encoding; seed-137 regression
+- [x] **Phase 4: ExactBackend & CBC Reference** - status-honest exact had₂ (PROVED_OPTIMAL vs INCUMBENT_ONLY); obstruction-based encoding; seed-137 regression (completed 2026-07-22)
 - [ ] **Phase 5: CP-SAT, Differential Gate & had₃** - second engine; dual-backend agreement gates any SHC-CANDIDATE; had₃ tier proven on synthetics; assume-and-verify symmetry breaking
 - [ ] **Phase 6: Kill Battery CLI (Gate, Search, Statuses)** - one tested CLI runs the 7-step runbook; author-pinned G1–G6; profile-general heuristic; derived statuses + results log
 - [ ] **Phase 7: P0 — CDM Frontier** - all 1,813 MTF graphs at n=12–14 exactly adjudicated; verified CDM frontier extended past the literature's n ≤ 11
@@ -82,7 +82,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 - [x] 04-01-PLAN.md — MVP slice: status-honest contracts (Status/ExactOutcome/Protocol) + obstruction enumeration + CBC adapter; C₅ solved PROVED_OPTIMAL end-to-end through the trust root (EXACT-01, EXACT-02)
 - [x] 04-02-PLAN.md — Status-honesty proof: live seed-137 timeout test (incumbent can never read as exact) + bound-parse fixture + AST pulp-confinement/zero-assert guard + `python -O` solver canary in CI (EXACT-01)
 - [x] 04-03-PLAN.md — Obstruction battery: set-equality vs naive loop at n=31 seeds 1 & 137, checksum literals (131/998/726, 177/1913/3782), mutation-raises gate proof, brute-force n≤8 differential (EXACT-02)
-- [ ] 04-04-PLAN.md — Capstone: seed-137 had₂=17 PROVED_OPTIMAL regression via in-memory record through the trust root (corpus byte-untouched) + 296-lineage decision-kill CI panel (EXACT-01, EXACT-02)
+- [x] 04-04-PLAN.md — Capstone: seed-137 had₂=17 PROVED_OPTIMAL regression via in-memory record through the trust root (corpus byte-untouched) + 296-lineage decision-kill CI panel (EXACT-01, EXACT-02)
 
 ### Phase 5: CP-SAT, Differential Gate & had₃
 **Goal**: The complete exact-arbitration stack: a second independent engine, the cross-examination that gates every SHC-CANDIDATE, the had₃ escalation tier ready to fire same-day, and symmetry-breaking that can never contaminate an impossibility branch.
@@ -192,7 +192,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 | 1. Pinned Environment & Verbatim Port | 2/2 | Complete    | 2026-07-22 |
 | 2. Trust Root & Corpus Schema | 2/2 | Complete    | 2026-07-22 |
 | 3. Corpus Reproduction & CI (First Blood) | 4/4 | Complete   | 2026-07-22 |
-| 4. ExactBackend & CBC Reference | 3/4 | In Progress|  |
+| 4. ExactBackend & CBC Reference | 4/4 | Complete   | 2026-07-22 |
 | 5. CP-SAT, Differential Gate & had₃ | 0/TBD | Not started | - |
 | 6. Kill Battery CLI (Gate, Search, Statuses) | 0/TBD | Not started | - |
 | 7. P0 — CDM Frontier | 0/TBD | Not started | - |
