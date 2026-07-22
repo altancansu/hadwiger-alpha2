@@ -11,8 +11,8 @@ Broad scope: the full program except Lean formalization (milestone 2). Each requ
 
 ### Environment & Reproducibility (ENV)
 
-- [ ] **ENV-01**: The project runs on a pinned, uv-managed CPython (3.12.x) with all dependencies version-locked (networkx 3.6.1, `pulp==3.3.2` hard-pin, ortools 9.15.6755, nauty 2.9.3, pynauty 2.8.8.1); a committed lockfile reproduces the environment. *(System Python 3.9.6 is EOL and cannot run this stack.)*
-- [ ] **ENV-02**: The Appendix C toolkit is ported into a repo-relative Python package (no `/mnt` paths), deterministic in (n, seed), split into library + thin CLI, with the reference algorithms unchanged.
+- [x] **ENV-01**: The project runs on a pinned, uv-managed CPython (3.12.x) with all dependencies version-locked (networkx 3.6.1, `pulp==3.3.2` hard-pin, ortools 9.15.6755, nauty 2.9.3, pynauty 2.8.8.1); a committed lockfile reproduces the environment. *(System Python 3.9.6 is EOL and cannot run this stack.)*
+- [x] **ENV-02**: The Appendix C toolkit is ported into a repo-relative Python package (no `/mnt` paths), deterministic in (n, seed), split into library + thin CLI, with the reference algorithms unchanged.
 - [ ] **ENV-03**: A corpus-fingerprint test asserts canonical generator invariants (n=31 seed 1 → |E(H)|=131, ν=15, χ=16) to guard byte-reproduction across environments.
 - [ ] **ENV-04**: The full 296-instance corpus (284 TFP complements n=31–501, 12 sum-free Cayley p≤151, seed-137) is regenerated and independently re-verified; all 27 stored certificates reproduce.
 - [ ] **ENV-05**: A reproduction contract distinguishes byte-exact (heuristic, seed-derived) from semantic (exact-method) reproduction and records solver/platform versions per certificate; Linux x86_64 is the canonical reference-regeneration platform.
@@ -28,7 +28,7 @@ Broad scope: the full program except Lean formalization (milestone 2). Each requ
 
 ### Exact chromatic number (CHI)
 
-- [ ] **CHI-01**: χ(G) = n − ν(H) is computed exactly via Edmonds blossom, with no estimates anywhere in control flow.
+- [x] **CHI-01**: χ(G) = n − ν(H) is computed exactly via Edmonds blossom, with no estimates anywhere in control flow.
 - [ ] **CHI-02**: Each certificate stores a maximum matching M and a Tutte–Berge witness set U, making χ = n − ν hand-checkable without trusting the matching library (and without formalizing Edmonds in Lean).
 
 ### Heuristic model search (SRCH)
@@ -106,8 +106,8 @@ Which phases cover which requirements. Populated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ENV-01 | Phase 1 | Pending |
-| ENV-02 | Phase 1 | Pending |
+| ENV-01 | Phase 1 | Complete |
+| ENV-02 | Phase 1 | Complete |
 | ENV-03 | Phase 1 | Pending |
 | ENV-04 | Phase 3 | Pending |
 | ENV-05 | Phase 2 | Pending |
@@ -115,7 +115,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 | GATE-01 | Phase 6 | Pending |
 | GATE-02 | Phase 6 | Pending |
 | GATE-03 | Phase 6 | Pending |
-| CHI-01 | Phase 1 | Pending |
+| CHI-01 | Phase 1 | Complete |
 | CHI-02 | Phase 2 | Pending |
 | SRCH-01 | Phase 6 | Pending |
 | SRCH-02 | Phase 6 | Pending |

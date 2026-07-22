@@ -36,7 +36,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
   3. The toolkit lives in a repo-relative src-layout package (no `/mnt` paths), split library + thin entry, reference algorithms unchanged — the n=31 seed=1 K₁₆ model matches Appendix D.
   4. χ(G) is computed only as n − ν(H) via Edmonds blossom (values asserted by the fingerprint test); no estimate exists anywhere in control flow.
 **Plans**: 2 plans
-- [ ] 01-01-PLAN.md — Pinned uv env + verbatim Appendix C port (Walking Skeleton spine; invariant fingerprint green)
+- [x] 01-01-PLAN.md — Pinned uv env + verbatim Appendix C port (Walking Skeleton spine; invariant fingerprint green)
 - [ ] 01-02-PLAN.md — Golden byte-exact fingerprint + stored-model re-verify + CHI-01 no-estimate guard
 
 ### Phase 2: Trust Root & Corpus Schema
@@ -179,7 +179,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Pinned Environment & Verbatim Port | 0/2 | Not started | - |
+| 1. Pinned Environment & Verbatim Port | 1/2 | In progress | - |
 | 2. Trust Root & Corpus Schema | 0/TBD | Not started | - |
 | 3. Corpus Reproduction & CI (First Blood) | 0/TBD | Not started | - |
 | 4. ExactBackend & CBC Reference | 0/TBD | Not started | - |
