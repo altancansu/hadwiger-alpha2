@@ -33,8 +33,8 @@ Broad scope: the full program except Lean formalization (milestone 2). Each requ
 
 ### Heuristic model search (SRCH)
 
-- [ ] **SRCH-01**: A profile-general heuristic searches for K_χ models with size-≤2 branch sets, iterating (p′, s′) profiles with p′+s′=χ and 2p′+s′≤n (the seed-137 non-spanning fix), with per-profile local-search repair + restarts.
-- [ ] **SRCH-02**: The searcher exposes instrumentation (restarts-to-solution, initial-conflict counts) for P7 fitness; "not found" is emitted only as a RESISTANT queue state, never as a result.
+- [x] **SRCH-01**: A profile-general heuristic searches for K_χ models with size-≤2 branch sets, iterating (p′, s′) profiles with p′+s′=χ and 2p′+s′≤n (the seed-137 non-spanning fix), with per-profile local-search repair + restarts.
+- [x] **SRCH-02**: The searcher exposes instrumentation (restarts-to-solution, initial-conflict counts) for P7 fitness; "not found" is emitted only as a RESISTANT queue state, never as a result.
 
 ### Exact backends & escalation (EXACT)
 
@@ -117,8 +117,8 @@ Which phases cover which requirements. Populated during roadmap creation.
 | GATE-03 | Phase 6 | Pending |
 | CHI-01 | Phase 1 | Complete |
 | CHI-02 | Phase 2 | Complete |
-| SRCH-01 | Phase 6 | Pending |
-| SRCH-02 | Phase 6 | Pending |
+| SRCH-01 | Phase 6 | Complete |
+| SRCH-02 | Phase 6 | Complete |
 | EXACT-01 | Phase 4 | Complete |
 | EXACT-02 | Phase 4 | Complete |
 | EXACT-03 | Phase 5 | Complete |
