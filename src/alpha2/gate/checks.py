@@ -153,6 +153,18 @@ def g5_unavoidables(adj, n, inv):
 def g6_safe_families(adj, n, inv):
     """G6: outside every proven-safe family (safe-family list, §2:644) — GATE-03, Plan 04.
 
-    FLAG-ONLY stub: the safe-family membership screen is not yet active; passes with a note.
+    Consults the maintained `safe_families` map (family->citation frozen from §2 line 644).
+    FLAG-ONLY (D-01 Role B): a proven-safe-family membership is RECORDED as a cited flag but
+    NEVER hard-kills a studied pool instance (seed-137 keeps passing the hard-gate). Families
+    whose membership test is deferred screen as "screen not yet active" — never a false kill.
     """
-    return Pass(witness={"screen": "G6 safe-families not yet active (GATE-03, Plan 04)"})
+    from alpha2.gate.safe_families import screen_safe_families
+
+    screen = screen_safe_families(adj, n, inv)
+    if screen["any_hit"]:
+        hit = screen["hits"][0]
+        return Fail(
+            f"G6 proven-safe family hit: {hit['family']} [{hit['citation']}]",
+            witness={"screen": screen},
+        )
+    return Pass(witness={"screen": screen})
