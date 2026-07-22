@@ -4,8 +4,8 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
-last_updated: "2026-07-22T12:17:16.709Z"
-last_activity: 2026-07-22 -- Phase 6 planning complete
+last_updated: "2026-07-22T12:27:36.114Z"
+last_activity: 2026-07-22
 progress:
   total_phases: 12
   completed_phases: 5
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-21)
 
 **Core value:** Reconstruct the *attempt* under discipline — build the adversary so that anything surviving it is a correct road to a disproof, and anything dying leaves a machine-verified result; never invent the missing hour. Epistemic integrity (verified existence, radioactive impossibility) wins over speed, coverage, or narrative.
-**Current focus:** Phase 6 — kill battery cli (gate, search, statuses)
+**Current focus:** Phase 6 — Kill Battery CLI (Gate, Search, Statuses)
 
 ## Current Position
 
-Phase: 6
-Plan: Not started
+Phase: 6 (Kill Battery CLI (Gate, Search, Statuses)) — EXECUTING
+Plan: 2 of 5
 Status: Ready to execute
-Last activity: 2026-07-22 -- Phase 6 planning complete
+Last activity: 2026-07-22
 
-Progress: [██████████] 100%
+Progress: [████████░░] 79%
 
 ## Performance Metrics
 
@@ -66,6 +66,7 @@ Progress: [██████████] 100%
 | Phase 05 P05 | 14min | 2 tasks | 3 files |
 | Phase 05 P06 | 10 | 2 tasks | 2 files |
 | Phase 05 P07 | 12min | 2 tasks | 1 files |
+| Phase 06 P01 | 16min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -114,6 +115,10 @@ Execution decisions (Phase 02 Plan 02):
 - [Phase ?]: Plan 05-05: had_3 escalation proven on the honest had_2<had_3 size-3-forced instance (n=7, had_2=4=chi < had_3=5); no triangle-free had_2<chi is known (296/296 killed at had_2; ~55k-trial small-graph search finds none), so the escalation signal is had_2<had_3, not had_2<chi (matches Plan 02)
 - [Phase ?]: Plan 05-05: solve_had3 on BOTH backends behind its own method, translating the SAME frozen Had3Problem (seagull Tier-1); solve_had2 + _guarded_extract byte-unchanged; new _guarded_extract3 extends guards over triple vars; ortools confined to cpsat.py, pulp to cbc.py
 - [Phase ?]: Plan 05-06: assume-and-verify SB discipline lands as stdlib-only solvers/symmetry.py (imports ONLY Status; 0 asserts); any impossibility-flavored (< chi) SB-on outcome reruns WITHOUT SB or raises SBContaminationError; C5 vertex-0-unused invalid hand constraint fabricates had_2=2<3=chi and is a passing regression (discipline restores 3); sound path = CP-SAT symmetry_level, pynauty DEFERRED (Open-Q2), no EXACT-06 criterion descoped
+- [Phase ?]: [Phase 06] Plan 06-01: G1 criticality encoded as nu==n//2 (even-n fix, LOCKED); n=32/nu=16 passes as n=31/nu=15; forbidden n=2·chi−1 form grep-asserted absent.
+- [Phase ?]: [Phase 06] Plan 06-01: D-01 Role B — hard-gate {g1,g2,connectivity} may KILL; g3_deep/g4/g5/g6 flag_only (record reason+witness, never terminate); seed-137 PASSES with g3/g4 as flags.
+- [Phase ?]: [Phase 06] Plan 06-01: omega/kappa/connectivity networkx-confined to invariants/cliques.py (CHI-01 guard extended cliques.py-scoped); omega via max_weight_clique(weight=None).
+- [Phase ?]: [Phase 06] Plan 06-01: runner.default_chain() resolves checks lazily so DEFAULT_CHAIN (PEP 562 __getattr__) never forms a checks<->runner import cycle.
 
 ### Pending Todos
 
@@ -135,6 +140,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-22T10:01:56.892Z
+Last session: 2026-07-22T12:27:04.600Z
 Stopped at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
 Resume file: None

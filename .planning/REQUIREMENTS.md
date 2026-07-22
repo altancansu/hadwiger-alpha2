@@ -20,8 +20,8 @@ Broad scope: the full program except Lean formalization (milestone 2). Each requ
 
 ### Gate — G1–G6 necessary-conditions filter (GATE)
 
-- [ ] **GATE-01**: The gate runs G1–G6 as a configurable cost-ordered chain, killing on first failure and logging the reason + seed/provenance.
-- [ ] **GATE-02**: The exact G1–G6 definitions are frozen from the author's original §2 (pinned in reference Appendix E), each with a witness/reason; the reconstructed vs. original labels are reconciled with the author before the gate is trusted.
+- [x] **GATE-01**: The gate runs G1–G6 as a configurable cost-ordered chain, killing on first failure and logging the reason + seed/provenance.
+- [x] **GATE-02**: The exact G1–G6 definitions are frozen from the author's original §2 (pinned in reference Appendix E), each with a witness/reason; the reconstructed vs. original labels are reconciled with the author before the gate is trusted.
 - [ ] **GATE-03**: The G5/G6 known-safe-family screen is a maintained settled/open map (proven-safe classes with citations) that grows as pools and literature settle classes, so the battery never re-spends on proven terrain.
 
 > Gate reference (Appendix E §2): **G1** n≥31, n odd, n=2χ−1 · **G2** H=Ḡ triangle-free, diameter 2 (edge-maximal) · **G3** χ≥7, κ≥χ, δ≥χ+1, G Hamiltonian, vertex-critical, H−v has perfect matching ∀v · **G4** 8≤ω≤χ−3, ω/n≲¼ · **G5** every non-adjacent pair in an induced C₅; contains W₅, K₈, all 33 Carter unavoidables · **G6** outside every proven-safe family.
@@ -112,8 +112,8 @@ Which phases cover which requirements. Populated during roadmap creation.
 | ENV-04 | Phase 3 | Complete |
 | ENV-05 | Phase 2 | Complete |
 | ENV-06 | Phase 3 | Complete |
-| GATE-01 | Phase 6 | Pending |
-| GATE-02 | Phase 6 | Pending |
+| GATE-01 | Phase 6 | Complete |
+| GATE-02 | Phase 6 | Complete |
 | GATE-03 | Phase 6 | Pending |
 | CHI-01 | Phase 1 | Complete |
 | CHI-02 | Phase 2 | Complete |
