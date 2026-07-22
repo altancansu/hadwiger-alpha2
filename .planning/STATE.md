@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 02-02-PLAN.md — schema v1 + append-only atomic store (verify-at-append + os.replace) + reproduction contract; Phase 02 complete (2/2)
-last_updated: "2026-07-22T06:31:47.698Z"
+status: ready_to_plan
+stopped_at: Phase 04 complete (4/4) — ready to discuss Phase 5
+last_updated: 2026-07-22T07:31:59.993Z
 last_activity: 2026-07-22 -- Phase 04 execution started
 progress:
   total_phases: 12
   completed_phases: 3
   total_plans: 12
-  completed_plans: 8
+  completed_plans: 12
   percent: 25
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-21)
 
 **Core value:** Reconstruct the *attempt* under discipline — build the adversary so that anything surviving it is a correct road to a disproof, and anything dying leaves a machine-verified result; never invent the missing hour. Epistemic integrity (verified existence, radioactive impossibility) wins over speed, coverage, or narrative.
-**Current focus:** Phase 04 — exactbackend-cbc-reference
+**Current focus:** Phase 5 — cp sat, differential gate & had₃
 
 ## Current Position
 
-Phase: 04 (exactbackend-cbc-reference) — EXECUTING
-Plan: 1 of 4
-Status: Executing Phase 04
-Last activity: 2026-07-22 -- Phase 04 execution started
+Phase: 5
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-07-22
 
 Progress: [██████████] 100% (Phase 02)
 
@@ -36,7 +36,7 @@ Progress: [██████████] 100% (Phase 02)
 
 **Velocity:**
 
-- Total plans completed: 10
+- Total plans completed: 14
 - Average duration: ~8 min
 - Total execution time: ~0.5 hours
 
@@ -48,6 +48,7 @@ Progress: [██████████] 100% (Phase 02)
 | 1 | 2 | - | - |
 | 2 | 2 | - | - |
 | 03 | 4 | - | - |
+| 04 | 4 | - | - |
 
 **Recent Trend:**
 
