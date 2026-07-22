@@ -31,8 +31,10 @@ jobs:
           cache-dependency-glob: "uv.lock"
       - name: Install dependencies (lockfile-authoritative)
         run: uv sync --locked --extra dev
-      - name: R1 + R2 + fingerprint (verifier over stored corpus)
-        run: uv run --frozen pytest tests/test_corpus_r1.py tests/test_corpus_r2.py tests/test_fingerprint.py -q
+      - name: R1 + R2 (fast slice) + fingerprint (verifier over stored corpus)
+        # -m "not slow" keeps the release/nightly full-296 R2 panel on the
+        # scheduled release-gate job only (WR-01) — per-commit runs the fast slice.
+        run: uv run --frozen pytest tests/test_corpus_r1.py tests/test_corpus_r2.py tests/test_fingerprint.py -m "not slow" -q
       - name: python -O assert-stripping canary
         # The trust root + corpus R1 must stay meaningful with asserts stripped
         # (Pitfall 6 / T-3-03): a rubber-stamp verifier would pass here otherwise.
