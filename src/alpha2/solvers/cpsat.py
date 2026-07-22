@@ -29,7 +29,9 @@ when one has a bug, so a mis-mapped status is a false claim):
 Determinism (recorded / impossibility mode — Open-Q4 resolution): every solve
 runs num_workers=1 with a pinned random_seed (the simplest clearly-deterministic
 mode; `interleave_search` is deliberately NOT used here and is reserved for
-later exploration/survivor scaling). The search log is archived (not printed).
+later exploration/survivor scaling). The CP-SAT dual bound is read directly from
+`solver.best_objective_bound`; unlike the CBC path there is NO archived search
+log (none is generated and none is needed — nothing here rests on a log).
 
 Extraction happens ONLY inside the status gate and is recompute-guarded:
 CP-SAT booleans are exact (no fractional LP junk, so the CBC integrality loop
@@ -212,10 +214,10 @@ class CPSATBackend:
             solver.parameters.stop_after_first_solution = True
         if symmetry_level is not None:
             solver.parameters.symmetry_level = symmetry_level
-        # Archive the search log (analog of CBC's logPath) WITHOUT spamming
-        # stdout — the CBC path writes to a file with msg=0 for the same reason.
-        solver.parameters.log_search_progress = True
-        solver.parameters.log_to_stdout = False
+        # No search log is captured or archived: the CP-SAT bound is read
+        # directly from solver.best_objective_bound, so there is no CBC-style
+        # logPath to write (log_search_progress is left at its default-off —
+        # enabling it would only add solver overhead for output we discard).
         # NOTE: do NOT set search_branching with a bare int — it is an enum and
         # a plain integer raises TypeError. It is not needed here.
 
@@ -334,8 +336,8 @@ class CPSATBackend:
             solver.parameters.stop_after_first_solution = True
         if symmetry_level is not None:
             solver.parameters.symmetry_level = symmetry_level
-        solver.parameters.log_search_progress = True
-        solver.parameters.log_to_stdout = False
+        # No search log is captured or archived: the bound comes directly from
+        # solver.best_objective_bound (see solve_had2 for the full rationale).
 
         cp_status = solver.solve(m)
         status = map_status(cp_status, solver, mode)
