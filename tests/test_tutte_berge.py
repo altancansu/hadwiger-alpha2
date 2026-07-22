@@ -144,6 +144,34 @@ def test_cr01_negative_index_alias_in_matching_raises():
         verify_chi_witness(bad)
 
 
+def test_wr01_wr06_malformed_witness_raises_verification_error():
+    """WR-01/WR-06: malformed/missing witness fields must raise VerificationError,
+    not a bare TypeError/KeyError, honoring the "every check raises" discipline.
+
+    Callers (e.g. store's prior-record loop) only `except VerificationError`, so a
+    leaking TypeError/KeyError would propagate uncaught.
+    """
+    base, *_ = _record(31, 1)
+
+    # nu_H = None -> arithmetic would raise TypeError; must be VerificationError.
+    r1 = json.loads(json.dumps(base))
+    r1["invariants"]["nu_H"] = None
+    with pytest.raises(VerificationError):
+        verify_chi_witness(r1)
+
+    # missing matching_M -> bare KeyError; must be VerificationError.
+    r2 = json.loads(json.dumps(base))
+    del r2["matching_M"]
+    with pytest.raises(VerificationError):
+        verify_chi_witness(r2)
+
+    # missing tutte_berge_U -> bare KeyError; must be VerificationError.
+    r3 = json.loads(json.dumps(base))
+    del r3["tutte_berge_U"]
+    with pytest.raises(VerificationError):
+        verify_chi_witness(r3)
+
+
 def test_wrong_chi_witness_mutant_raises():
     """Good seed-1 witness with chi_G lowered to 15 (n-nu=16 != 15) MUST raise.
 

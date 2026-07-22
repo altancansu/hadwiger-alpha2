@@ -132,16 +132,28 @@ def verify_chi_witness(rec):
 
     GENERAL path: U is read and removed, never assumed empty. Stdlib-only.
     """
+    # WR-06: fail closed (VerificationError, not KeyError) on missing structure.
+    if "invariants" not in rec:
+        raise VerificationError("record missing invariants")
     inv = rec["invariants"]
-    n = inv["n"]
-    nu = inv["nu_H"]
-    chi = inv["chi_G"]
+    n = inv.get("n")
+    nu = inv.get("nu_H")
+    chi = inv.get("chi_G")
+    # WR-01: validate types BEFORE arithmetic, mirroring verify_model_record. A
+    # non-int (e.g. nu_H: null) would otherwise raise a bare TypeError that callers
+    # doing `except VerificationError` never catch.
+    if not (isinstance(n, int) and isinstance(nu, int) and isinstance(chi, int)):
+        raise VerificationError(f"bad n/nu/chi types (n={n!r}, nu={nu!r}, chi={chi!r})")
     if n - nu != chi:
         raise VerificationError(f"chi {chi} != n - nu ({n} - {nu} = {n - nu})")
 
+    if "H_edges" not in rec:
+        raise VerificationError("record missing H_edges")
     adj = _build_adj(rec["H_edges"], n)
 
     # M is a valid matching in H with |M| == nu  =>  nu >= |M|.
+    if "matching_M" not in rec:
+        raise VerificationError("record missing matching_M")
     M = [tuple(e) for e in rec["matching_M"]]
     covered = set()
     for e in M:
@@ -165,6 +177,8 @@ def verify_chi_witness(rec):
         raise VerificationError(f"|M| = {len(M)} != nu = {nu}")
 
     # Count odd-order connected components of H - U by stdlib BFS.
+    if "tutte_berge_U" not in rec:
+        raise VerificationError("record missing tutte_berge_U")
     U = set(rec["tutte_berge_U"])
     for v in U:
         if not (isinstance(v, int) and 0 <= v < n):
