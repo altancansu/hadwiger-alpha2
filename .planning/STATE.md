@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
-last_updated: "2026-07-22T09:41:46.290Z"
+last_updated: "2026-07-22T09:49:08.206Z"
 last_activity: 2026-07-22
 progress:
   total_phases: 12
   completed_phases: 4
   total_plans: 19
-  completed_plans: 16
+  completed_plans: 18
   percent: 33
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-07-21)
 ## Current Position
 
 Phase: 05 (cp-sat-differential-gate-had) — EXECUTING
-Plan: 6 of 7
+Plan: 7 of 7
 Status: Ready to execute
 Last activity: 2026-07-22
 
-Progress: [████████░░] 84%
+Progress: [██████████] 95%
 
 ## Performance Metrics
 
@@ -63,6 +63,7 @@ Progress: [████████░░] 84%
 | Phase 05 P03 | 10min | 2 tasks | 3 files |
 | Phase 05 P04 | 10min | 2 tasks | 3 files |
 | Phase 05 P05 | 14min | 2 tasks | 3 files |
+| Phase 05 P06 | 10 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -110,6 +111,7 @@ Execution decisions (Phase 02 Plan 02):
 - [Phase 05]: Plan 05-04: metamorphic guard assert_not_below_verified(outcome, verified_k) raises CriticalDisagreement when a PROVED_OPTIMAL value < a trust-root-verified family size (verifier trumps solver); verified_k must come from verify_certificate, never a solver flag; new solver paths (CP-SAT + differential) fail closed under -O via test_solver_paths_dash_O.py
 - [Phase ?]: Plan 05-05: had_3 escalation proven on the honest had_2<had_3 size-3-forced instance (n=7, had_2=4=chi < had_3=5); no triangle-free had_2<chi is known (296/296 killed at had_2; ~55k-trial small-graph search finds none), so the escalation signal is had_2<had_3, not had_2<chi (matches Plan 02)
 - [Phase ?]: Plan 05-05: solve_had3 on BOTH backends behind its own method, translating the SAME frozen Had3Problem (seagull Tier-1); solve_had2 + _guarded_extract byte-unchanged; new _guarded_extract3 extends guards over triple vars; ortools confined to cpsat.py, pulp to cbc.py
+- [Phase ?]: Plan 05-06: assume-and-verify SB discipline lands as stdlib-only solvers/symmetry.py (imports ONLY Status; 0 asserts); any impossibility-flavored (< chi) SB-on outcome reruns WITHOUT SB or raises SBContaminationError; C5 vertex-0-unused invalid hand constraint fabricates had_2=2<3=chi and is a passing regression (discipline restores 3); sound path = CP-SAT symmetry_level, pynauty DEFERRED (Open-Q2), no EXACT-06 criterion descoped
 
 ### Pending Todos
 
@@ -131,6 +133,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-22T09:41:35.335Z
+Last session: 2026-07-22T09:48:44.433Z
 Stopped at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
 Resume file: None
