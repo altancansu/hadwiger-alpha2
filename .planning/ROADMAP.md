@@ -15,7 +15,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 - [x] **Phase 3: Corpus Reproduction & CI (First Blood)** - 296/296 regenerated and independently re-verified; golden manifest frozen; verifier + reproduction run as CI on every commit (completed 2026-07-22)
 - [x] **Phase 4: ExactBackend & CBC Reference** - status-honest exact had₂ (PROVED_OPTIMAL vs INCUMBENT_ONLY); obstruction-based encoding; seed-137 regression (completed 2026-07-22)
 - [x] **Phase 5: CP-SAT, Differential Gate & had₃** - second engine; dual-backend agreement gates any SHC-CANDIDATE; had₃ tier proven on synthetics; assume-and-verify symmetry breaking (completed 2026-07-22)
-- [ ] **Phase 6: Kill Battery CLI (Gate, Search, Statuses)** - one tested CLI runs the 7-step runbook; author-pinned G1–G6; profile-general heuristic; derived statuses + results log
+- [x] **Phase 6: Kill Battery CLI (Gate, Search, Statuses)** - one tested CLI runs the 7-step runbook; author-pinned G1–G6; profile-general heuristic; derived statuses + results log (completed 2026-07-22)
 - [ ] **Phase 7: P0 — CDM Frontier** - all 1,813 MTF graphs at n=12–14 exactly adjudicated; verified CDM frontier extended past the literature's n ≤ 11
 - [ ] **Phase 8: P1 & P2 — Seeded Families at Scale** - TFP critical-size sweep + showpieces toward n≈1001–2001; sum-free Cayley generalized to abelian Γ, structured vs random
 - [ ] **Phase 9: P3 & P6 — Inflation Pools** - shared inflation operator; Higman–Sims complement inflations; 477,142 Ramsey(3,8,27) witnesses ingested and inflated
@@ -119,7 +119,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 - [x] 06-02-PLAN.md — MVP e2e slice: `alpha2 battery` 7-step runbook + append-only JSONL results log; seed-137 in-memory had₂=17 verified kill (CLI-01, CLI-02)
 - [x] 06-03-PLAN.md — Profile-general heuristic: non-spanning (p′,s′) iteration + instrumentation; finds the seed-137-class model (SRCH-01, SRCH-02)
 - [x] 06-04-PLAN.md — Derived statuses (KILLED/SHC-CANDIDATE/RESISTANT, read-only) + G5/G6 safe-family map (VRF-03, GATE-03)
-- [ ] 06-05-PLAN.md — Gate-trust author sign-off checkpoint: §2↔FEATURES reconciliation + B₇ + Role A/B (GATE-02, non-blocking for SC1)
+- [x] 06-05-PLAN.md — Gate-trust author sign-off checkpoint: §2↔FEATURES reconciliation + B₇ + Role A/B (GATE-02, non-blocking for SC1)
 **Research flags**: GATE-02 requires author input (pin exact original G1–G6 §2 definitions; confirm B₇ meaning in the PST citation) — gather early, needed before the gate is trusted.
 
 ### Phase 7: P0 — CDM Frontier
@@ -206,7 +206,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 | 3. Corpus Reproduction & CI (First Blood) | 4/4 | Complete   | 2026-07-22 |
 | 4. ExactBackend & CBC Reference | 4/4 | Complete   | 2026-07-22 |
 | 5. CP-SAT, Differential Gate & had₃ | 7/7 | Complete    | 2026-07-22 |
-| 6. Kill Battery CLI (Gate, Search, Statuses) | 4/5 | In Progress|  |
+| 6. Kill Battery CLI (Gate, Search, Statuses) | 5/5 | Complete    | 2026-07-22 |
 | 7. P0 — CDM Frontier | 0/TBD | Not started | - |
 | 8. P1 & P2 — Seeded Families at Scale | 0/TBD | Not started | - |
 | 9. P3 & P6 — Inflation Pools | 0/TBD | Not started | - |
