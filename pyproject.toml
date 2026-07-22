@@ -31,5 +31,6 @@ markers = ["slow: release/nightly replay gate"]
 # these files.
 extend-exclude = [
     "src/alpha2/generators/tfp.py",
+    "src/alpha2/generators/cayley.py",
     "src/alpha2/search/heuristic.py",
 ]
