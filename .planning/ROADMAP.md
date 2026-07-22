@@ -14,7 +14,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 - [x] **Phase 2: Trust Root & Corpus Schema** - independent stdlib-only verifier (fails closed under `python -O`); witness-complete append-only schema v1
 - [x] **Phase 3: Corpus Reproduction & CI (First Blood)** - 296/296 regenerated and independently re-verified; golden manifest frozen; verifier + reproduction run as CI on every commit (completed 2026-07-22)
 - [x] **Phase 4: ExactBackend & CBC Reference** - status-honest exact had₂ (PROVED_OPTIMAL vs INCUMBENT_ONLY); obstruction-based encoding; seed-137 regression (completed 2026-07-22)
-- [ ] **Phase 5: CP-SAT, Differential Gate & had₃** - second engine; dual-backend agreement gates any SHC-CANDIDATE; had₃ tier proven on synthetics; assume-and-verify symmetry breaking
+- [x] **Phase 5: CP-SAT, Differential Gate & had₃** - second engine; dual-backend agreement gates any SHC-CANDIDATE; had₃ tier proven on synthetics; assume-and-verify symmetry breaking (completed 2026-07-22)
 - [ ] **Phase 6: Kill Battery CLI (Gate, Search, Statuses)** - one tested CLI runs the 7-step runbook; author-pinned G1–G6; profile-general heuristic; derived statuses + results log
 - [ ] **Phase 7: P0 — CDM Frontier** - all 1,813 MTF graphs at n=12–14 exactly adjudicated; verified CDM frontier extended past the literature's n ≤ 11
 - [ ] **Phase 8: P1 & P2 — Seeded Families at Scale** - TFP critical-size sweep + showpieces toward n≈1001–2001; sum-free Cayley generalized to abelian Γ, structured vs random
@@ -101,7 +101,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 - [x] 05-04-PLAN.md — Differential agreement gate: CriticalDisagreement/SHC-CANDIDATE licensing + metamorphic guard + solver-path -O canary (EXACT-04)
 - [x] 05-05-PLAN.md — had_3 on both backends: solve_had3 on CBC+CP-SAT, synthetic size-3-forced instance had_2<chi then had_3==chi, verified (EXACT-05, EXACT-03)
 - [x] 05-06-PLAN.md — Assume-and-verify symmetry: C5 "vertex unused" disaster regression + SBContaminationError + on/off differential (EXACT-06)
-- [ ] 05-07-PLAN.md — Dual-backend agreement panel + seed-137=17 both PROVED_OPTIMAL through the gate (slow) + CP-SAT timing (EXACT-04, EXACT-03)
+- [x] 05-07-PLAN.md — Dual-backend agreement panel + seed-137=17 both PROVED_OPTIMAL through the gate (slow) + CP-SAT timing (EXACT-04, EXACT-03)
 
 ### Phase 6: Kill Battery CLI (Gate, Search, Statuses)
 **Goal**: One tested CLI runs the full 7-step runbook per candidate — author-pinned gate, profile-general heuristic, dual-backend exact steps, independent verification, corpus append — with derived statuses and an append-only results log.
@@ -200,7 +200,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 | 2. Trust Root & Corpus Schema | 2/2 | Complete    | 2026-07-22 |
 | 3. Corpus Reproduction & CI (First Blood) | 4/4 | Complete   | 2026-07-22 |
 | 4. ExactBackend & CBC Reference | 4/4 | Complete   | 2026-07-22 |
-| 5. CP-SAT, Differential Gate & had₃ | 6/7 | In Progress|  |
+| 5. CP-SAT, Differential Gate & had₃ | 7/7 | Complete   | 2026-07-22 |
 | 6. Kill Battery CLI (Gate, Search, Statuses) | 0/TBD | Not started | - |
 | 7. P0 — CDM Frontier | 0/TBD | Not started | - |
 | 8. P1 & P2 — Seeded Families at Scale | 0/TBD | Not started | - |
