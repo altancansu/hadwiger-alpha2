@@ -47,6 +47,7 @@ from ortools.sat.python import cp_model
 
 from alpha2.solvers.backend import register_backend
 from alpha2.solvers.problems.had2 import build_had2_problem
+from alpha2.solvers.problems.had3 import build_had3_problem
 from alpha2.solvers.result import ExactOutcome, SolveParams, Status
 
 # Pinned recorded-mode seed (Open-Q4: num_workers=1 + a fixed seed is the
@@ -104,6 +105,35 @@ def _guarded_extract(solver, mv, sv, problem, n, mode, target_k):
     fam = [tuple(e) for e in problem.Gedges if solver.boolean_value(mv[e])] + [
         (v,) for v in range(n) if solver.boolean_value(sv[v])
     ]
+    if mode == "optimize":
+        if round(solver.objective_value) != len(fam):
+            return None  # recompute guard: fail closed
+    else:
+        if len(fam) < target_k:
+            return None
+    used = set()
+    for s in fam:
+        for v in s:
+            if v in used:
+                return None
+            used.add(v)
+    return tuple(fam)
+
+
+def _guarded_extract3(solver, mv, sv, tv, problem2, triples, n, mode, target_k):
+    """had_3 analog of `_guarded_extract`: same guards, extended over triple vars.
+
+    The extracted family now mixes size-1/2/3 sets. CP-SAT booleans are exact, so
+    (as in the had_2 extractor) no fractional-integrality loop is needed; the
+    count==objective recompute and the internal-disjointness `used`-set guard are
+    KEPT as the fail-closed check. solve_had2 and its `_guarded_extract` are left
+    byte-unchanged.
+    """
+    fam = (
+        [tuple(e) for e in problem2.Gedges if solver.boolean_value(mv[e])]
+        + [(v,) for v in range(n) if solver.boolean_value(sv[v])]
+        + [tuple(T) for T in triples if solver.boolean_value(tv[T])]
+    )
     if mode == "optimize":
         if round(solver.objective_value) != len(fam):
             return None  # recompute guard: fail closed
@@ -217,6 +247,123 @@ class CPSATBackend:
 
         return ExactOutcome(
             problem="had2",
+            mode=mode,
+            status=status,
+            value=value,
+            bound=bound,
+            bound_source=bound_source,
+            family=family,
+            backend=self.name,
+            backend_version=self.backend_version(),
+            params=p,
+            wall_time_s=time.monotonic() - t0,
+        )
+
+    def solve_had3(self, adj, n, *, mode, target_k=None, params=None, symmetry_level=None):
+        """had_3 escalation tier (EXACT-05), behind its own method (a flag).
+
+        The CP-SAT twin of `CBCBackend.solve_had3`: the had_2 Bools (G-edge pairs +
+        singletons) AND the checksum-gated triple Bools (<=1 internal H-edge) from
+        the SAME frozen `Had3Problem`, so a CBC-vs-CP-SAT had_3 agreement is
+        meaningful (identical instance, independent encoding). Objective unchanged
+        (maximize family size). Same OPTIMAL + round(obj)==round(bound) gate and
+        determinism (num_workers=1 + pinned seed) as solve_had2, which is left
+        byte-unchanged. The returned family is an UNTRUSTED proposal.
+        """
+        if mode not in ("optimize", "decision"):
+            raise ValueError(f"mode must be 'optimize' or 'decision', got {mode!r}")
+        if mode == "decision":
+            # bool subclasses int: reject explicitly (WR-04), as solve_had2 does.
+            if (
+                not isinstance(target_k, int)
+                or isinstance(target_k, bool)
+                or target_k < 1
+            ):
+                raise ValueError(
+                    f"decision mode requires a positive int target_k "
+                    f"(bool rejected: True would silently mean k=1), "
+                    f"got {target_k!r}"
+                )
+        elif target_k is not None:
+            raise ValueError("target_k is only meaningful in decision mode")
+        p = params if params is not None else SolveParams()
+        t0 = time.monotonic()
+
+        problem2 = build_had2_problem(adj, n)  # checksum-gated on EVERY build
+        problem3 = build_had3_problem(adj, n)  # checksum-gated on EVERY build
+        Gedges = problem2.Gedges
+        triples = problem3.triples
+
+        m = cp_model.CpModel()
+        mv = {e: m.new_bool_var(f"m_{e[0]}_{e[1]}") for e in Gedges}
+        sv = {v: m.new_bool_var(f"s_{v}") for v in range(n)}
+        tv = {T: m.new_bool_var(f"t_{T[0]}_{T[1]}_{T[2]}") for T in triples}
+        size = sum(mv.values()) + sum(sv.values()) + sum(tv.values())
+        if mode == "optimize":
+            m.maximize(size)
+        else:
+            m.add(size >= target_k)  # constant objective: pure feasibility
+        # Per-vertex disjointness INCLUDING the triple vars that cover a vertex.
+        for v in range(n):
+            m.add_at_most_one(
+                [mv[e] for e in Gedges if v in e]
+                + [sv[v]]
+                + [tv[T] for T in triples if v in T]
+            )
+        # had_2 conflict rows (sorted: determinism).
+        for (u, v) in sorted(problem2.ss):
+            m.add_at_most_one([sv[u], sv[v]])
+        for (v, (a, b)) in sorted(problem2.sp):
+            m.add_at_most_one([sv[v], mv[(a, b)]])
+        for e1, e2 in sorted(tuple(sorted(pair)) for pair in problem2.pp):
+            m.add_at_most_one([mv[e1], mv[e2]])
+        # had_3 size-3 conflict rows: triple-single and triple-pair (sorted).
+        for (T, S) in sorted(problem3.conflicts):
+            if len(S) == 1:
+                m.add_at_most_one([tv[T], sv[S[0]]])
+            else:
+                m.add_at_most_one([tv[T], mv[S]])
+
+        solver = cp_model.CpSolver()
+        # Deterministic recorded/impossibility mode: single worker + pinned seed.
+        solver.parameters.num_workers = 1
+        solver.parameters.random_seed = _RANDOM_SEED
+        if p.time_limit_s is not None:
+            solver.parameters.max_time_in_seconds = p.time_limit_s
+        if mode == "decision":
+            solver.parameters.stop_after_first_solution = True
+        if symmetry_level is not None:
+            solver.parameters.symmetry_level = symmetry_level
+        solver.parameters.log_search_progress = True
+        solver.parameters.log_to_stdout = False
+
+        cp_status = solver.solve(m)
+        status = map_status(cp_status, solver, mode)
+
+        value = None
+        family = None
+        if status in _EXTRACTABLE:
+            fam = _guarded_extract3(
+                solver, mv, sv, tv, problem2, triples, n, mode, target_k
+            )
+            if fam is None:
+                status = Status.ERROR  # guard tripped: nothing crosses the gate
+            else:
+                family = fam
+                value = len(fam)
+
+        bound = None
+        bound_source = "none"
+        if mode == "optimize":
+            if status is Status.PROVED_OPTIMAL:
+                bound, bound_source = value, "definition"
+            elif status in (Status.INCUMBENT_ONLY, Status.UNKNOWN):
+                bb = solver.best_objective_bound
+                bound = round(bb) if math.isfinite(bb) else n
+                bound_source = "trivial_n"
+
+        return ExactOutcome(
+            problem="had3",
             mode=mode,
             status=status,
             value=value,

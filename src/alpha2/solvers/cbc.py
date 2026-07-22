@@ -33,6 +33,7 @@ import pulp
 
 from alpha2.solvers.backend import register_backend
 from alpha2.solvers.problems.had2 import build_had2_problem
+from alpha2.solvers.problems.had3 import build_had3_problem
 from alpha2.solvers.result import ExactOutcome, SolveParams, Status
 
 _INTEGRALITY_TOL = 1e-6
@@ -168,6 +169,49 @@ def _guarded_extract(prob, mv, sv, Gedges, n, mode, target_k):
     return tuple(fam)
 
 
+def _guarded_extract3(prob, mv, sv, tv, Gedges, triples, n, mode, target_k):
+    """had_3 analog of `_guarded_extract`: same guards, extended over triple vars.
+
+    The extracted family now mixes size-1/2/3 sets (singletons, G-edge pairs, and
+    triples). Guards are identical in spirit to the had_2 extractor — integrality
+    over ALL binaries (incl. triples), a scale-robust round(objective)==count
+    recompute whose per-variable drift budget grows with the triple vars, and the
+    internal-disjointness `used`-set check — each mapping the whole outcome to
+    Status.ERROR at the caller. solve_had2 and its `_guarded_extract` are left
+    byte-unchanged (the frozen reference lineage).
+    """
+    for var in list(mv.values()) + list(sv.values()) + list(tv.values()):
+        x = var.value()
+        if x is None:
+            return None
+        if min(abs(x), abs(x - 1.0)) > _INTEGRALITY_TOL:
+            return None
+    fam = (
+        [tuple(e) for e in Gedges if mv[e].value() > 0.5]
+        + [(v,) for v in range(n) if sv[v].value() > 0.5]
+        + [tuple(T) for T in triples if tv[T].value() > 0.5]
+    )
+    if mode == "optimize":
+        reported = pulp.value(prob.objective)
+        if reported is None:
+            return None
+        nvars = len(mv) + len(sv) + len(tv)
+        if round(reported) != len(fam):
+            return None
+        if abs(reported - round(reported)) > nvars * _INTEGRALITY_TOL:
+            return None
+    else:
+        if len(fam) < target_k:
+            return None
+    used = set()
+    for s in fam:
+        for v in s:
+            if v in used:
+                return None
+            used.add(v)
+    return tuple(fam)
+
+
 class CBCBackend:
     """ExactBackend over the bundled CBC via PULP_CBC_CMD (reference lineage)."""
 
@@ -277,6 +321,148 @@ class CBCBackend:
 
         return ExactOutcome(
             problem="had2",
+            mode=mode,
+            status=status,
+            value=value,
+            bound=bound,
+            bound_source=bound_source,
+            family=family,
+            backend=self.name,
+            backend_version=self.backend_version(),
+            params=p,
+            wall_time_s=time.monotonic() - t0,
+        )
+
+    def solve_had3(self, adj, n, *, mode, target_k=None, params=None):
+        """had_3 escalation tier (EXACT-05), behind its own method (a flag).
+
+        The seagull/Tier-1 size-3 model: the had_2 variables (G-edge pairs +
+        singletons) AND the checksum-gated triple variables (<=1 internal
+        H-edge) from the SAME frozen `Had3Problem` the CP-SAT twin translates.
+        Objective is unchanged (maximize family size); the model grows by
+        conflict-sparse triple Bools. Fires ONLY as an escalation on a certified
+        had_2 shortfall — it is a separate method, never on the had_2 path.
+
+        Everything else mirrors solve_had2 exactly (same two-field PROVED_OPTIMAL
+        gate, same guarded extraction extended over triples, same bound
+        provenance). solve_had2 is left byte-unchanged. The returned family is an
+        UNTRUSTED proposal — only the widened trust root confers truth on it.
+        """
+        if mode not in ("optimize", "decision"):
+            raise ValueError(f"mode must be 'optimize' or 'decision', got {mode!r}")
+        if mode == "decision":
+            # bool subclasses int: reject explicitly (WR-04), as solve_had2 does.
+            if (
+                not isinstance(target_k, int)
+                or isinstance(target_k, bool)
+                or target_k < 1
+            ):
+                raise ValueError(
+                    f"decision mode requires a positive int target_k "
+                    f"(bool rejected: True would silently mean k=1), "
+                    f"got {target_k!r}"
+                )
+        elif target_k is not None:
+            raise ValueError("target_k is only meaningful in decision mode")
+        p = params if params is not None else SolveParams()
+        if p.threads != 1:
+            raise ValueError(
+                "the CBC reference backend is single-thread by contract "
+                f"(deterministic reference lineage); got threads={p.threads!r}"
+            )
+        t0 = time.monotonic()
+
+        problem2 = build_had2_problem(adj, n)  # checksum-gated on EVERY build
+        problem3 = build_had3_problem(adj, n)  # checksum-gated on EVERY build
+        Gedges = problem2.Gedges
+        triples = problem3.triples
+
+        prob = pulp.LpProblem("had3", pulp.LpMaximize)
+        mv = {
+            e: pulp.LpVariable(f"m_{e[0]}_{e[1]}", cat="Binary") for e in Gedges
+        }
+        sv = {v: pulp.LpVariable(f"s_{v}", cat="Binary") for v in range(n)}
+        tv = {
+            T: pulp.LpVariable(f"t_{T[0]}_{T[1]}_{T[2]}", cat="Binary")
+            for T in triples
+        }
+        size = pulp.lpSum(mv.values()) + pulp.lpSum(sv.values()) + pulp.lpSum(tv.values())
+        if mode == "optimize":
+            prob += size
+        else:
+            prob += 0  # constant objective: pure feasibility
+            prob += size >= target_k
+        # Per-vertex disjointness INCLUDING the triple vars that cover a vertex.
+        for v in range(n):
+            prob += (
+                pulp.lpSum(mv[e] for e in Gedges if v in e)
+                + sv[v]
+                + pulp.lpSum(tv[T] for T in triples if v in T)
+                <= 1
+            )
+        # had_2 conflict rows (sorted: determinism).
+        for (u, v) in sorted(problem2.ss):
+            prob += sv[u] + sv[v] <= 1
+        for (v, (a, b)) in sorted(problem2.sp):
+            prob += sv[v] + mv[(a, b)] <= 1
+        for e1, e2 in sorted(tuple(sorted(pair)) for pair in problem2.pp):
+            prob += mv[e1] + mv[e2] <= 1
+        # had_3 size-3 conflict rows: triple-single and triple-pair (sorted).
+        for (T, S) in sorted(problem3.conflicts):
+            if len(S) == 1:
+                prob += tv[T] + sv[S[0]] <= 1
+            else:
+                prob += tv[T] + mv[S] <= 1
+
+        solve_error = False
+        log_text = ""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            log_path = Path(tmpdir) / "cbc.log"
+            solver = pulp.PULP_CBC_CMD(
+                msg=0,
+                threads=1,  # single-thread: deterministic reference lineage
+                timeLimit=p.time_limit_s,
+                logPath=str(log_path),  # ALWAYS: evidence + dual bound
+            )
+            try:
+                prob.solve(solver)
+            except pulp.PulpSolverError:
+                solve_error = True
+            if log_path.exists():
+                log_text = log_path.read_text()
+
+        status = (
+            Status.ERROR
+            if solve_error
+            else map_status(prob.status, prob.sol_status, mode)
+        )
+
+        value = None
+        family = None
+        if status in _EXTRACTABLE:
+            fam = _guarded_extract3(
+                prob, mv, sv, tv, Gedges, triples, n, mode, target_k
+            )
+            if fam is None:
+                status = Status.ERROR  # guard tripped: nothing crosses the gate
+            else:
+                family = fam
+                value = len(fam)
+
+        bound = None
+        bound_source = "none"
+        if mode == "optimize":
+            if status is Status.PROVED_OPTIMAL:
+                bound, bound_source = value, "definition"
+            elif status in (Status.INCUMBENT_ONLY, Status.UNKNOWN):
+                parsed = parse_bound(log_text)
+                if parsed is not None:
+                    bound, bound_source = parsed, "cbc_log"
+                else:
+                    bound, bound_source = n, "trivial_n"
+
+        return ExactOutcome(
+            problem="had3",
             mode=mode,
             status=status,
             value=value,
