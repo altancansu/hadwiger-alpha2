@@ -75,8 +75,11 @@ def verify_model_record(rec):
       1. n, chi are ints >= 1.
       2. recomputed canonical H_edges sha256 == stored H_edges_sha256.
       3. k = len(model_branch_sets); k >= chi.
-      4. each branch set size in {1,2}; vertices in [0,n); globally disjoint.
-      5. each size-2 set {a,b} is a G-edge (b not in adj[a], i.e. NOT an H-edge).
+      4. each branch set size in {1,2,3}; vertices in [0,n); globally disjoint.
+      5. each size-2 set {a,b} is a G-edge (b not in adj[a], i.e. NOT an H-edge);
+         each size-3 set {a,b,c} is CONNECTED in G, i.e. >=2 of its 3 internal
+         pairs are G-edges (<=1 internal H-edge). (For 3 vertices, connected in G
+         <=> >=2 internal G-edges.)
       6. every i<j pair of branch sets is adjacent in G (not _is_conflict) —
          i.e. all C(k,2) cross-adjacencies present.
     """
@@ -101,8 +104,8 @@ def verify_model_record(rec):
 
     used = set()
     for S in sets:
-        if len(S) not in (1, 2):
-            raise VerificationError(f"branch set size {len(S)} not in (1,2): {S!r}")
+        if len(S) not in (1, 2, 3):
+            raise VerificationError(f"branch set size {len(S)} not in (1,2,3): {S!r}")
         for v in S:
             if not (isinstance(v, int) and 0 <= v < n):
                 raise VerificationError(f"vertex {v!r} out of range [0,{n})")
@@ -113,6 +116,13 @@ def verify_model_record(rec):
             a, b = S
             if b in adj[a]:
                 raise VerificationError(f"pair {S!r} is an H-edge, not a G-edge")
+        if len(S) == 3:
+            a, b, c = S
+            g_edges = (b not in adj[a]) + (c not in adj[a]) + (c not in adj[b])
+            if g_edges < 2:
+                raise VerificationError(
+                    f"triple {S!r} disconnected in G ({g_edges} G-edges < 2)"
+                )
 
     for i in range(k):
         for j in range(i + 1, k):
