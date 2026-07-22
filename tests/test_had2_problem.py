@@ -24,16 +24,19 @@ become a production path. Embedded-literal discipline (test_corpus_r1
 precedent): expected constants are in-file literals, no cross-test imports.
 """
 import random
+from itertools import combinations
 
 import pytest
 
 from alpha2.generators.tfp import triangle_free_process
+from alpha2.solvers.backend import get_backend
 from alpha2.solvers.problems import had2 as had2_module
 from alpha2.solvers.problems.had2 import (
     ChecksumError,
     build_had2_problem,
     enumerate_had2,
 )
+from alpha2.solvers.result import Status
 
 
 # --------------------------------------------------------------------------- #
@@ -176,3 +179,117 @@ def test_triangle_containing_h_refused_at_build():
     adj = [{1, 2}, {0, 2}, {0, 1}, set()]
     with pytest.raises(ValueError):
         build_had2_problem(adj, 4)
+
+
+# --------------------------------------------------------------------------- #
+# Test-local exhaustive brute-force had_2 reference — INDEPENDENT semantics.
+# Imports NOTHING from alpha2.solvers.problems.had2 (that is the point of a
+# differential): candidates and compatibility are re-derived here from first
+# principles. Two branch sets are mutually usable iff they are disjoint AND
+# joined by at least one G-edge (some a in A, b in B with a != b and
+# b not in adj_H[a]). Candidate count <= 8 + C(8,2) = 36 at n <= 8 —
+# trivially exhaustive, correctness over speed.
+# --------------------------------------------------------------------------- #
+def _brute_had2(adj, n):
+    """Exhaustive had_2: max clique in the candidate-compatibility graph."""
+    cands = [frozenset((v,)) for v in range(n)]
+    cands += [
+        frozenset((u, v))
+        for u in range(n) for v in range(u + 1, n)
+        if v not in adj[u]                       # size-2 branch sets are G-edges
+    ]
+
+    def compatible(A, B):
+        if A & B:                                # branch sets must be disjoint
+            return False
+        for a in A:                              # ... and adjacent in G
+            for b in B:
+                if a != b and b not in adj[a]:
+                    return True
+        return False
+
+    m = len(cands)
+    comp = [
+        [i != j and compatible(cands[i], cands[j]) for j in range(m)]
+        for i in range(m)
+    ]
+
+    best = 0
+
+    def extend(size, allowed):
+        nonlocal best
+        if size > best:
+            best = size
+        for idx, i in enumerate(allowed):
+            if size + (len(allowed) - idx) <= best:
+                return                           # cardinality bound only
+            extend(size + 1, [j for j in allowed[idx + 1:] if comp[i][j]])
+
+    extend(0, list(range(m)))
+    return best
+
+
+def _alpha_h_exhaustive(adj, n):
+    """Exact alpha(H) by full subset scan (2^n <= 256 at n <= 8)."""
+    best = 0
+    for k in range(n, 0, -1):
+        for S in combinations(range(n), k):
+            if all(v not in adj[u] for u, v in combinations(S, 2)):
+                return k
+    return best
+
+
+# --------------------------------------------------------------------------- #
+# The deterministic small-instance panel (>= 9 instances)
+# --------------------------------------------------------------------------- #
+def _matching6_adj():
+    """H = perfect matching on n=6: edges 0-1, 2-3, 4-5."""
+    return [{1}, {0}, {3}, {2}, {5}, {4}]
+
+
+def _c5_adj():
+    """H = C5: edges 0-1, 1-2, 2-3, 3-4, 4-0."""
+    return [{1, 4}, {0, 2}, {1, 3}, {2, 4}, {3, 0}]
+
+
+def _panel():
+    """(id, adj, n) — closed-form anchors + seeded TFP at n in {6, 7, 8}."""
+    instances = [
+        ("c5", _c5_adj(), 5),
+        ("empty5", [set() for _ in range(5)], 5),
+        ("matching6", _matching6_adj(), 6),
+    ]
+    for n, s in [(6, 1), (6, 2), (7, 1), (7, 2), (8, 1), (8, 2)]:
+        adj, _m = triangle_free_process(n, random.Random(s))
+        instances.append((f"tfp-n{n}-s{s}", adj, n))
+    return instances
+
+
+PANEL = _panel()
+PANEL_IDS = [name for name, _adj, _n in PANEL]
+
+
+# --------------------------------------------------------------------------- #
+# Test 5 — exhaustive differential: brute == CBC PROVED_OPTIMAL on every
+# panel instance (the enumeration+adapter pipeline has no small-case bug)
+# --------------------------------------------------------------------------- #
+@pytest.mark.parametrize("name,adj,n", PANEL, ids=PANEL_IDS)
+def test_brute_force_differential_n_le_8(name, adj, n):
+    expected = _brute_had2(adj, n)
+
+    out = get_backend("cbc").solve_had2(adj, n, mode="optimize")
+    assert out.status is Status.PROVED_OPTIMAL   # gate BEFORE any value read
+    assert out.exact_value() == expected
+
+
+# --------------------------------------------------------------------------- #
+# Test 6 — domain sanity: had_2 >= alpha(H) = omega(G) on every instance
+# (singletons on a max clique of G are always a valid family)
+# --------------------------------------------------------------------------- #
+@pytest.mark.parametrize("name,adj,n", PANEL, ids=PANEL_IDS)
+def test_domain_sanity_had2_geq_alpha_h(name, adj, n):
+    alpha_h = _alpha_h_exhaustive(adj, n)
+
+    out = get_backend("cbc").solve_had2(adj, n, mode="optimize")
+    assert out.status is Status.PROVED_OPTIMAL   # gate BEFORE any value read
+    assert out.exact_value() >= alpha_h
