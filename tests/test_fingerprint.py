@@ -124,3 +124,29 @@ def test_heuristic_matches_d2_exact_pinned_env():
     sets, *_ = solve(adj, n, 16, rng)
     assert sets is not None, "heuristic returned no model"
     assert [list(s) for s in sets] == D2_MODEL, ("did not reproduce D.2 exactly", sets)
+
+
+def test_seed137_h_only():
+    """Pre-lock seed-137's graph identity for the Phase-4 regression (research OQ2).
+
+    H-only: gate on the doc-derived |E(H)|==177 (Appendix D.3) FIRST, then assert the frozen
+    canonical H_edges sha256. NO model/ILP assertion here — seed-137 needs CBC (Phase 4).
+    """
+    n = 31
+    adj, m = _regen(n, 137)
+    # Doc-invariant gate before the hash is trusted.
+    assert m == 177, ("seed137 m", m)
+
+    entry = _load_manifest()["tfp:n31:s137"]
+    assert entry["m"] == 177
+    got = canonical_h_edges_sha256(adj, n)
+    assert got == entry["h_edges_sha256"], ("seed137 h_edges_sha256 drift", got, entry["h_edges_sha256"])
+
+
+def test_env_smoke():
+    """ENV-01 tripwire: assert the exact pinned interpreter and networkx (byte-reproduction pins)."""
+    import sys
+    import networkx
+
+    assert sys.version.split()[0] == "3.12.13", ("python", sys.version.split()[0])
+    assert networkx.__version__ == "3.6.1", ("networkx", networkx.__version__)
