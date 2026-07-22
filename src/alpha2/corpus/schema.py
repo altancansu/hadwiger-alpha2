@@ -26,11 +26,20 @@ stdlib ONLY (json, hashlib). No networkx, no search/generators imports — the
 schema assembles plain data the trust root consumes.
 """
 import hashlib
+import importlib.metadata as _md
 import json
+import platform as _platform
+import sys as _sys
 
 SCHEMA_VERSION = 1
 
 _VALID_KINDS = ("seed", "params", "graph6")
+
+# ENV-05: Linux x86_64 is the canonical reference-regeneration platform. PuLP's
+# bundled CBC ships no osx/arm64 binary, so on Apple Silicon it runs under Rosetta 2
+# (x86_64 emulation); to make semantic (exact-method) reproduction deterministic,
+# ILP-method certificates are regenerated on Linux x86_64.
+CANONICAL_PLATFORM = "linux-x86_64"
 
 
 # --------------------------------------------------------------------------- #
@@ -109,6 +118,80 @@ def validate_provenance(prov):
 
 
 # --------------------------------------------------------------------------- #
+# Reproduction contract (ENV-05)
+# --------------------------------------------------------------------------- #
+def reproduction_kind_for_method(method):
+    """byte_exact for heuristic/seed-derived models; semantic for exact methods.
+
+    Heuristic models are byte-reproducible from (n, seed) on the pinned interpreter
+    (single-RNG contract). Exact-method models (CBC ILP / CP-SAT) are only
+    SEMANTICALLY reproducible — the claim (had_2 value, optimality) reproduces, but
+    the model bytes depend on solver threading/platform (CBC-under-Rosetta).
+    """
+    return "byte_exact" if "heuristic" in method.lower() else "semantic"
+
+
+def make_reproduction(method, seed=None):
+    """Build the `reproduction` block: kind + canonical_platform (+ seed if exact-byte)."""
+    kind = reproduction_kind_for_method(method)
+    repro = {"kind": kind, "canonical_platform": CANONICAL_PLATFORM}
+    if kind == "byte_exact" and seed is not None:
+        repro["seed"] = seed
+    return repro
+
+
+def _pkg_version(name):
+    """Package version from installed metadata WITHOUT importing the package.
+
+    importlib.metadata is stdlib and reads dist metadata only — so the schema stays
+    stdlib-only (it never imports networkx / pulp / ortools).
+    """
+    try:
+        return _md.version(name)
+    except _md.PackageNotFoundError:
+        return None
+
+
+def _cbc_under_rosetta():
+    """True when the bundled CBC would run under Rosetta 2 (Apple Silicon).
+
+    PuLP ships no osx/arm64 CBC binary, so on darwin+arm64 CBC executes emulated
+    (x86_64). This is exactly why Linux x86_64 is the canonical platform.
+    """
+    return _sys.platform == "darwin" and _platform.machine() == "arm64"
+
+
+def make_backends(method):
+    """Stamp the current environment's backend versions for a given method.
+
+    Always records python + networkx + the platform block. Solver stamps are null
+    for heuristic (byte_exact) records; for exact methods they carry the relevant
+    solver: `pulp`+`cbc` for exact ILP (CBC), `ortools` for exact CP-SAT.
+
+    The `cbc` field records the bundled-CBC provenance; the exact CBC binary version
+    is stamped at ILP-solve time on the canonical platform (Phase 4).
+    """
+    m = method.lower()
+    semantic = reproduction_kind_for_method(method) == "semantic"
+    is_ilp = semantic and ("ilp" in m or "cbc" in m)
+    is_cpsat = semantic and ("cp-sat" in m or "cp_sat" in m or "cpsat" in m)
+
+    pulp_ver = _pkg_version("pulp") if is_ilp else None
+    return {
+        "python": _platform.python_version(),
+        "networkx": _pkg_version("networkx"),
+        "pulp": pulp_ver,
+        "cbc": (f"bundled-with-pulp-{pulp_ver}" if is_ilp else None),
+        "ortools": (_pkg_version("ortools") if is_cpsat else None),
+        "platform": {
+            "system": _platform.system(),
+            "machine": _platform.machine(),
+            "cbc_under_rosetta": _cbc_under_rosetta(),
+        },
+    }
+
+
+# --------------------------------------------------------------------------- #
 # Record builder
 # --------------------------------------------------------------------------- #
 def _as_int_pairs(edges):
@@ -183,9 +266,13 @@ def build_record(
         "tutte_berge_U": [int(v) for v in tutte_berge_U],
         "verified": bool(verified),
         "method": method,
+        # ENV-05 reproduction contract — every certificate carries it. Callers may
+        # override; otherwise it is derived from the method (+ provenance seed).
+        "reproduction": (
+            reproduction
+            if reproduction is not None
+            else make_reproduction(method, seed=provenance.get("seed"))
+        ),
+        "backends": (backends if backends is not None else make_backends(method)),
     }
-    if reproduction is not None:
-        record["reproduction"] = reproduction
-    if backends is not None:
-        record["backends"] = backends
     return record
