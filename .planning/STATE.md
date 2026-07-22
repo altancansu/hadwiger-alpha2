@@ -4,7 +4,7 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 05-03-PLAN.md — trust root widened to size {1,2,3} with size-3 >=2-G-edges connectivity check (EXACT-05); size-3 mutants + full corpus + extended -O canary green (3/7)
-last_updated: "2026-07-22T09:21:00.801Z"
+last_updated: "2026-07-22T09:28:17.474Z"
 last_activity: 2026-07-22
 progress:
   total_phases: 12
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-07-21)
 ## Current Position
 
 Phase: 05 (cp-sat-differential-gate-had) — EXECUTING
-Plan: 4 of 7
+Plan: 5 of 7
 Status: Ready to execute
 Last activity: 2026-07-22
 
@@ -61,6 +61,7 @@ Progress: [████████░░] 79%
 | Phase 05 P01 | 12min | 3 tasks | 2 files |
 | Phase 05 P02 | 18min | 2 tasks | 2 files |
 | Phase 05 P03 | 10min | 2 tasks | 3 files |
+| Phase 05 P04 | 10min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -104,6 +105,8 @@ Execution decisions (Phase 02 Plan 02):
 - [Phase ?]: Phase 05 Plan 02: size-3-forced test uses a genuine had_2<had_3 (4<5) instance, NOT had_2<chi — no triangle-free H with had_2<chi is known (would be a Hadwiger counterexample); had_2<had_3 is the honest escalation signal
 - [Phase 05]: Plan 05-03: trust root widened to size gate {1,2,3} with an explicit >=2-G-edges size-3 connectivity check; size-<=2 legs + _is_conflict byte-unchanged, raises-only under -O
 - [Phase 05]: Plan 05-03: no schema.py / had_3 invariant change (RESEARCH Open-Q1/A6) — size-3 escalation proven at trust-root level only; had_3 corpus-field naming deferred to first real escalation-certificate consumer (Phase 6/11)
+- [Phase 05]: Plan 05-04: differential.py is stdlib-only (imports only Status), raises-only (0 asserts); differential_verdict licenses SHC_CANDIDATE ONLY on two equal PROVED_OPTIMAL below chi, unequal proven optima raise CriticalDisagreement (quarantine+halt), single proof -> INSUFFICIENT (EXACT-04)
+- [Phase 05]: Plan 05-04: metamorphic guard assert_not_below_verified(outcome, verified_k) raises CriticalDisagreement when a PROVED_OPTIMAL value < a trust-root-verified family size (verifier trumps solver); verified_k must come from verify_certificate, never a solver flag; new solver paths (CP-SAT + differential) fail closed under -O via test_solver_paths_dash_O.py
 
 ### Pending Todos
 
@@ -125,6 +128,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-22T09:20:57.469Z
+Last session: 2026-07-22T09:27:20.848Z
 Stopped at: Completed 05-03-PLAN.md — trust root widened to size {1,2,3} with size-3 >=2-G-edges connectivity check (EXACT-05); size-3 mutants + full corpus + extended -O canary green (3/7)
 Resume file: None
