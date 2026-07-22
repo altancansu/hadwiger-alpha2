@@ -414,14 +414,14 @@ def cbc_binary_version() -> str:
 
 All other load-bearing claims are `[VERIFIED]` by execution or direct source inspection — no user confirmation needed for them.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Does the frozen corpus's seed-137 record get upgraded to the 17-set family in this phase?**
+1. **Does the frozen corpus's seed-137 record get upgraded to the 17-set family in this phase?** — **RESOLVED:** regression-as-test, corpus byte-untouched (plan 04-04); the stored-family upgrade is DEFERRED to a future deliberate freeze amendment — first real consumer is the Phase-11 Falsification-Rule harness.
    - What we know: the Phase-2 summary promises "Phase 4 drops in seed-137's true 17-set family with no schema change"; but Phase 3 froze the repro drivers "forever", and R1 byte-asserts the 16-set D.3 literal. R2/R3/manifest are provably unaffected by a model-field change; R1 + `seed137.py` (+ `freeze.py` ordering) are the only artifacts a lockstep amendment must touch.
    - What's unclear: whether freeze discipline outweighs the corpus-completeness promise *now* (the first real consumer of k=17-level corpus storage is the Phase-11 Falsification-Rule harness).
    - Recommendation: Phase 4 ships the regression-as-test unconditionally (satisfies the roadmap success criterion verbatim); the corpus upgrade is either a clearly-fenced final plan (single commit: driver + refreeze + R1 literal, flagged as a deliberate freeze amendment) or an explicit deferral recorded in STATE.md. Planner should surface this at plan-check; treat as Claude's-discretion-with-visibility since no CONTEXT.md exists.
 
-2. **Decision-mode "stop at first feasible":** with a constant objective CBC already behaves as pure feasibility (2.3 s observed). No `maxSolutions`-style option is needed; do not add unverified CBC CLI options.
+2. **Decision-mode "stop at first feasible":** — **RESOLVED:** no `maxSolutions` option needed — with a constant objective CBC already behaves as pure feasibility (2.3 s observed). No `maxSolutions`-style option is needed; do not add unverified CBC CLI options.
 
 ## Environment Availability
 
