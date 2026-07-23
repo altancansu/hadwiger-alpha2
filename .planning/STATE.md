@@ -133,7 +133,13 @@ Execution decisions (Phase 02 Plan 02):
 
 ### Pending Todos
 
-None yet.
+- **⏳ AUTHOR READ PENDING (non-blocking): transfer-lemma A3.** Phase 7 execution was run with both
+  author checkpoints delegated to Claude (07-04 Q3 → ratified v1: OEIS + second-filter + shortg;
+  07-05 Q1 → carve-out self-reviewed). The transfer-lemma proof (`docs/proofs/transfer-lemma.md`)
+  Assumption A3 (disconnected complement is the ONLY carve-out obstruction) is a first-new-science
+  claim that still wants the author's final read before any external frontier claim is published.
+  Correctness backstop: the empirical n≤11 definition gate (all 134 connected MTF-complements vs
+  CLWY's published all-CDM result).
 
 ### Blockers/Concerns
 
