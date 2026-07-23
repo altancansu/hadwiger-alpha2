@@ -155,7 +155,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 - [x] 08-01-PLAN.md — Wave-0 RED scaffold: full pool/sumfree test contract + certificate-honesty gate + additive paths (POOL-1, POOL-2)
 - [x] 08-02-PLAN.md — Abelian group + sum-free generators (structured + random) + canonical dedup + RNG v2 + additive deterministic CP-SAT budget (POOL-2)
 - [x] 08-03-PLAN.md — g(G) certificate schema + stdlib verifier + append-only verify-at-append store; certificate honesty backbone (POOL-2)
-- [ ] 08-04-PLAN.md — g(G) per-instance runbook: had₂→had₃ tiering + adjudicate (gen→gate→χ→g→honest verified cert); the P2 spine (POOL-2)
+- [x] 08-04-PLAN.md — g(G) per-instance runbook: had₂→had₃ tiering + adjudicate (gen→gate→χ→g→honest verified cert); the P2 spine (POOL-2)
 - [x] 08-05-PLAN.md — ILP optimality-frontier measurement (A4): per-n PROVED window under a deterministic budget; bounds the exact g>0 region (POOL-2)
 - [ ] 08-06-PLAN.md — Structured-vs-random grid sweep over odd |Γ|=31–~500: g-vs-|Γ| + resistant-rate plot data; the break-hunt run (POOL-2)
 - [x] 08-07-PLAN.md — P1 secondary: TFP n=31–32 exact sweep + n≈1001–2001 existence-only showpieces; RNG v2 + resistance tracking (POOL-1)

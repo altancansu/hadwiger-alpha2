@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 08-07-PLAN.md — P1 (secondary) at scale: run_p1_tfp/critical_sweep (n=31-32 exact dual-backend sweep, verdict deterministic in (n,seed,det_budget)) + run_showpiece (n≈1001-2001 existence-only, heuristic HIT→verify_certificate→dedicated P1 corpus, MISS→RESISTANT); RNG v2; POOL-1 COMPLETE; test_p1_sweep+test_showpiece GREEN, 321 pre-existing green"
-last_updated: "2026-07-23T10:31:13.308Z"
+stopped_at: "Completed 08-04-PLAN.md — the per-instance g(G) runbook SPINE: screen.py (compute_g / classify_screen_outcome + screen_gap had_2→had_3 tiering under a deterministic budget on BOTH backends) + adjudicate.py (adjudicate_sumfree end-to-end gen→gate→χ→heuristic/screen→trust-root-verified honest certificate; KILLED-BY-GATE first-class; SHC_CANDIDATE g>0 carries HONEST_G_POSITIVE_STATEMENT; RESISTANT→E3 queue; adjudicate_gscreen rejects wall-clock + num_workers≠1). test_screen GREEN; 323 non-slow pass, 321 pre-existing unchanged; POOL-2 still shared with 08-06"
+last_updated: "2026-07-23T11:10:00.000Z"
 last_activity: 2026-07-23
 progress:
   total_phases: 12
   completed_phases: 7
   total_plans: 37
-  completed_plans: 35
-  percent: 58
+  completed_plans: 36
+  percent: 60
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-07-21)
 ## Current Position
 
 Phase: 08 (p1-p2-seeded-families-at-scale) — EXECUTING
-Plan: 6 of 7
+Plan: 08-06 remaining (08-01..08-05, 08-07 done)
 Status: Ready to execute
 Last activity: 2026-07-23
 
-Progress: [██████████] 95%
+Progress: [██████████] 97%
 
 ## Performance Metrics
 
@@ -82,6 +82,7 @@ Progress: [██████████] 95%
 | Phase 08 P03 | ~18min | 3 tasks | 3 files |
 | Phase 08 P05 | ~25min | 2 tasks | 2 files |
 | Phase 08 P07 | ~45min | 2 tasks | 1 files |
+| Phase 08 P04 | ~35min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -160,6 +161,9 @@ Execution decisions (Phase 02 Plan 02):
 - [Phase 08 P07]: POOL-1 COMPLETE — the P1/TFP-complement track is delivered solely by this plan (POOL-2 stays open, shared across 08-02..08-07). pool/sumfree/p1.py: run_p1_tfp/critical_sweep (n=31-32 EXACT-had_2 dual-backend sweep under differential_verdict + trust root; DECIDED vs RESISTANT; verdict a deterministic function of (n,seed,det_budget) via CP-SAT det_time + CBC det_nodes=det_budget·5000, never wall-clock; num_workers!=1 raises) and the RESISTANT set IS the derived E3 queue (SC1).
 - [Phase 08 P07]: run_showpiece is EXISTENCE-ONLY above the ILP frontier (n≈1001-2001) — heuristic proposes, verify_certificate (SOLE trust root) disposes: HIT→VERIFIED cert appended to a NEW dedicated paths.P1_SHOWPIECE_CORPUS (gitignored runtime output); MISS→RESISTANT with had_2=None (heuristic resistance is never a result, never an impossibility claim; T-8-11/SRCH-02). RNG v2 gen/search subseeds + byte-exact descriptor rebuild; frozen 296-corpus + generators/{tfp,cayley}.py byte-untouched.
 - [Phase 08 P07]: run_p1_tfp reimplements the exact-had_2 slice directly (NOT battery.run_candidate, which is RNG-v1 + wall-clock and ignores its params arg — incompatible with the RNG-v2 + deterministic-budget must-haves and the (n,seed) determinism test); reuses the SAME differential_verdict + verify_certificate + build_record + extract_witness machinery, in-memory, files_modified scope = p1.py only (Deviation Rule 3).
+- [Phase 08 P04]: the per-instance g(G) runbook SPINE is complete. screen.py: compute_g / classify_screen_outcome (pure metric + radioactive labels — heuristic hit→KILLED g≤0, had_k<χ→SHC_CANDIDATE g>0, miss/unproved→RESISTANT g None) + screen_gap (had_2 dual-backend optimize → differential_verdict → Tier-1 had_3 seagull; a proved U<χ is a SOUND g>0 from the upper bound, U≥χ raises UnverifiedKill → Tier-2 extract + trust_root_verify_family). adjudicate.py: adjudicate_sumfree replicates the runbook legs on the descriptor-built adj (NOT run_candidate) — build→gate→χ=n−ν→heuristic(HIT→verify_certificate→KILLED store)/screen→honest certificate; HARD gate fail is first-class KILLED-BY-GATE (log only, no g, no cert); g>0 carries HONEST_G_POSITIVE_STATEMENT; RESISTANT→E3 queue log.
+- [Phase 08 P04]: every recorded verdict is deterministically bounded on BOTH co-equal backends — CP-SAT det_time (max_deterministic_time, num_workers=1), CBC det_nodes (maxNodes) — screen_gap RAISES if either budget is absent; adjudicate_gscreen rejects wall-clock knobs (wallclock_budget/time_limit_s) and num_workers≠1 (T-8-07, CP-SAT #3590/#3842/#4839). verify_certificate is the SOLE family authority, called OUTSIDE any truth-expression; an unverifiable ≥χ upper-bound family routes conservatively to RESISTANT (never an unverified kill or a false g>0).
+- [Phase 08 P04]: DEVIATION (Rule 3, conservative) — the backends expose only the Tier-1 seagull solve_had3 (an UPPER bound), so a rigorous Tier-2 exact had_3 is unavailable; a proved U≥χ whose extracted family does NOT certify a K_χ minor is routed to RESISTANT (E3 / Tier-2 exact obligation) rather than emitting an unproven g>0 — errs toward the radioactive-impossibility discipline. At dev ns all odd-|Γ| structured/random instances are hard-gate-KILLED at g1_criticality (documented in 08-05); the KILLED-BY-GATE + heuristic-verify+store legs were validated directly (trust_root_verify_family returns k=3 on the Z_5 C_5 K_3 minor, None on a bogus family). POOL-2 NOT marked complete — the slow grid sweep (08-06) remains; requirements-completed: [].
 
 ### Pending Todos
 
@@ -193,6 +197,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-23T10:31:13.298Z
-Stopped at: Completed 08-07-PLAN.md — P1 (secondary) at scale: run_p1_tfp/critical_sweep (n=31-32 exact dual-backend sweep, verdict deterministic in (n,seed,det_budget) via CP-SAT det_time + CBC det_nodes) + run_showpiece (n≈1001-2001 existence-only, heuristic HIT→verify_certificate→dedicated P1 corpus, MISS→RESISTANT E3 queue); RNG v2 + byte-exact descriptor rebuild; POOL-1 COMPLETE; test_p1_sweep+test_showpiece GREEN, 321 pre-existing green
+Last session: 2026-07-23T11:10:00.000Z
+Stopped at: Completed 08-04-PLAN.md — the per-instance g(G) runbook SPINE (screen.py + adjudicate.py). screen.compute_g / classify_screen_outcome (pure metric + radioactive labels) + screen_gap (had_2→had_3 tiering via differential_verdict, both backends deterministically bounded); adjudicate_sumfree end-to-end gen→gate→χ→heuristic/screen→trust-root-verified honest certificate (KILLED-BY-GATE first-class; SHC_CANDIDATE g>0 = HONEST_G_POSITIVE_STATEMENT; RESISTANT→E3 queue); adjudicate_gscreen rejects wall-clock + num_workers≠1. test_screen GREEN; 323 non-slow pass, 321 pre-existing unchanged; frozen 296-corpus + generators/cayley.py byte-untouched. POOL-2 still shared with the 08-06 slow grid sweep (not marked complete).
 Resume file: None
