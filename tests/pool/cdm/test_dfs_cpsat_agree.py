@@ -60,3 +60,55 @@ def test_dfs_cpsat_agree_full_batch(n):
             f"DFS≡CP-SAT DISAGREEMENT n={n} g6={g6!r} (DFS={dfs}, CP-SAT={sat}) "
             "— RELEASE-BLOCKING: quarantine + halt the batch"
         )
+
+
+@pytest.mark.slow
+def test_full_batch_runbook_adjudicates_and_certificates(tmp_path):
+    """The full runbook over n=12,13: adjudicate_batch -> verified + stored corpus.
+
+    Drives `adjudicate_batch` (decode -> DFS≡CP-SAT gate -> verify -> append) over the
+    n=12,13 frontier into a TMP corpus (hermetic; the real `paths.CDM_CORPUS` is
+    populated by the Wave-3 batch run, not by this test). Asserts:
+      * exactly 147+392 = 539 instances adjudicated (OEIS A216783), per-n counts pinned;
+      * zero connected-complement CDM-fails (radioactive; expected 0 under Conjecture 10);
+      * every stored certificate re-verifies via `verify_cdm_witness` on reload;
+      * every stored record carries the SC1 `generation` {geng_version, flags, shard,
+        index} field; and the per-record hash chain re-verifies end to end.
+    The n=14 slice stays behind the parametrized differential above + the batch run.
+    """
+    if shutil.which("geng") is None or shutil.which("pickg") is None:
+        pytest.skip("nauty geng/pickg not on PATH")
+    import json
+
+    from alpha2.pool.cdm.adjudicate import adjudicate_batch
+    from alpha2.pool.cdm.schema import CHAIN_FIELD, chain_hash
+    from alpha2.pool.cdm.verifier import verify_cdm_witness
+
+    corpus = tmp_path / "cdm_certificates.json"
+    log = tmp_path / "events.jsonl"
+    summary = adjudicate_batch(
+        [12, 13], corpus_path=corpus, log_path=log
+    )
+
+    assert summary["per_n"][12]["total"] == 147
+    assert summary["per_n"][13]["total"] == 392
+    assert summary["total"] == 539
+    assert summary["connected_fails"] == 0, (
+        "RADIOACTIVE: a connected-complement CDM-FAIL appeared — Hadwiger-relevant, "
+        "must be surfaced via the escalation hook, never suppressed"
+    )
+    # every connected instance HOLDS; the rest are the K_a⊔K_b disconnected carve-out.
+    assert summary["holds"] + summary["disconnected_carveouts"] == 539
+    assert summary["holds"] > 0
+
+    records = json.loads(corpus.read_text())
+    assert len(records) == summary["holds"], "one stored certificate per CDM-HOLDS"
+
+    prev = ""
+    for i, rec in enumerate(records):
+        assert verify_cdm_witness(rec) >= 1  # trust root re-check on reload
+        gen = rec.get("generation")
+        assert gen is not None and set(gen) >= {"geng_version", "flags", "shard", "index"}
+        stored = rec.get(CHAIN_FIELD)
+        assert stored == chain_hash(prev, rec), f"hash-chain break at record {i}"
+        prev = stored

@@ -37,9 +37,21 @@ ALLOWED_NX_ATTRS = {"Graph", "add_nodes_from", "add_edges_from", "max_weight_mat
 # stay FORBIDDEN everywhere else; the scope check below keys on cliques.py.
 CLIQUES_NX_ATTRS = {"complement", "max_weight_clique", "node_connectivity", "is_connected"}
 
+# The networkx decode/classify surface permitted ONLY in pool/cdm/adjudicate.py — the
+# same CHI-01 confinement discipline: the CDM adjudicator is the one module (besides the
+# generation driver) authorized to touch a graph library, and strictly at the graph6
+# DECODE + complement + connectivity-classify boundary (POOL-0, 07-PATTERNS.md networkx
+# confinement). These attrs stay FORBIDDEN everywhere else; the scope check keys on
+# pool/cdm/adjudicate.py exactly as the clique surface keys on invariants/cliques.py.
+CDM_ADJUDICATE_NX_ATTRS = {"from_graph6_bytes", "complement", "is_connected"}
+
 
 def _is_cliques_module(path):
     return path.name == "cliques.py" and path.parent.name == "invariants"
+
+
+def _is_cdm_adjudicate_module(path):
+    return path.name == "adjudicate.py" and path.parent.name == "cdm"
 
 
 def _src_files():
@@ -112,6 +124,8 @@ def test_chi_no_estimate():
                 permitted = set(ALLOWED_NX_ATTRS)
                 if _is_cliques_module(path):
                     permitted |= CLIQUES_NX_ATTRS
+                if _is_cdm_adjudicate_module(path):
+                    permitted |= CDM_ADJUDICATE_NX_ATTRS
                 assert f.attr in permitted, \
                     f"{path}: networkx call `{f.value.id}.{f.attr}` outside the confined allow-list"
 
