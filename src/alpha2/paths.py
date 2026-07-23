@@ -26,6 +26,25 @@ CDM_CORPUS = REPO_ROOT / "data" / "corpus" / "cdm_certificates.json"
 # module embeds this literal.
 RESULTS_LOG = REPO_ROOT / "data" / "results" / "battery_results.jsonl"
 
+# --- Phase 8 (P1 & P2) additive paths — beside CDM_CORPUS, NOT touching the frozen
+# 296-instance CORPUS above (which stays byte-untouched: a different record shape and
+# its own stdlib-only verifier leg). Each is the SOLE authority for its literal. ---
+
+# Append-only g(G) = (chi - had_k)/chi certificate corpus for the sum-free Cayley
+# break-hunt (POOL-2). A SEPARATE file from CORPUS/CDM_CORPUS: its records carry a
+# g(G)-screen shape (invariant_factors + S provenance, chi/had_k, computed g,
+# terminal_state, certificate_statement) and their own verify-at-append leg.
+SUMFREE_CORPUS = REPO_ROOT / "data" / "corpus" / "sumfree_gscreen_certificates.json"
+
+# Append-only P1 large-n showpiece existence-certificate corpus (POOL-1): heuristic
+# HIT -> trust-root-verified K_chi models at n≈1001–2001 (existence-only, never exact).
+P1_SHOWPIECE_CORPUS = REPO_ROOT / "data" / "corpus" / "p1_showpiece_certificates.json"
+
+# Append-only aggregate sweep event stream (the g-vs-|Gamma| plot data): one row per
+# adjudicated instance (|Gamma|, structured/random tag, g, terminal_state). A SEPARATE
+# contract from SUMFREE_CORPUS — an event stream, not the hash-chained FACT authority.
+SUMFREE_SWEEP = REPO_ROOT / "data" / "results" / "sumfree_sweep.jsonl"
+
 
 def ensure_parent(path=CORPUS):
     """Ensure the parent directory of ``path`` exists; return the path."""
