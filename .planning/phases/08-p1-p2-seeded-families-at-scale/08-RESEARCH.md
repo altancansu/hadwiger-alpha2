@@ -633,18 +633,33 @@ itself (measure the frontier).
 
 ## Open Questions
 
-1. **Exact Green–Ruzsa extremal-set membership for non-cyclic type-II Γ.**
+> All three are RESOLVED at planning time (marked below with one-line resolutions). The residual
+> mathematical uncertainties (exact coset-membership formulas) are made non-load-bearing by the
+> runtime `verify_sumfree_maximal` re-check, not by pinning a formula.
+
+1. **Exact Green–Ruzsa extremal-set membership for non-cyclic type-II Γ.** **(RESOLVED)**
+   - **Resolution:** the runtime `verify_sumfree_maximal` re-check (08-02) is the load-bearing net —
+     every generated S is re-verified symmetric + sum-free + maximal (raise-based) before use, so an
+     unpinned coset-membership formula can never yield a bad instance; the ambiguous non-cyclic "all
+     primes ≡1 mod 3" type is additionally EXCLUDED from the 08-06 grid with a logged reason.
    - Known: the max density formulas and the cyclic middle-interval construction.
    - Unclear: the precise coset-membership formula for the "all primes ≡1 mod 3" case on non-cyclic Γ.
    - Recommendation: pin from Green–Ruzsa (2005) / Hassler–Treglown before locking the structured
      generator; until then, generate candidate extremal sets and verify sum-free+maximal
      programmatically (raise-based).
-2. **Which odd non-cyclic Γ to include in the grid** (Z_3×Z_15, Z_3^k, Z_5^k, Z_7×Z_7, …).
+2. **Which odd non-cyclic Γ to include in the grid** (Z_3×Z_15, Z_3^k, Z_5^k, Z_7×Z_7, …). **(RESOLVED)**
+   - **Resolution:** the same runtime `verify_sumfree_maximal` re-check gates a curated non-cyclic set
+     in 08-06 `grid_descriptors` (Z_3^4=81, Z_3×Z_27, Z_5^3=125, Z_3^2×Z_5=45, Z_9×Z_9=81) alongside
+     all odd cyclic n; the unresolved "all primes ≡1 mod 3" non-cyclic type is excluded, so no instance
+     rests on an unpinned formula.
    - Known: many exist in 31–500; Z_3^k caps and Z_5^k are literature-interesting (arXiv 2025 Z_5^k).
    - Recommendation: Claude's discretion — start with all cyclic odd n plus a curated non-cyclic
      set (Z_3^4=81, Z_3×Z_27=81, Z_5^3=125, Z_7^2=49→out, Z_3^2×Z_5=45, Z_9×Z_9=81…).
 3. **The exact ILP feasibility frontier** (A4) — measure it in an early plan (time had₂ optimality
-   at n = 31, 61, 101, 151, 201, …) so the sweep's exact-window boundary is empirical, not assumed.
+   at n = 31, 61, 101, 151, 201, …) so the sweep's exact-window boundary is empirical, not assumed. **(RESOLVED)**
+   - **Resolution:** 08-05 `measure_ilp_frontier` measures it empirically — per-n PROVED/UNPROVED under
+     a deterministic (det_time for CP-SAT, det_nodes for CBC) budget on both co-equal backends — and
+     exposes `exact_window_max` for the 08-06 sweep; the boundary is data-driven, never assumed.
 
 ## Environment Availability
 
