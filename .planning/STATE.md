@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
-last_updated: "2026-07-23T09:26:05.331Z"
+last_updated: "2026-07-23T09:40:47.390Z"
 last_activity: 2026-07-23
 progress:
   total_phases: 12
   completed_phases: 7
   total_plans: 37
-  completed_plans: 31
+  completed_plans: 32
   percent: 58
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-07-21)
 ## Current Position
 
 Phase: 08 (p1-p2-seeded-families-at-scale) — EXECUTING
-Plan: 3 of 7
+Plan: 4 of 7
 Status: Ready to execute
 Last activity: 2026-07-23
 
-Progress: [████████░░] 84%
+Progress: [█████████░] 86%
 
 ## Performance Metrics
 
@@ -79,12 +79,18 @@ Progress: [████████░░] 84%
 | Phase 07 P07-06 | 32min | 2 tasks | 4 files |
 | Phase 08 P01 | 25min | 3 tasks | 12 files |
 | Phase 08 P02 | 20min | 3 tasks | 7 files |
+| Phase 08 P03 | ~18min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.
+
+- 08-03: the g(G) verifier re-derives χ = n − ν(H) via its OWN self-contained stdlib Edmonds blossom (the g-screen record carries no Tutte–Berge witness field), keeping the trust root independent of the networkx blossom the toolkit uses; n is re-derived from `invariant_factors` (true |Γ|), never the placeholder `provenance.n`.
+- 08-03: the certificate-honesty gate is enforced INDEPENDENTLY in BOTH legs (schema `_assert_honest` + verifier `_assert_honest`, each carrying its own private radioactive literals) — a g(G) record can never be assembled OR verified with a "counterexample"/"had(G) <" claim (Pitfall 1, T-8-01).
+- 08-03: POOL-2 NOT marked complete — still shared across waves 08-04..08-07 (adjudicate/frontier/sweep); this plan lands the certificate persistence backbone only, same discipline as 08-01/08-02.
+
 Roadmap-creation decisions affecting current work:
 
 - Roadmap: 296-reproduction and test-suite/CI merged into one "first blood" phase (Phase 3); Phases 1→2→3 are strictly sequential and gate everything downstream.
@@ -180,6 +186,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-23T09:26:05.324Z
+Last session: 2026-07-23T09:40:47.382Z
 Stopped at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
 Resume file: None
