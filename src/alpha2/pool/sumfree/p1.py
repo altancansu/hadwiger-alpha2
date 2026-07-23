@@ -2,7 +2,7 @@
 
 Phase 8 reorients the roadmap into a P2 break-hunt spine; P1 is kept but deliberately
 lighter (08-CONTEXT Locked Decision 1). This module grows the P1 lineage under the same
-zero-heuristic-only discipline as the rest of the program:
+zero-heuristic-only discipline as the rest of the program, in two pieces:
 
   * `run_p1_tfp` / `critical_sweep` — the critical-size sweep at n=31–32 with many new
     seeds, each instance EXACT-had_2 adjudicated by the dual-backend battery (CBC +
@@ -14,24 +14,41 @@ zero-heuristic-only discipline as the rest of the program:
     (CP-SAT `max_deterministic_time`) / `det_nodes` (CBC `maxNodes`) budgets — never a
     machine-speed timeout (CLAUDE.md determinism; CP-SAT #3590/#3842/#4839).
 
+  * `run_showpiece` — large-n showpieces toward n≈1001–2001 as EXISTENCE-ONLY results
+    (RESEARCH §"g(G) rigor & cost", SRCH-02). These n are far past the ILP range, so
+    there is NO exact solve here: the heuristic proposes a size-≤2 K_χ model, and a HIT
+    counts ONLY after the independent trust root verifies it (a genuine existence
+    certificate, appended to a NEW dedicated corpus). A MISS is RESISTANT — it queues
+    for E3, NEVER a reported result, NEVER an impossibility claim (heuristic resistance
+    is never a result).
+
 RNG contract v2 (POOL-1/2): every instance is built from a per-stage sha256 subseed
-(`gen_rng` feeds `triangle_free_process`) and rebuilds byte-exactly from its stored
-descriptor — never RNG replay (cross-platform set-iteration safety). The frozen
-296-instance CORPUS, `generators/cayley.py`, and `generators/tfp.py` stay byte-untouched:
-the sweep keeps its records IN MEMORY (T-8-12).
+(`gen_rng` feeds `triangle_free_process`; `search_rng` feeds the heuristic) and rebuilds
+byte-exactly from its stored descriptor — never RNG replay (cross-platform set-iteration
+safety). The frozen 296-instance CORPUS, `generators/cayley.py`, and `generators/tfp.py`
+stay byte-untouched: the sweep keeps its records IN MEMORY and the showpieces append to
+`paths.P1_SHOWPIECE_CORPUS` (T-8-12).
 
 Raises-only (survives `python -O`); no `assert`. The trust root is called OUTSIDE any
 truth-expression (call, bind k, compare) — it is the sole authority on existence.
 """
+from alpha2 import paths
 from alpha2.corpus import schema
+from alpha2.corpus.store import append_certificate
 from alpha2.corpus.verifier import verify_certificate
 from alpha2.generators.tfp import triangle_free_process
 from alpha2.invariants.matching import matching_number
 from alpha2.invariants.witness import extract_witness
-from alpha2.pool.sumfree.rng import gen_rng
+from alpha2.pool.sumfree.rng import gen_rng, search_rng
+from alpha2.search.heuristic import solve
 from alpha2.solvers.backend import get_backend
 from alpha2.solvers.differential import differential_verdict
 from alpha2.solvers.result import SolveParams
+
+# Existence-only showpiece default heuristic budget (dev-scale on the Mac; a canonical
+# large push belongs on the box, docs/COMPUTE.md). A MISS under it is RESISTANT, never
+# a result — the budget can only under-report existence, never manufacture it.
+DEFAULT_SHOWPIECE_BUDGET = 20.0
 
 # Deterministic CBC node cap per unit of `det_budget`: a fixed pure function of the
 # budget, so a recorded CBC verdict is machine-speed-independent (paired with CP-SAT's
@@ -171,3 +188,59 @@ def critical_sweep(seeds, *, ns=(31, 32), det_budget=5.0, num_workers=1):
             if v["terminal_state"] == "RESISTANT":
                 resistant_queue.append({"n": v["n"], "seed": v["seed"]})
     return {"results": results, "counts": counts, "resistant_queue": resistant_queue}
+
+
+def run_showpiece(n, *, seed, time_budget=DEFAULT_SHOWPIECE_BUDGET, corpus_path=None):
+    """A large-n (≈1001–2001) EXISTENCE-ONLY showpiece: heuristic HIT -> trust root.
+
+    Above the ILP frontier there is no exact solve. Generate the TFP instance (RNG v2),
+    compute chi = n - nu (blossom, exact + fast to n≈2001), and run the heuristic for a
+    size-≤2 K_chi model. A HIT is an UNTRUSTED proposal routed through
+    `verify_certificate` (the SOLE authority); once verified it is a genuine existence
+    certificate and is appended to the NEW dedicated `paths.P1_SHOWPIECE_CORPUS` (the
+    frozen 296-corpus is never touched, T-8-12). A MISS is RESISTANT — it queues for E3,
+    NEVER a reported result and NEVER an impossibility claim (T-8-11 / SRCH-02).
+    """
+    adj, descriptor = _tfp_instance(n, seed)
+    nu = matching_number(adj, n)
+    chi = n - nu
+    sets, _init_conf, _moves, _restarts, _tsolve = solve(
+        adj, n, chi, search_rng(seed), time_budget=time_budget
+    )
+    if sets is None:
+        # MISS -> RESISTANT. Heuristic resistance is never a result; no exact bound
+        # exists at this size, so had_2 is None and it queues for E3.
+        return _showpiece_result(descriptor, chi, "RESISTANT", verified=False, had_2=None,
+                                 reason="heuristic MISS -> RESISTANT (E3 queue); no exact solve at this n")
+    # HIT: the family is UNTRUSTED until the trust root passes (call, bind k, compare).
+    matching_m, tutte_u, _nu2 = extract_witness(adj, n)
+    rec = schema.build_record(
+        provenance=schema.provenance_seed(_TFP_FAMILY, n, seed, _TFP_PROCESS),
+        H_edges=descriptor["H_edges"], nu_H=nu, chi_G=chi,
+        model_branch_sets=[list(s) for s in sets],
+        matching_M=matching_m, tutte_berge_U=tutte_u,
+        method=f"heuristic existence-only (K_{chi} size-<=2 model, verifier-adjudicated)",
+        verified=True,
+    )
+    k = verify_certificate(rec)
+    path = paths.ensure_parent(corpus_path or paths.P1_SHOWPIECE_CORPUS)
+    append_certificate(rec, path=path)
+    return _showpiece_result(descriptor, chi, "VERIFIED", verified=True, had_2=k,
+                             reason=f"heuristic HIT verified by the trust root (had_2={k})")
+
+
+def _showpiece_result(descriptor, chi, terminal_state, *, verified, had_2, reason):
+    """Build the deterministic, JSON-serializable existence-only showpiece dict."""
+    return {
+        "family": descriptor["family"],
+        "n": descriptor["n"],
+        "seed": descriptor["seed"],
+        "rng_contract": descriptor["rng_contract"],
+        "H_edges_sha256": descriptor["H_edges_sha256"],
+        "kind": "existence_only",
+        "chi": chi,
+        "terminal_state": terminal_state,
+        "verified": verified,
+        "had_2": had_2,
+        "reason": reason,
+    }
