@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
-last_updated: "2026-07-23T09:52:33.235Z"
+stopped_at: "Completed 08-07-PLAN.md — P1 (secondary) at scale: run_p1_tfp/critical_sweep (n=31-32 exact dual-backend sweep, verdict deterministic in (n,seed,det_budget)) + run_showpiece (n≈1001-2001 existence-only, heuristic HIT→verify_certificate→dedicated P1 corpus, MISS→RESISTANT); RNG v2; POOL-1 COMPLETE; test_p1_sweep+test_showpiece GREEN, 321 pre-existing green"
+last_updated: "2026-07-23T10:31:13.308Z"
 last_activity: 2026-07-23
 progress:
   total_phases: 12
   completed_phases: 7
   total_plans: 37
-  completed_plans: 34
+  completed_plans: 35
   percent: 58
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-07-21)
 ## Current Position
 
 Phase: 08 (p1-p2-seeded-families-at-scale) — EXECUTING
-Plan: 5 of 7
+Plan: 6 of 7
 Status: Ready to execute
 Last activity: 2026-07-23
 
-Progress: [█████████░] 92%
+Progress: [██████████] 95%
 
 ## Performance Metrics
 
@@ -81,6 +81,7 @@ Progress: [█████████░] 92%
 | Phase 08 P02 | 20min | 3 tasks | 7 files |
 | Phase 08 P03 | ~18min | 3 tasks | 3 files |
 | Phase 08 P05 | ~25min | 2 tasks | 2 files |
+| Phase 08 P07 | ~45min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -156,6 +157,9 @@ Execution decisions (Phase 02 Plan 02):
 - [Phase 08 P02]: POOL-2 NOT marked complete — shared across waves 08-02..08-07; this plan lands the generation foundation only. Completed when the g-screen/store/verifier/adjudicate waves make the full contract green (same discipline as 08-01).
 - [Phase 08 P05]: ILP optimality-proof frontier MEASURED, not assumed (RESEARCH A4). measure_ilp_frontier walks a group-order grid, hard-gates each structured/random sum-free Cayley instance, and times ONLY survivors on BOTH co-equal backends under a FIXED deterministic budget — CP-SAT det_time (num_workers=1), CBC det_nodes (maxNodes, threads=1) — with NO wall-clock time_limit_s on any timed call (T-8-07; the exact failure this closes). proved iff BOTH PROVED_OPTIMAL; had_2<chi escalates to Tier-1 had_3 the same bounded way. num_workers!=1 raises.
 - [Phase 08 P05]: run_frontier_probe persists the compact frontier_report (per-n bools + conservative contiguous-from-bottom frontier_n + budgets + solver versions) atomically; exact_window_max is the boundary 08-06 reads to route a non-packing instance to exact g>0 (n≤window) or the RESISTANT E3 queue (n>window) — 0 when nothing proved (conservative → E3). Signature follows the RED contract (det_budget/num_workers) with det_time/det_nodes additive; authoritative data/results/sumfree_frontier.json regenerated on the box at 08-06, not this Mac session. POOL-2 still NOT complete.
+- [Phase 08 P07]: POOL-1 COMPLETE — the P1/TFP-complement track is delivered solely by this plan (POOL-2 stays open, shared across 08-02..08-07). pool/sumfree/p1.py: run_p1_tfp/critical_sweep (n=31-32 EXACT-had_2 dual-backend sweep under differential_verdict + trust root; DECIDED vs RESISTANT; verdict a deterministic function of (n,seed,det_budget) via CP-SAT det_time + CBC det_nodes=det_budget·5000, never wall-clock; num_workers!=1 raises) and the RESISTANT set IS the derived E3 queue (SC1).
+- [Phase 08 P07]: run_showpiece is EXISTENCE-ONLY above the ILP frontier (n≈1001-2001) — heuristic proposes, verify_certificate (SOLE trust root) disposes: HIT→VERIFIED cert appended to a NEW dedicated paths.P1_SHOWPIECE_CORPUS (gitignored runtime output); MISS→RESISTANT with had_2=None (heuristic resistance is never a result, never an impossibility claim; T-8-11/SRCH-02). RNG v2 gen/search subseeds + byte-exact descriptor rebuild; frozen 296-corpus + generators/{tfp,cayley}.py byte-untouched.
+- [Phase 08 P07]: run_p1_tfp reimplements the exact-had_2 slice directly (NOT battery.run_candidate, which is RNG-v1 + wall-clock and ignores its params arg — incompatible with the RNG-v2 + deterministic-budget must-haves and the (n,seed) determinism test); reuses the SAME differential_verdict + verify_certificate + build_record + extract_witness machinery, in-memory, files_modified scope = p1.py only (Deviation Rule 3).
 
 ### Pending Todos
 
@@ -189,6 +193,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-23T00:00:00.000Z
-Stopped at: Completed 08-05-PLAN.md — empirical ILP optimality-proof frontier (A4): measure_ilp_frontier / run_frontier_probe / exact_window_max, both backends bounded deterministically (CP-SAT det_time, CBC det_nodes), no wall-clock; test_frontier GREEN, 319 pre-existing green
+Last session: 2026-07-23T10:31:13.298Z
+Stopped at: Completed 08-07-PLAN.md — P1 (secondary) at scale: run_p1_tfp/critical_sweep (n=31-32 exact dual-backend sweep, verdict deterministic in (n,seed,det_budget) via CP-SAT det_time + CBC det_nodes) + run_showpiece (n≈1001-2001 existence-only, heuristic HIT→verify_certificate→dedicated P1 corpus, MISS→RESISTANT E3 queue); RNG v2 + byte-exact descriptor rebuild; POOL-1 COMPLETE; test_p1_sweep+test_showpiece GREEN, 321 pre-existing green
 Resume file: None

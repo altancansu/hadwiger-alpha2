@@ -158,7 +158,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 - [ ] 08-04-PLAN.md — g(G) per-instance runbook: had₂→had₃ tiering + adjudicate (gen→gate→χ→g→honest verified cert); the P2 spine (POOL-2)
 - [x] 08-05-PLAN.md — ILP optimality-frontier measurement (A4): per-n PROVED window under a deterministic budget; bounds the exact g>0 region (POOL-2)
 - [ ] 08-06-PLAN.md — Structured-vs-random grid sweep over odd |Γ|=31–~500: g-vs-|Γ| + resistant-rate plot data; the break-hunt run (POOL-2)
-- [ ] 08-07-PLAN.md — P1 secondary: TFP n=31–32 exact sweep + n≈1001–2001 existence-only showpieces; RNG v2 + resistance tracking (POOL-1)
+- [x] 08-07-PLAN.md — P1 secondary: TFP n=31–32 exact sweep + n≈1001–2001 existence-only showpieces; RNG v2 + resistance tracking (POOL-1)
 
 ### Phase 9: P3 & P6 — Inflation Pools
 **Goal**: The shared inflation operator is built once and drives both open inflation families — Higman–Sims complements (the named SRG gap) and Ramsey-extremal witnesses at odd orders ≥ 31.
@@ -221,7 +221,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 | 5. CP-SAT, Differential Gate & had₃ | 7/7 | Complete    | 2026-07-22 |
 | 6. Kill Battery CLI (Gate, Search, Statuses) | 5/5 | Complete    | 2026-07-22 |
 | 7. P0 — CDM Frontier | 6/6 | Complete   | 2026-07-23 |
-| 8. P1 & P2 — Seeded Families at Scale | 4/7 | In Progress|  |
+| 8. P1 & P2 — Seeded Families at Scale | 5/7 | In Progress|  |
 | 9. P3 & P6 — Inflation Pools | 0/TBD | Not started | - |
 | 10. P4 & P5 — Literature-Frontier Pools | 0/TBD | Not started | - |
 | 11. Escalation Machinery (E1/E2/E3) | 0/TBD | Not started | - |
