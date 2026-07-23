@@ -12,15 +12,25 @@ are the small gate-KILLED instances used for the sweep-run tests.
 """
 import json
 
+import pytest
+
 from alpha2.pool.sumfree.generate import (
     KIND_GREEN_RUZSA,
     KIND_MIDDLE_INTERVAL,
     KIND_RANDOM_GREEDY,
 )
 from alpha2.pool.sumfree.sweep import (
+    aggregate_sweep,
     grid_descriptors,
     group_observables,
+    run_sweep,
 )
+
+# Small hand-built gate-KILLED descriptors (fast: no exact solve fires on these).
+_D_C5 = {"invariant_factors": [5], "S": [[1], [4]], "kind": KIND_RANDOM_GREEDY, "tag": "random"}
+_D_C7 = {"invariant_factors": [7], "S": [[1], [6]], "kind": KIND_MIDDLE_INTERVAL, "tag": "structured"}
+
+_DET = dict(det_time=0.05, det_nodes=200)
 
 
 def _read_events(path):
@@ -113,3 +123,85 @@ def test_group_observables_cross_sections():
     z3x5 = group_observables((3, 3, 5))          # Z_3^2 x Z_5, |Aut| = 48 * 4
     assert z3x5["order"] == 45 and z3x5["aut_order"] == 48 * 4
     assert z3x5["n_primes_1mod3"] == 0 and z3x5["n_primes_2mod3"] == 1
+
+
+# --------------------------------------------------------------------------- #
+# run_sweep + aggregation (small gate-KILLED descriptors, no heavy solve)
+# --------------------------------------------------------------------------- #
+def test_run_sweep_emits_series_and_observables(tmp_path):
+    sweep = tmp_path / "sweep.jsonl"
+    result = run_sweep(
+        descriptors=[_D_C5, _D_C7], seed=0, exact_window=0,
+        sweep_path=str(sweep), corpus_path=str(tmp_path / "corpus.json"),
+        log_path=str(tmp_path / "log.jsonl"), **_DET,
+    )
+
+    assert result["n_instances"] == 2
+    assert result["exact_window"] == 0
+    rows = result["rows"]
+    for row in rows:
+        # Observable bank folded in on every row (group + per-instance signals).
+        obs = row["observables"]
+        for field in ("rank", "exponent", "aut_order", "cyclic",
+                      "n_primes_1mod3", "n_primes_2mod3", "S_density", "det_work"):
+            assert field in obs
+        assert row["window_class"] in ("within_window", "above_window")
+        assert "effective_state" in row
+
+    # Structured-vs-random series present, order-sorted, with the plot traces.
+    series = result["series"]
+    assert set(series) == {KIND_RANDOM_GREEDY, KIND_MIDDLE_INTERVAL}
+    for trace in series.values():
+        assert trace["orders"] == sorted(trace["orders"])
+        assert len(trace["g_mean"]) == len(trace["orders"])
+        assert len(trace["resistant_rate"]) == len(trace["orders"])
+
+    # The sweep event stream carries per-row events + one aggregate event.
+    events = _read_events(sweep)
+    assert sum(1 for e in events if e["event"] == "sweep_row") == 2
+    assert sum(1 for e in events if e["event"] == "sweep_aggregate") == 1
+
+
+def test_run_sweep_is_deterministic(tmp_path):
+    kw = dict(descriptors=[_D_C5, _D_C7], seed=0, exact_window=0, **_DET)
+    r1 = run_sweep(sweep_path=str(tmp_path / "a.jsonl"),
+                   corpus_path=str(tmp_path / "ca.json"),
+                   log_path=str(tmp_path / "la.jsonl"), **kw)
+    r2 = run_sweep(sweep_path=str(tmp_path / "b.jsonl"),
+                   corpus_path=str(tmp_path / "cb.json"),
+                   log_path=str(tmp_path / "lb.jsonl"), **kw)
+    # Every recorded verdict is a function of (n, seed) — two runs agree exactly.
+    strip = lambda rows: [{k: v for k, v in r.items() if k != "observables"} for r in rows]
+    assert strip(r1["rows"]) == strip(r2["rows"])
+
+
+def test_run_sweep_requires_deterministic_budget(tmp_path):
+    with pytest.raises(ValueError):
+        run_sweep(descriptors=[_D_C5], det_time=None, det_nodes=200,
+                  sweep_path=str(tmp_path / "s.jsonl"))
+    with pytest.raises(ValueError):
+        run_sweep(descriptors=[_D_C5], det_time=0.05, det_nodes=None,
+                  sweep_path=str(tmp_path / "s.jsonl"))
+
+
+def test_aggregate_routes_g_positive_above_window_to_resistant():
+    # A g>0 screen ABOVE the exact window must count as RESISTANT, never a reported g>0
+    # (RESEARCH §Consequence). Below/at the window it is an exact g>0 candidate.
+    within = {
+        "kind": "structured:green_ruzsa", "order": 41, "gate_survived": True,
+        "terminal_state": "SHC_CANDIDATE", "effective_state": "SHC_CANDIDATE",
+        "g": 0.25, "had_2": 3, "had_3": 3,
+    }
+    above = {
+        "kind": "structured:green_ruzsa", "order": 400, "gate_survived": True,
+        "terminal_state": "SHC_CANDIDATE", "effective_state": "RESISTANT",
+        "g": 0.25, "had_2": 3, "had_3": 3,
+    }
+    agg = aggregate_sweep([within, above], exact_window=151)
+    cells = {(c["kind"], c["order"]): c for c in agg["cells"]}
+    assert cells[("structured:green_ruzsa", 41)]["exact_g_gt0"] == 1
+    assert cells[("structured:green_ruzsa", 41)]["resistant"] == 0
+    assert cells[("structured:green_ruzsa", 400)]["exact_g_gt0"] == 0
+    assert cells[("structured:green_ruzsa", 400)]["resistant"] == 1
+    # Multiple-comparison honesty: the exploratory count is recorded alongside the primary.
+    assert agg["n_exploratory_cross_sections"] == len(agg["exploratory_cross_sections_examined"])

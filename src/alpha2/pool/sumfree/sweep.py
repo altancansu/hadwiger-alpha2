@@ -34,9 +34,19 @@ Open Q1) is EXCLUDED from the grid with a logged reason; the `verify_sumfree_max
 net still runs on every generated S, so a wrong density formula can never surface a bad
 instance regardless.
 """
+import argparse
 import math
+import os
 
+from alpha2 import paths
 from alpha2.battery.log import append_event
+from alpha2.pool.sumfree.adjudicate import (
+    KILLED,
+    KILLED_BY_GATE,
+    RESISTANT,
+    SHC_CANDIDATE,
+    adjudicate_grid_point,
+)
 from alpha2.pool.sumfree.dedup import dedup
 from alpha2.pool.sumfree.generate import (
     KIND_GREEN_RUZSA,
@@ -294,11 +304,330 @@ def grid_descriptors(order_max=500, seed=0, non_cyclic=DEFAULT_NONCYCLIC, *, log
     return representatives
 
 
+# --------------------------------------------------------------------------- #
+# Per-instance observable enrichment
+# --------------------------------------------------------------------------- #
+def _recover_chi(g, had_2, had_3):
+    """Recover χ exactly from the recorded g = (χ − had_k)/χ and had_k (no extra solve).
+
+    had_k is had₃ when a had₃ was settled, else had₂. Returns None when g/had_k is absent
+    (gate-KILLED or RESISTANT) or the algebra is degenerate.
+    """
+    had_k = had_3 if had_3 is not None else had_2
+    if g is None or had_k is None or g == 1:
+        return None
+    chi = had_k / (1 - g)
+    return int(round(chi))
+
+
+def _instance_observables(descriptor, row, det_time, det_nodes):
+    """The per-instance observable bank additions (SECONDARY/exploratory).
+
+    `had3_minus_had2` (does the size-3 branch set help?), `abs_gap = χ − had₃` (raw
+    shortfall), `S_density = |S|/|Γ|`, and `det_work` (the deterministic budget bounding
+    both backends — the difficulty knob). All recorded, none trusted as a verdict. Note:
+    `det_work` records the deterministic BUDGET applied (the compact grid row does not
+    surface actual solver work consumed); it is the reproducible difficulty bound.
+    """
+    n = row["n"]
+    S_size = len(descriptor.get("S", []))
+    had_2, had_3, g = row["had_2"], row["had_3"], row["g"]
+    chi = _recover_chi(g, had_2, had_3)
+    had_deciding = had_3 if had_3 is not None else had_2
+    return {
+        "had3_minus_had2": (had_3 - had_2) if (had_3 is not None and had_2 is not None) else None,
+        "chi": chi,
+        "abs_gap": (chi - had_deciding) if (chi is not None and had_deciding is not None) else None,
+        "S_size": S_size,
+        "S_density": (S_size / n) if n else None,
+        "det_work": {"det_time": det_time, "det_nodes": det_nodes},
+    }
+
+
+def _window_class(order, exact_window):
+    """within_window (order ≤ frontier) → exact g>0 admissible; else above_window → E3."""
+    return "within_window" if order <= exact_window else "above_window"
+
+
+def _effective_state(terminal_state, order, exact_window):
+    """The window-adjusted terminal state (RESEARCH §Consequence).
+
+    A g>0 screen (SHC_CANDIDATE) is an exact g>0 candidate ONLY within the measured ILP
+    window; ABOVE the window a non-packing structured instance is RESISTANT (E3 queue),
+    NEVER a reported g>0. Every other state passes through unchanged.
+    """
+    if terminal_state == SHC_CANDIDATE and order > exact_window:
+        return RESISTANT
+    return terminal_state
+
+
+def _enrich_row(descriptor, base, det_time, det_nodes, exact_window):
+    """Fold the observable bank + window annotation onto the compact adjudicator row."""
+    order = base["n"]
+    kind = descriptor["kind"]
+    obs_group = group_observables(descriptor["invariant_factors"])
+    obs_inst = _instance_observables(descriptor, base, det_time, det_nodes)
+    effective = _effective_state(base["terminal_state"], order, exact_window)
+    return {
+        "order": order,
+        "kind": kind,                    # fine-grained family (structured:… / random_greedy)
+        "tag": descriptor.get("tag", _tag_for(kind)),
+        "gate_survived": base["gate_survived"],
+        "terminal_state": base["terminal_state"],
+        "effective_state": effective,    # window-adjusted (SHC above window → RESISTANT)
+        "g": base["g"],
+        "had_2": base["had_2"],
+        "had_3": base["had_3"],
+        "exact_window": exact_window,
+        "window_class": _window_class(order, exact_window),
+        "invariant_factors": descriptor["invariant_factors"],
+        "observables": {**obs_group, **obs_inst},
+    }
+
+
+# --------------------------------------------------------------------------- #
+# The exact-window boundary (08-05) the sweep reads to route non-packing outcomes
+# --------------------------------------------------------------------------- #
+def _resolve_exact_window(exact_window, frontier_report):
+    """Resolve the exact-window boundary (largest n where the ILP proof is trusted).
+
+    Priority: an explicit `exact_window` int; else `exact_window_max(frontier_report)`;
+    else read `paths.SUMFREE_FRONTIER_REPORT` if it exists; else 0 (conservative — route
+    every non-packing instance to the RESISTANT E3 queue). The authoritative report is the
+    one regenerated on the box (08-05); a dev run without it stays conservative.
+    """
+    from alpha2.pool.sumfree.frontier import exact_window_max   # imported at use site
+
+    if exact_window is not None:
+        return int(exact_window)
+    if frontier_report is not None:
+        return exact_window_max(frontier_report)
+    report_path = paths.SUMFREE_FRONTIER_REPORT
+    if os.path.exists(report_path):
+        import json
+        with open(report_path) as fh:
+            return exact_window_max(json.load(fh))
+    return 0
+
+
+# --------------------------------------------------------------------------- #
+# The sweep driver + aggregation
+# --------------------------------------------------------------------------- #
+def _adjudicate_one(descriptor, seed, det_time, det_nodes, corpus_path, log_path, exact_window):
+    """Adjudicate ONE descriptor and fold the observable bank + window annotation on.
+
+    A pure function of (descriptor, seed, det_time, det_nodes): both backends are bounded
+    deterministically inside `adjudicate_grid_point`, so the enriched row is reproducible
+    regardless of worker contention (breadth-only parallelism preserves per-verdict
+    determinism, T-8-07).
+    """
+    base = adjudicate_grid_point(
+        descriptor, seed, det_time, det_nodes,
+        corpus_path=corpus_path, log_path=log_path,
+    )
+    return _enrich_row(descriptor, base, det_time, det_nodes, exact_window)
+
+
+def _adjudicate_one_star(args):
+    """Picklable wrapper so `_adjudicate_one` can fan out over ProcessPoolExecutor.map."""
+    return _adjudicate_one(*args)
+
+
+def run_sweep(
+    descriptors=None,
+    *,
+    det_time,
+    det_nodes,
+    seed=0,
+    workers=None,
+    order_max=500,
+    non_cyclic=DEFAULT_NONCYCLIC,
+    exact_window=None,
+    frontier_report=None,
+    sweep_path=None,
+    corpus_path=None,
+    log_path=None,
+):
+    """Drive the structured-vs-random g(G) grid and aggregate the falsifiable plot data.
+
+    For each deduped descriptor, `adjudicate_grid_point` returns a compact verdict row
+    under a DETERMINISTIC budget on BOTH backends (CP-SAT det_time, CBC det_nodes); the row
+    is enriched with the observable bank and the exact-window annotation, appended to the
+    sweep event stream (`paths.SUMFREE_SWEEP` by default), and aggregated per (kind, order):
+    gate-survival rate, verified g≤0 count, exact g>0 count (WITHIN the measured window
+    only), RESISTANT-rate, and the raw g series — the structured-vs-random knee/trend/crossing
+    data the LOCKED prediction is falsifiable from.
+
+    Parallelism (`workers`) is INSTANCE-LEVEL BREADTH ONLY: workers compute rows, the parent
+    writes the sweep stream in DESCRIPTOR ORDER, so contention never reorders or flips a
+    recorded verdict. Wall-clock cutoffs are forbidden on the recorded-verdict path.
+    """
+    if det_time is None or det_nodes is None:
+        raise ValueError(
+            "run_sweep requires a DETERMINISTIC budget on BOTH backends "
+            "(det_time for CP-SAT, det_nodes for CBC); wall-clock/unbounded is forbidden "
+            "(T-8-07; a recorded verdict must be a function of (n, seed), never machine speed)."
+        )
+    if workers is not None and workers < 1:
+        raise ValueError(f"workers must be a positive int or None, got {workers!r}")
+
+    if descriptors is None:
+        descriptors = grid_descriptors(
+            order_max=order_max, seed=seed, non_cyclic=non_cyclic, log_path=log_path
+        )
+    window = _resolve_exact_window(exact_window, frontier_report)
+
+    args = [
+        (d, seed, det_time, det_nodes, corpus_path, log_path, window)
+        for d in descriptors
+    ]
+    if workers is not None and workers > 1 and len(args) > 1:
+        # Breadth-only fan-out: workers produce rows; the PARENT serializes every append
+        # below in descriptor order, so parallelism can never reorder the event stream.
+        from concurrent.futures import ProcessPoolExecutor
+        with ProcessPoolExecutor(max_workers=workers) as pool:
+            rows = list(pool.map(_adjudicate_one_star, args))
+    else:
+        rows = [_adjudicate_one(*a) for a in args]
+
+    sweep_path = sweep_path if sweep_path is not None else paths.ensure_parent(paths.SUMFREE_SWEEP)
+    for row in rows:                      # parent-serial, descriptor order (deterministic)
+        append_event({"subsystem": _SUBSYSTEM, "event": "sweep_row", **row}, path=sweep_path)
+
+    aggregate = aggregate_sweep(rows, window)
+    append_event(
+        {"subsystem": _SUBSYSTEM, "event": "sweep_aggregate", **aggregate},
+        path=sweep_path,
+    )
+    return {
+        "rows": rows,
+        "aggregate": aggregate,
+        "series": aggregate["series"],
+        "exact_window": window,
+        "n_instances": len(rows),
+        "sweep_path": os.fspath(sweep_path),
+    }
+
+
+# The secondary/exploratory cross-sections examined alongside the primary test — recorded
+# for multiple-comparison honesty (a claimed effect must state how many were mined).
+EXPLORATORY_CROSS_SECTIONS = (
+    "rank", "exponent", "n_prime_divisors", "n_primes_1mod3", "n_primes_2mod3",
+    "cyclic", "elementary_abelian", "aut_order",
+    "had3_minus_had2", "abs_gap", "S_density", "det_work",
+)
+
+
+def aggregate_sweep(rows, exact_window):
+    """Aggregate rows per (kind, order) into the structured-vs-random plot series.
+
+    Per (kind, order): gate-survival rate, verified g≤0 count (KILLED), exact g>0 count
+    (SHC_CANDIDATE WITHIN the window only), RESISTANT-rate (RESISTANT + any g>0 screen
+    ABOVE the window — never a reported g>0), and the raw g values. `series[kind]` is the
+    order-sorted g / resistant-rate / gate-survival-rate trace for the knee/trend/crossing
+    plot. `exploratory_cross_sections_examined` records the multiple-comparison count.
+    """
+    cells = {}
+    for row in rows:
+        key = (row["kind"], row["order"])
+        cell = cells.setdefault(key, {
+            "kind": row["kind"], "order": row["order"], "total": 0,
+            "gate_survivors": 0, "verified_g_le0": 0, "exact_g_gt0": 0,
+            "resistant": 0, "killed_by_gate": 0, "g_values": [],
+        })
+        cell["total"] += 1
+        state = row["terminal_state"]
+        effective = row["effective_state"]
+        if state == KILLED_BY_GATE:
+            cell["killed_by_gate"] += 1
+            continue
+        cell["gate_survivors"] += 1
+        if row["g"] is not None:
+            cell["g_values"].append(row["g"])
+        if state == KILLED:
+            cell["verified_g_le0"] += 1
+        elif effective == SHC_CANDIDATE:            # g>0 within the exact window
+            cell["exact_g_gt0"] += 1
+        elif effective == RESISTANT:                # RESISTANT, or g>0 pushed above window
+            cell["resistant"] += 1
+
+    per_cell = []
+    for key in sorted(cells):
+        c = cells[key]
+        survivors = c["gate_survivors"]
+        c["gate_survival_rate"] = (survivors / c["total"]) if c["total"] else 0.0
+        c["resistant_rate"] = (c["resistant"] / survivors) if survivors else 0.0
+        per_cell.append(c)
+
+    series = {}
+    for c in per_cell:
+        s = series.setdefault(c["kind"], {
+            "orders": [], "g_mean": [], "resistant_rate": [], "gate_survival_rate": [],
+        })
+        s["orders"].append(c["order"])
+        gs = c["g_values"]
+        s["g_mean"].append(sum(gs) / len(gs) if gs else None)
+        s["resistant_rate"].append(c["resistant_rate"])
+        s["gate_survival_rate"].append(c["gate_survival_rate"])
+
+    return {
+        "exact_window": exact_window,
+        "cells": per_cell,
+        "series": series,
+        "primary_test": "g(G)=(chi-had_k)/chi and RESISTANT-rate, structured vs random, vs |Gamma|",
+        "exploratory_cross_sections_examined": list(EXPLORATORY_CROSS_SECTIONS),
+        "n_exploratory_cross_sections": len(EXPLORATORY_CROSS_SECTIONS),
+    }
+
+
+# --------------------------------------------------------------------------- #
+# Box entrypoint (drives the FULL grid — NOT run in the Mac author session)
+# --------------------------------------------------------------------------- #
+def main(argv=None):
+    """CLI: run the full structured-vs-random g(G) sweep (the SC2 box deliverable).
+
+    Example (on the shared box, docs/COMPUTE.md):
+      python -m alpha2.pool.sumfree.sweep --order-max 500 --det-time <b> --det-nodes <b>
+    """
+    parser = argparse.ArgumentParser(description="Structured-vs-random g(G) grid sweep (POOL-2).")
+    parser.add_argument("--order-max", type=int, default=500)
+    parser.add_argument("--det-time", type=float, required=True,
+                        help="CP-SAT max_deterministic_time (deterministic; never wall-clock)")
+    parser.add_argument("--det-nodes", type=int, required=True,
+                        help="CBC maxNodes (deterministic; never wall-clock)")
+    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--workers", type=int, default=None,
+                        help="instance-level breadth (per-verdict determinism preserved)")
+    parser.add_argument("--exact-window", type=int, default=None,
+                        help="override the measured ILP window boundary (else read the report)")
+    args = parser.parse_args(argv)
+
+    result = run_sweep(
+        det_time=args.det_time, det_nodes=args.det_nodes, seed=args.seed,
+        workers=args.workers, order_max=args.order_max, exact_window=args.exact_window,
+    )
+    agg = result["aggregate"]
+    print(f"sweep complete: {result['n_instances']} instances, "
+          f"exact_window={result['exact_window']}, "
+          f"families={sorted(result['series'])}, "
+          f"cross_sections_examined={agg['n_exploratory_cross_sections']}")
+    print(f"plot data -> {result['sweep_path']}")
+    return result
+
+
 __all__ = [
     "grid_descriptors",
+    "run_sweep",
+    "aggregate_sweep",
     "group_observables",
     "DEFAULT_NONCYCLIC",
     "STRUCTURED_KINDS",
     "ALL_KINDS",
     "ORDER_MIN",
+    "EXPLORATORY_CROSS_SECTIONS",
+    "main",
 ]
+
+
+if __name__ == "__main__":   # pragma: no cover - box entrypoint
+    main()
