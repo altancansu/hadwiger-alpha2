@@ -4,14 +4,14 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
-last_updated: "2026-07-23T05:31:04.793Z"
+last_updated: "2026-07-23T06:08:23.364Z"
 last_activity: 2026-07-23
 progress:
   total_phases: 12
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 30
-  completed_plans: 29
-  percent: 50
+  completed_plans: 30
+  percent: 58
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-07-21)
 ## Current Position
 
 Phase: 07 (p0-cdm-frontier) — EXECUTING
-Plan: 5 of 6
+Plan: 6 of 6
 Status: Ready to execute
 Last activity: 2026-07-23
 
-Progress: [██████████] 97%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -75,6 +75,7 @@ Progress: [██████████] 97%
 | Phase 07 P07-02 | 11min | 2 tasks | 3 files |
 | Phase 07 P07-03 | 14min | 3 tasks | 3 files |
 | Phase 07 P07-04 | 31min | 3 tasks | 1 files |
+| Phase 07 P07-06 | 32min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -135,6 +136,9 @@ Execution decisions (Phase 02 Plan 02):
 - [Phase ?]: [Phase 07] Plan 07-01: CDM record shape = H_edges (MTF H) + matching_M of G-edges (complement) + invariants{n,complement_connected,cdm}; verifier rebuilds H-adjacency; paths.CDM_CORPUS additive, frozen 296-corpus byte-untouched
 - [Phase 07]: Plan 07-04: Q3 ratified v1 — OEIS A216783 counts + is_edge_maximal_tf second-FILTER + shortg canonical dedup ARE the independent cross-check; independent MTF generator deferred to milestone-2/n~16
 - [Phase 07]: Plan 07-04: stream_mtf = geng -ctq n [res/mod] | pickg -Z2 via Popen arg lists (no shell); int-validated + DoS-bounded n<=17 before interpolation; yields 147/392/1274 at n=12/13/14 (OEIS A216783)
+- [Phase ?]: [Phase 07] Plan 07-06: adjudicate.py wires the CDM subsystem — decode(V5 n-assert)->has_cdm≡cdm_cpsat gate(CDMCriticalDisagreement, release-blocking)->CDM-HOLDS verify+append; CDM-FAILS is_connected carve-out (K_a⊔K_b out-of-scope) vs connected-complement battery escalation hook
+- [Phase ?]: [Phase 07] Plan 07-06: full n=12-14 batch — 1813 total, DFS≡CP-SAT everywhere (0 disagreements), 1794 CDM-HOLDS certificated (141/386/1267), 19 K_a⊔K_b carve-outs, 0 connected-complement fails; verified CDM frontier extends past n≤11
+- [Phase ?]: [Phase 07] Plan 07-06: CDM corpus is gitignored runtime output; CHI-01 guard extended with pool/cdm/adjudicate.py-scoped networkx allow-list {from_graph6_bytes,complement,is_connected}
 
 ### Pending Todos
 
@@ -168,6 +172,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-23T05:31:04.786Z
+Last session: 2026-07-23T06:07:55.265Z
 Stopped at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
 Resume file: None

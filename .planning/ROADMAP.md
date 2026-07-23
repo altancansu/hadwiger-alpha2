@@ -16,7 +16,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 - [x] **Phase 4: ExactBackend & CBC Reference** - status-honest exact had₂ (PROVED_OPTIMAL vs INCUMBENT_ONLY); obstruction-based encoding; seed-137 regression (completed 2026-07-22)
 - [x] **Phase 5: CP-SAT, Differential Gate & had₃** - second engine; dual-backend agreement gates any SHC-CANDIDATE; had₃ tier proven on synthetics; assume-and-verify symmetry breaking (completed 2026-07-22)
 - [x] **Phase 6: Kill Battery CLI (Gate, Search, Statuses)** - one tested CLI runs the 7-step runbook; author-pinned G1–G6; profile-general heuristic; derived statuses + results log (completed 2026-07-22)
-- [ ] **Phase 7: P0 — CDM Frontier** - all 1,813 MTF graphs at n=12–14 exactly adjudicated; verified CDM frontier extended past the literature's n ≤ 11
+- [x] **Phase 7: P0 — CDM Frontier** - all 1,813 MTF graphs at n=12–14 exactly adjudicated; verified CDM frontier extended past the literature's n ≤ 11 (completed 2026-07-23)
 - [ ] **Phase 8: P1 & P2 — Seeded Families at Scale** - TFP critical-size sweep + showpieces toward n≈1001–2001; sum-free Cayley generalized to abelian Γ, structured vs random
 - [ ] **Phase 9: P3 & P6 — Inflation Pools** - shared inflation operator; Higman–Sims complement inflations; 477,142 Ramsey(3,8,27) witnesses ingested and inflated
 - [ ] **Phase 10: P4 & P5 — Literature-Frontier Pools** - generalized Kneser cells outside the pinned CLWY window; ETT crooked-graph complements under the battery
@@ -138,7 +138,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 - [x] 07-03-PLAN.md — CDM trust leg: build_cdm_record schema + verify_cdm_witness + append-only CDM store
 - [x] 07-04-PLAN.md — MTF generation: geng/pickg subprocess driver + provenance + sharding cross-check
 - [x] 07-05-PLAN.md — Transfer-lemma in-repo proof + executable predicates + author-review checkpoint
-- [ ] 07-06-PLAN.md — Adjudication runbook: dual-decision gate + carve-out/escalation + full 1,813 batch
+- [x] 07-06-PLAN.md — Adjudication runbook: dual-decision gate + carve-out/escalation + full 1,813 batch
 **Research flags**: re-derive the transfer lemma in-repo; MTF-generator cross-check options and geng res/mod tuning if throughput hurts at n=14+.
 
 ### Phase 8: P1 & P2 — Seeded Families at Scale
@@ -213,7 +213,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 | 4. ExactBackend & CBC Reference | 4/4 | Complete   | 2026-07-22 |
 | 5. CP-SAT, Differential Gate & had₃ | 7/7 | Complete    | 2026-07-22 |
 | 6. Kill Battery CLI (Gate, Search, Statuses) | 5/5 | Complete    | 2026-07-22 |
-| 7. P0 — CDM Frontier | 5/6 | In Progress|  |
+| 7. P0 — CDM Frontier | 6/6 | Complete   | 2026-07-23 |
 | 8. P1 & P2 — Seeded Families at Scale | 0/TBD | Not started | - |
 | 9. P3 & P6 — Inflation Pools | 0/TBD | Not started | - |
 | 10. P4 & P5 — Literature-Frontier Pools | 0/TBD | Not started | - |
