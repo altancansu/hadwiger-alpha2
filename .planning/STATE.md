@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
-last_updated: "2026-07-23T09:40:47.390Z"
+last_updated: "2026-07-23T09:52:33.235Z"
 last_activity: 2026-07-23
 progress:
   total_phases: 12
   completed_phases: 7
   total_plans: 37
-  completed_plans: 32
+  completed_plans: 34
   percent: 58
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-07-21)
 ## Current Position
 
 Phase: 08 (p1-p2-seeded-families-at-scale) — EXECUTING
-Plan: 4 of 7
+Plan: 5 of 7
 Status: Ready to execute
 Last activity: 2026-07-23
 
-Progress: [█████████░] 86%
+Progress: [█████████░] 92%
 
 ## Performance Metrics
 
@@ -80,6 +80,7 @@ Progress: [█████████░] 86%
 | Phase 08 P01 | 25min | 3 tasks | 12 files |
 | Phase 08 P02 | 20min | 3 tasks | 7 files |
 | Phase 08 P03 | ~18min | 3 tasks | 3 files |
+| Phase 08 P05 | ~25min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -153,6 +154,8 @@ Execution decisions (Phase 02 Plan 02):
 - [Phase 08 P02]: green_ruzsa_sumfree keys off the ARITHMETIC of |Γ| (smallest prime ≡2 mod3 pullback / all ≡1 mod3 middle interval), never an I/II/III numeral (Pitfall 6); the raise-based re-check makes an unpinned coset-membership formula non-fatal (RESEARCH Open Q1). 3∣n cyclic case deliberately NotImplemented (ambiguous — served by random-greedy).
 - [Phase 08 P02]: deterministic solver budgets are ADDITIVE — SolveParams.det_time → CP-SAT max_deterministic_time, SolveParams.det_nodes → CBC PULP_CBC_CMD(maxNodes=…); both default None → unbounded → 296-corpus reproduction byte-unchanged (273 pre-existing tests still green); map_status untouched (node-limit stop already maps to INCUMBENT_ONLY). Wall-clock forbidden for any recorded verdict (Pitfall 2).
 - [Phase 08 P02]: POOL-2 NOT marked complete — shared across waves 08-02..08-07; this plan lands the generation foundation only. Completed when the g-screen/store/verifier/adjudicate waves make the full contract green (same discipline as 08-01).
+- [Phase 08 P05]: ILP optimality-proof frontier MEASURED, not assumed (RESEARCH A4). measure_ilp_frontier walks a group-order grid, hard-gates each structured/random sum-free Cayley instance, and times ONLY survivors on BOTH co-equal backends under a FIXED deterministic budget — CP-SAT det_time (num_workers=1), CBC det_nodes (maxNodes, threads=1) — with NO wall-clock time_limit_s on any timed call (T-8-07; the exact failure this closes). proved iff BOTH PROVED_OPTIMAL; had_2<chi escalates to Tier-1 had_3 the same bounded way. num_workers!=1 raises.
+- [Phase 08 P05]: run_frontier_probe persists the compact frontier_report (per-n bools + conservative contiguous-from-bottom frontier_n + budgets + solver versions) atomically; exact_window_max is the boundary 08-06 reads to route a non-packing instance to exact g>0 (n≤window) or the RESISTANT E3 queue (n>window) — 0 when nothing proved (conservative → E3). Signature follows the RED contract (det_budget/num_workers) with det_time/det_nodes additive; authoritative data/results/sumfree_frontier.json regenerated on the box at 08-06, not this Mac session. POOL-2 still NOT complete.
 
 ### Pending Todos
 
@@ -186,6 +189,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-23T09:40:47.382Z
-Stopped at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
+Last session: 2026-07-23T00:00:00.000Z
+Stopped at: Completed 08-05-PLAN.md — empirical ILP optimality-proof frontier (A4): measure_ilp_frontier / run_frontier_probe / exact_window_max, both backends bounded deterministically (CP-SAT det_time, CBC det_nodes), no wall-clock; test_frontier GREEN, 319 pre-existing green
 Resume file: None
