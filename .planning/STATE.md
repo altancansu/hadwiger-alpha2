@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
-last_updated: "2026-07-23T04:59:43.870Z"
+last_updated: "2026-07-23T05:21:48.324Z"
 last_activity: 2026-07-23
 progress:
   total_phases: 12
   completed_phases: 6
   total_plans: 30
-  completed_plans: 27
+  completed_plans: 28
   percent: 50
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-07-21)
 ## Current Position
 
 Phase: 07 (p0-cdm-frontier) — EXECUTING
-Plan: 3 of 6
+Plan: 4 of 6
 Status: Ready to execute
 Last activity: 2026-07-23
 
-Progress: [█████████░] 90%
+Progress: [█████████░] 93%
 
 ## Performance Metrics
 
@@ -74,6 +74,7 @@ Progress: [█████████░] 90%
 | Phase 07 P07-01 | 22min | 3 tasks | 15 files |
 | Phase 07 P07-02 | 11min | 2 tasks | 3 files |
 | Phase 07 P07-03 | 14min | 3 tasks | 3 files |
+| Phase 07 P07-04 | 31min | 3 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -132,6 +133,8 @@ Execution decisions (Phase 02 Plan 02):
 - [Phase ?]: [Phase 07] Plan 07-01: n≤11 MTF definition oracle embedded as 134 graph6 literals in conftest (self-contained, no geng-at-fixture-build) so the A1 CDM definition-regression gate can never silently skip
 - [Phase ?]: [Phase 07] Plan 07-01: Lemma 2.5 equivalence leg GREEN now (embedded oracle + tfp.is_edge_maximal_tf + nx.diameter, no CDM module) as a live transfer-lemma regression; monotonicity + other bodies RED via function-local imports
 - [Phase ?]: [Phase 07] Plan 07-01: CDM record shape = H_edges (MTF H) + matching_M of G-edges (complement) + invariants{n,complement_connected,cdm}; verifier rebuilds H-adjacency; paths.CDM_CORPUS additive, frozen 296-corpus byte-untouched
+- [Phase 07]: Plan 07-04: Q3 ratified v1 — OEIS A216783 counts + is_edge_maximal_tf second-FILTER + shortg canonical dedup ARE the independent cross-check; independent MTF generator deferred to milestone-2/n~16
+- [Phase 07]: Plan 07-04: stream_mtf = geng -ctq n [res/mod] | pickg -Z2 via Popen arg lists (no shell); int-validated + DoS-bounded n<=17 before interpolation; yields 147/392/1274 at n=12/13/14 (OEIS A216783)
 
 ### Pending Todos
 
@@ -165,6 +168,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-23T04:59:34.773Z
+Last session: 2026-07-23T05:21:48.317Z
 Stopped at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
 Resume file: None
