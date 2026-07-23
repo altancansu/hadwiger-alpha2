@@ -699,7 +699,7 @@ in one key set). No new install required.
 | POOL-2/1 | verdict is deterministic (max_deterministic_time, num_workers=1) across two runs | integration | `pytest tests/pool/sumfree/test_determinism.py -x` | ❌ Wave 0 |
 | POOL-1 | n=31/32 critical sweep exact had₂ matches corpus lineage | integration | `pytest tests/pool/sumfree/test_p1_sweep.py -x` | ❌ Wave 0 |
 | POOL-1 | n≈1001 showpiece heuristic HIT verified by trust root | integration (slow) | `pytest tests/pool/sumfree/test_showpiece.py -x -m slow` | ❌ Wave 0 |
-| POOL-2 | frozen `generators/cayley.py` untouched; 296-corpus reproduction still green | regression | `uv run pytest tests/repro -x` | ✅ (existing CI) |
+| POOL-2 | frozen `generators/cayley.py` untouched; 296-corpus reproduction still green | regression | `uv run pytest tests/test_reproduction_contract.py tests/test_corpus_r1.py tests/test_corpus_r2.py tests/test_corpus_r3.py tests/test_seed137_regression.py` | ✅ (existing CI) |
 
 ### Sampling Rate
 - **Per task commit:** `uv run pytest tests/pool/sumfree/ -x -q`
