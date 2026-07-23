@@ -32,6 +32,7 @@ Hadwiger number.
 import json
 import os
 import tempfile
+from pathlib import Path
 
 from alpha2 import paths
 from alpha2.battery.log import append_event
@@ -238,3 +239,117 @@ def derive_frontier_n(table):
         else:
             break
     return frontier
+
+
+# The default coarse group-order grid the box probe walks (odd |Γ|, Locked Decision 1).
+DEFAULT_PROBE_NS = (31, 61, 101, 151, 201, 251, 301)
+
+
+def _atomic_write_json(path, payload):
+    """Write `payload` as pretty JSON to `path` atomically (tempfile -> fsync -> replace)."""
+    path = os.fspath(path)
+    paths.ensure_parent(Path(path))
+    directory = os.path.dirname(path) or "."
+    line = json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    fd, tmp = tempfile.mkstemp(dir=directory, suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w") as fh:
+            fh.write(line)
+            fh.flush()
+            os.fsync(fh.fileno())
+        os.replace(tmp, path)
+    finally:
+        if os.path.exists(tmp):
+            os.unlink(tmp)
+    return path
+
+
+def run_frontier_probe(
+    det_time,
+    det_nodes,
+    ns=None,
+    *,
+    seed=0,
+    table_path=None,
+    report_path=None,
+):
+    """Walk the coarse grid, persist the compact frontier report, and return it.
+
+    The report — per-n structured-proved booleans + the derived `frontier_n` boundary + the
+    (det_time, det_nodes) budget + solver versions — is what the 08-06 sweep consumes via
+    `exact_window_max`. Every per-n row is logged to the append-only event stream. Persists
+    atomically to `report_path` (default `paths.SUMFREE_FRONTIER_REPORT`); the AUTHORITATIVE
+    report is regenerated on the shared box, not on a dev machine (docstring A4).
+    """
+    if ns is None:
+        ns = DEFAULT_PROBE_NS
+    if table_path is None:
+        table_path = paths.SUMFREE_FRONTIER_TABLE
+    if report_path is None:
+        report_path = paths.SUMFREE_FRONTIER_REPORT
+
+    table = measure_ilp_frontier(
+        ns, det_time=det_time, det_nodes=det_nodes, seed=seed, table_path=table_path
+    )
+    per_n = {int(n): bool(table[n]["proved"]) for n in table}
+    frontier_n = derive_frontier_n(table)
+
+    solver_versions = {
+        "cbc": get_backend("cbc").backend_version(),
+        "cpsat": get_backend("cpsat").backend_version(),
+    }
+    report = {
+        "kind": "sumfree_ilp_optimality_frontier",
+        "a4_note": (
+            "MEASURED budget-dependent evidence (RESEARCH A4): frontier_n is a function of "
+            "(n, det_time, det_nodes), NOT wall-clock hardware speed, and NOT a theorem."
+        ),
+        "ns": list(int(n) for n in ns),
+        "per_n_structured_had2_proved": per_n,
+        "frontier_n": frontier_n,
+        "det_time": det_time,
+        "det_nodes": det_nodes,
+        "solver_versions": solver_versions,
+        "seed": seed,
+    }
+
+    for n in sorted(table):
+        append_event(
+            {
+                "subsystem": "pool/sumfree",
+                "event": "frontier_probe",
+                "n": int(n),
+                "structured_had2_proved": bool(table[n]["proved"]),
+                "det_time": det_time,
+                "det_nodes": det_nodes,
+                "seed": seed,
+            },
+            path=os.fspath(table_path),
+        )
+
+    _atomic_write_json(report_path, report)
+    return report
+
+
+def exact_window_max(report):
+    """The exact-window boundary the 08-06 sweep reads: the largest n where STRUCTURED had_2
+    optimality proved on both backends (the conservative downward frontier).
+
+    Returns `frontier_n` when present; else the largest contiguous-from-bottom proved n
+    re-derived from the per-n booleans; 0 when no n proved (route everything to E3 — the
+    conservative default). A non-packing instance at n ≤ window is an exact `g>0` candidate;
+    at n > window it is a RESISTANT E3-queue instance, never a claimed break.
+    """
+    if not isinstance(report, dict):
+        raise TypeError(f"report must be a dict, got {type(report).__name__}")
+    frontier_n = report.get("frontier_n")
+    if frontier_n is not None:
+        return int(frontier_n)
+    per_n = report.get("per_n_structured_had2_proved", {})
+    window = 0
+    for n in sorted(int(k) for k in per_n):
+        if per_n[n] if n in per_n else per_n[str(n)]:
+            window = n
+        else:
+            break
+    return window
