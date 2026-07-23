@@ -135,7 +135,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 **Plans**: 6 plans in 3 waves
 - [x] 07-01-PLAN.md — Wave-0 failing tests + fixtures + package skeleton + paths.CDM_CORPUS (definition-regression gate first)
 - [x] 07-02-PLAN.md — CDM decision engines: has_cdm DFS reference + cdm_cpsat CP-SAT cross-check
-- [ ] 07-03-PLAN.md — CDM trust leg: build_cdm_record schema + verify_cdm_witness + append-only CDM store
+- [x] 07-03-PLAN.md — CDM trust leg: build_cdm_record schema + verify_cdm_witness + append-only CDM store
 - [ ] 07-04-PLAN.md — MTF generation: geng/pickg subprocess driver + provenance + sharding cross-check
 - [ ] 07-05-PLAN.md — Transfer-lemma in-repo proof + executable predicates + author-review checkpoint
 - [ ] 07-06-PLAN.md — Adjudication runbook: dual-decision gate + carve-out/escalation + full 1,813 batch
@@ -213,7 +213,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 | 4. ExactBackend & CBC Reference | 4/4 | Complete   | 2026-07-22 |
 | 5. CP-SAT, Differential Gate & had₃ | 7/7 | Complete    | 2026-07-22 |
 | 6. Kill Battery CLI (Gate, Search, Statuses) | 5/5 | Complete    | 2026-07-22 |
-| 7. P0 — CDM Frontier | 2/6 | In Progress|  |
+| 7. P0 — CDM Frontier | 3/6 | In Progress|  |
 | 8. P1 & P2 — Seeded Families at Scale | 0/TBD | Not started | - |
 | 9. P3 & P6 — Inflation Pools | 0/TBD | Not started | - |
 | 10. P4 & P5 — Literature-Frontier Pools | 0/TBD | Not started | - |
