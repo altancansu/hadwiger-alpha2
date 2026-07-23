@@ -210,6 +210,11 @@ class CPSATBackend:
         solver.parameters.random_seed = _RANDOM_SEED
         if p.time_limit_s is not None:
             solver.parameters.max_time_in_seconds = p.time_limit_s
+        if p.det_time is not None:
+            # Deterministic work-count budget (Pattern 4): a recorded verdict is a
+            # function of (n, seed), never machine speed. num_workers=1 + pinned
+            # random_seed above keep the search itself deterministic.
+            solver.parameters.max_deterministic_time = p.det_time
         if mode == "decision":
             solver.parameters.stop_after_first_solution = True
         if symmetry_level is not None:
@@ -332,6 +337,11 @@ class CPSATBackend:
         solver.parameters.random_seed = _RANDOM_SEED
         if p.time_limit_s is not None:
             solver.parameters.max_time_in_seconds = p.time_limit_s
+        if p.det_time is not None:
+            # Deterministic work-count budget (Pattern 4): a recorded verdict is a
+            # function of (n, seed), never machine speed. num_workers=1 + pinned
+            # random_seed above keep the search itself deterministic.
+            solver.parameters.max_deterministic_time = p.det_time
         if mode == "decision":
             solver.parameters.stop_after_first_solution = True
         if symmetry_level is not None:

@@ -283,6 +283,15 @@ class CBCBackend:
                 threads=1,  # single-thread: deterministic reference lineage
                 timeLimit=p.time_limit_s,
                 logPath=str(log_path),  # ALWAYS: evidence + dual bound
+                # Deterministic node-count cap: under threads=1 the CBC node count is
+                # machine-speed-independent, so a recorded verdict is a function of
+                # (n, seed) — the wall-clock analog is forbidden for reported verdicts.
+                # None (default) -> PuLP omits the CLI arg -> unbounded (2147483647) ->
+                # the frozen 296-corpus reproduction path is BYTE-UNCHANGED. A
+                # node-limit stop returns (LpStatusOptimal, LpSolutionIntegerFeasible)
+                # which map_status already routes to INCUMBENT_ONLY (never
+                # PROVED_OPTIMAL), so no map_status change is needed.
+                maxNodes=p.det_nodes,
             )
             try:
                 prob.solve(solver)
@@ -423,6 +432,15 @@ class CBCBackend:
                 threads=1,  # single-thread: deterministic reference lineage
                 timeLimit=p.time_limit_s,
                 logPath=str(log_path),  # ALWAYS: evidence + dual bound
+                # Deterministic node-count cap: under threads=1 the CBC node count is
+                # machine-speed-independent, so a recorded verdict is a function of
+                # (n, seed) — the wall-clock analog is forbidden for reported verdicts.
+                # None (default) -> PuLP omits the CLI arg -> unbounded (2147483647) ->
+                # the frozen 296-corpus reproduction path is BYTE-UNCHANGED. A
+                # node-limit stop returns (LpStatusOptimal, LpSolutionIntegerFeasible)
+                # which map_status already routes to INCUMBENT_ONLY (never
+                # PROVED_OPTIMAL), so no map_status change is needed.
+                maxNodes=p.det_nodes,
             )
             try:
                 prob.solve(solver)

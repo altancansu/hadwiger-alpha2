@@ -48,10 +48,21 @@ class NotProvedOptimal(Exception):
 
 @dataclass(frozen=True)
 class SolveParams:
-    """Solver invocation parameters, recorded verbatim in every outcome."""
+    """Solver invocation parameters, recorded verbatim in every outcome.
+
+    `det_time` / `det_nodes` are ADDITIVE deterministic-budget fields (Phase 8): on
+    the shared 64–250-core box a recorded verdict must be a function of (n, seed), not
+    machine speed, so any reported impossibility/RESISTANT run is bounded by a
+    work-count (CP-SAT `max_deterministic_time`) or node-count (CBC `maxNodes`) budget
+    — NEVER wall-clock. Both default None → unbounded → the frozen 296-corpus
+    reproduction path is byte-unchanged. `time_limit_s` (wall-clock) and `threads`
+    are unchanged; wall-clock is forbidden for any path feeding a reported verdict.
+    """
 
     time_limit_s: float | None = None
     threads: int = 1
+    det_time: float | None = None   # CP-SAT deterministic work-count budget
+    det_nodes: int | None = None    # CBC deterministic node-count cap (maxNodes)
 
 
 @dataclass(frozen=True)
