@@ -54,8 +54,12 @@ def test_every_connected_alpha2_graph_n_le_11_has_cdm(mtf_n_le_11_graph6):
                 "the A1 vertex-edge adjacency reading, NOT new science"
             )
             checked += 1
-    # Sanity: the gate actually iterated the full connected set (not a vacuous pass).
-    assert checked >= 120, f"expected ~130 connected instances, only checked {checked}"
+    # Sanity: the gate actually iterated the full connected set (not a vacuous
+    # pass). Of the 134 embedded MTF-complements, exactly floor(n/2) per n are
+    # complete-bipartite complements G = K_a ⊔ K_b (disconnected, carved out
+    # above): 1+2+2+3+3+4+4+5+5 = 29 disconnected, so 134 − 29 = 105 connected
+    # instances every one of which must report CDM.
+    assert checked == 105, f"expected 105 connected instances, checked {checked}"
 
 
 def test_disconnected_complement_has_no_cdm(disjoint_cliques_g_adj):
