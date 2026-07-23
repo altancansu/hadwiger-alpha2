@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: ready_to_execute
-stopped_at: Phase 7 planned (6 plans / 3 waves) — plan-checker PASSED (rev 2); ready to execute
-last_updated: 2026-07-22T14:10:00.000Z
-last_activity: 2026-07-22 - Planned Phase 7 (P0 — CDM Frontier): 6 plans, research+validation+patterns, checker-verified
+status: executing
+stopped_at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
+last_updated: "2026-07-23T04:28:51.317Z"
+last_activity: 2026-07-23
 progress:
   total_phases: 12
-  completed_phases: 5
-  total_plans: 24
-  completed_plans: 24
-  percent: 42
+  completed_phases: 6
+  total_plans: 30
+  completed_plans: 25
+  percent: 50
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-21)
 
 **Core value:** Reconstruct the *attempt* under discipline — build the adversary so that anything surviving it is a correct road to a disproof, and anything dying leaves a machine-verified result; never invent the missing hour. Epistemic integrity (verified existence, radioactive impossibility) wins over speed, coverage, or narrative.
-**Current focus:** Phase 7 — p0 — cdm frontier
+**Current focus:** Phase 07 — p0-cdm-frontier
 
 ## Current Position
 
-Phase: 7
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-07-22
+Phase: 07 (p0-cdm-frontier) — EXECUTING
+Plan: 2 of 6
+Status: Ready to execute
+Last activity: 2026-07-23
 
-Progress: [█████████░] 92%
+Progress: [████████░░] 83%
 
 ## Performance Metrics
 
@@ -71,6 +71,7 @@ Progress: [█████████░] 92%
 | Phase 06 P02 | 20min | 3 tasks | 9 files |
 | Phase 06 P03 | 30min | 2 tasks | 3 files |
 | Phase 06 P04 | 16min | 3 tasks | 7 files |
+| Phase 07 P07-01 | 22min | 3 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -126,6 +127,9 @@ Execution decisions (Phase 02 Plan 02):
 - [Phase ?]: [Phase 06] Plan 06-03: profile-general solve() iterates (p',s') with p'+s'=chi & 2p'+s'<=n, round-robin restarts, NO assert (bounded enumeration); new initial_state_profile holds non-spanning states (unused verts) — finds seed-137 K16 the spanning profile missed
 - [Phase ?]: [Phase 06] Plan 06-03: spanning profile (2p+s==n) stays byte-exact via untouched initial_state so D.2 (seed=1) reproduces verbatim; PER_RESTART_ITERS=1000 cap cycles restarts (deterministic, above the 3-iter D.2 solve); determinism idiom preserved byte-for-byte
 - [Phase ?]: [Phase 06] Plan 06-03: heuristic miss stays sets=None (never RESISTANT); SC1 e2e preserved — starved 0.0s budget still misses -> exact had_2=17; explicit fast SC1-routing guard added
+- [Phase ?]: [Phase 07] Plan 07-01: n≤11 MTF definition oracle embedded as 134 graph6 literals in conftest (self-contained, no geng-at-fixture-build) so the A1 CDM definition-regression gate can never silently skip
+- [Phase ?]: [Phase 07] Plan 07-01: Lemma 2.5 equivalence leg GREEN now (embedded oracle + tfp.is_edge_maximal_tf + nx.diameter, no CDM module) as a live transfer-lemma regression; monotonicity + other bodies RED via function-local imports
+- [Phase ?]: [Phase 07] Plan 07-01: CDM record shape = H_edges (MTF H) + matching_M of G-edges (complement) + invariants{n,complement_connected,cdm}; verifier rebuilds H-adjacency; paths.CDM_CORPUS additive, frozen 296-corpus byte-untouched
 
 ### Pending Todos
 
@@ -153,6 +157,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-22T13:20:03.128Z
+Last session: 2026-07-23T04:28:22.762Z
 Stopped at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
 Resume file: None
