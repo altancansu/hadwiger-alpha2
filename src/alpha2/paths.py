@@ -11,6 +11,14 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 CORPUS = REPO_ROOT / "data" / "corpus" / "hadwiger_alpha2_certificates.json"
 
+# Dedicated append-only CDM corpus (POOL-0, Phase 7). A SEPARATE file from the
+# frozen 296-instance had_2 CORPUS above, which stays byte-untouched: CDM
+# certificates carry a different record shape (a connected dominating matching
+# witness, not a K_chi branch-set family) and their own stdlib-only verifier leg.
+# Same REPO_ROOT / "data" / "corpus" / ... shape; `ensure_parent` generalizes over
+# any path. Sole path authority — no other module embeds this literal.
+CDM_CORPUS = REPO_ROOT / "data" / "corpus" / "cdm_certificates.json"
+
 # Append-only battery results log (CLI-02) — a SEPARATE contract from the corpus:
 # the corpus is the hash-chained FACT authority; this is the event stream (every
 # terminal state + method + reason). Same REPO_ROOT / "data" / ... shape as CORPUS;
