@@ -6,3 +6,6 @@ data/corpus/*.json
 # (store.py: git history is the external anchor against a wholesale rewrite). Other
 # generated/tmp corpus JSON stays ignored; this one file is tracked forever.
 !data/corpus/hadwiger_alpha2_certificates.json
+
+# local-only remote compute box endpoint (ephemeral; never publish on public repo)
+.compute-box

@@ -190,3 +190,11 @@ Do not make direct repo edits outside a GSD workflow unless the user explicitly 
 > Profile not yet configured. Run `/gsd-profile-user` to generate your developer profile.
 > This section is managed by `generate-claude-profile` -- do not edit manually.
 <!-- GSD:profile-end -->
+
+## Remote Compute (Phase 8+ sweeps)
+
+Heavy sweeps (Phase 8's sum-free Cayley break-hunt and later large-n pools) do NOT run here — they run on a **rented remote Linux box driven over SSH from the author's Mac session**. Full runbook: **`docs/COMPUTE.md`** (provisioning, verification, sweep commands, discipline).
+
+- The box is compute muscle only. Develop + small-scale-test on the Mac → `git push` → box `git pull && uv sync --all-extras --all-groups` → run `uv run pytest -n <N> -m slow` in `tmux`.
+- The **live SSH endpoint is NOT committed** (public repo + ephemeral rental): it lives in the gitignored **`.compute-box`** at the repo root. To reconnect after a re-rent, update that file.
+- On-box discipline: instance-level parallelism only; **`num_workers=1` + deterministic solver budgets** (`max_deterministic_time` / CBC `maxNodes`) on any reported impossibility/RESISTANT verdict, so DECIDED-vs-RESISTANT depends on `(n, seed)`, never machine speed.
