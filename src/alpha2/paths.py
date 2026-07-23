@@ -45,6 +45,18 @@ P1_SHOWPIECE_CORPUS = REPO_ROOT / "data" / "corpus" / "p1_showpiece_certificates
 # contract from SUMFREE_CORPUS — an event stream, not the hash-chained FACT authority.
 SUMFREE_SWEEP = REPO_ROOT / "data" / "results" / "sumfree_sweep.jsonl"
 
+# Phase 8 (P2) — the empirical ILP optimality-proof frontier (RESEARCH open-Q A4). Two
+# SEPARATE data/results/ artifacts (measured/derived data, NEVER the hash-chained corpus):
+#   * SUMFREE_FRONTIER_TABLE  — append-only per-(n, kind) PROVED/UNPROVED measurement rows
+#     under a deterministic (det_time, det_nodes) budget on BOTH co-equal backends.
+#   * SUMFREE_FRONTIER_REPORT — the compact DERIVED report (per-n booleans + the frontier_n
+#     boundary + the det budgets + solver versions) the 08-06 grid sweep reads via
+#     `exact_window_max` to route a non-packing instance to an exact g>0 verdict (n ≤ window)
+#     or the RESISTANT E3 queue (n > window). The authoritative report is regenerated on the
+#     shared box (08-06), never on a dev machine — the frontier is a function of (n, budget).
+SUMFREE_FRONTIER_TABLE = REPO_ROOT / "data" / "results" / "sumfree_frontier_table.jsonl"
+SUMFREE_FRONTIER_REPORT = REPO_ROOT / "data" / "results" / "sumfree_frontier.json"
+
 
 def ensure_parent(path=CORPUS):
     """Ensure the parent directory of ``path`` exists; return the path."""
