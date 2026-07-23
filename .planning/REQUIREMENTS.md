@@ -60,7 +60,7 @@ Broad scope: the full program except Lean formalization (milestone 2). Each requ
 
 - [x] **POOL-0**: **P0 CDM frontier** — exhaustively generate the 1,813 maximal-triangle-free graphs at n=12–14 (`geng -ctq | pickg -Z2`, cross-checked vs OEIS A216783 counts and a second generator), run an exact CDM checker (DFS reference + CP-SAT cross-check), prove the transfer lemma in-repo; extend the verified CDM frontier past the literature's n≤11 (stretch ≤17).
 - [x] **POOL-1**: **P1 TFP complements at scale** — reproduce the 296, extend the critical-size sweep (n=31–32, many seeds), push showpieces toward n≈1001–2001 (heuristic + verifier engine past ILP range), with resistance tracking.
-- [ ] **POOL-2**: **P2 sum-free Cayley complements** — generalize to any finite abelian Γ, add structured generators (Andrásfai intervals, Green–Ruzsa types) alongside random-greedy; structured-vs-random grid, |Γ| odd 31–~500.
+- [x] **POOL-2**: **P2 sum-free Cayley complements** — generalize to any finite abelian Γ, add structured generators (Andrásfai intervals, Green–Ruzsa types) alongside random-greedy; structured-vs-random grid, |Γ| odd 31–~500.
 - [ ] **POOL-3**: **P3 Higman–Sims complement inflations** — build + verify HS srg(100,22,0,6), the shared inflation operator, odd-order uneven inflations (n≥101), CP-SAT exact with automorphism-group symmetry-breaking.
 - [ ] **POOL-4**: **P4 generalized Kneser K(n,k,≥t)** — parameter cartography outside the CLWY-settled window (Thm 3.12; pin the exact window), exact ω + small-clique-ratio prioritization, settled/open cells folded into the G5 map.
 - [ ] **POOL-5**: **P5 crooked-graph complements** — implement crooked-function constructions over F_{2^m} for ETT 𝒲₃/𝒲₅, plus remaining Eberhard 𝒲₇ primes (p≢11 mod 12); battery under heuristic + CP-SAT (ETT construction study is a phase-research task).
@@ -132,7 +132,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 | CLI-02 | Phase 6 | Complete |
 | POOL-0 | Phase 7 | Complete |
 | POOL-1 | Phase 8 | Complete |
-| POOL-2 | Phase 8 | Pending |
+| POOL-2 | Phase 8 | Complete |
 | POOL-3 | Phase 9 | Pending |
 | POOL-4 | Phase 10 | Pending |
 | POOL-5 | Phase 10 | Pending |

@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: "08-06 code authored (box run pending) — pool/sumfree/sweep.py: grid_descriptors (odd |Γ|=31–500 cyclic + curated non-cyclic; non-cyclic all-primes-≡1-mod3 type-II EXCLUDED with a logged reason) + canonical merged-stream dedup (pynauty; collisions logged) + group_observables (rank/exponent/prime-residue/cyclic?/exact |Aut|) + run_sweep (adjudicate_grid_point under a deterministic budget on BOTH backends; breadth-only instance parallelism; exact-window routing g>0-only-≤-window; observable bank folded in) + aggregate_sweep (structured-vs-random g / resistant-rate series) + box CLI. Dev-scale sweep/grid/dedup/aggregate tests GREEN; 332 non-slow pass (323 pre-existing unchanged); frozen trust root byte-untouched. The CANONICAL --order-max 500 box sweep + Task-3 human-verify checkpoint + POOL-2 completion are the orchestrator's box job (NOT run this Mac session)."
-last_updated: "2026-07-23T12:00:00.000Z"
+status: ready_to_plan
+stopped_at: Phase 08 complete (7/7) — ready to discuss Phase 9
+last_updated: 2026-07-23T15:11:56.327Z
 last_activity: 2026-07-23
 progress:
   total_phases: 12
   completed_phases: 7
   total_plans: 37
-  completed_plans: 36
-  percent: 60
+  completed_plans: 37
+  percent: 58
 ---
 
 # Project State
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-21)
 
 **Core value:** Reconstruct the *attempt* under discipline — build the adversary so that anything surviving it is a correct road to a disproof, and anything dying leaves a machine-verified result; never invent the missing hour. Epistemic integrity (verified existence, radioactive impossibility) wins over speed, coverage, or narrative.
-**Current focus:** Phase 08 — p1-p2-seeded-families-at-scale
+**Current focus:** Phase 9 — p3 & p6 — inflation pools
 
 ## Current Position
 
-Phase: 08 (p1-p2-seeded-families-at-scale) — EXECUTING
-Plan: 08-06 CODE AUTHORED, box run pending (08-01..08-05, 08-07 done)
-Status: 08-06 sweep.py authored + dev-scale tests GREEN; canonical --order-max 500 box sweep + Task-3 checkpoint + POOL-2 completion pending (orchestrator/box)
+Phase: 9
+Plan: Not started
+Status: Ready to plan
 Last activity: 2026-07-23
 
 Progress: [██████████] 97%
@@ -36,7 +36,7 @@ Progress: [██████████] 97%
 
 **Velocity:**
 
-- Total plans completed: 32
+- Total plans completed: 39
 - Average duration: ~8 min
 - Total execution time: ~0.5 hours
 
@@ -52,6 +52,7 @@ Progress: [██████████] 97%
 | 5 | 7 | - | - |
 | 6 | 5 | - | - |
 | 07 | 6 | - | - |
+| 08 | 7 | - | - |
 
 **Recent Trend:**
 
