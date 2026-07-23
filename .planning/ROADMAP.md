@@ -17,7 +17,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 - [x] **Phase 5: CP-SAT, Differential Gate & had₃** - second engine; dual-backend agreement gates any SHC-CANDIDATE; had₃ tier proven on synthetics; assume-and-verify symmetry breaking (completed 2026-07-22)
 - [x] **Phase 6: Kill Battery CLI (Gate, Search, Statuses)** - one tested CLI runs the 7-step runbook; author-pinned G1–G6; profile-general heuristic; derived statuses + results log (completed 2026-07-22)
 - [x] **Phase 7: P0 — CDM Frontier** - all 1,813 MTF graphs at n=12–14 exactly adjudicated; verified CDM frontier extended past the literature's n ≤ 11 (completed 2026-07-23)
-- [ ] **Phase 8: P1 & P2 — Seeded Families at Scale** - TFP critical-size sweep + showpieces toward n≈1001–2001; sum-free Cayley generalized to abelian Γ, structured vs random
+- [x] **Phase 8: P1 & P2 — Seeded Families at Scale** - TFP critical-size sweep + showpieces toward n≈1001–2001; sum-free Cayley generalized to abelian Γ, structured vs random (completed 2026-07-23)
 - [ ] **Phase 9: P3 & P6 — Inflation Pools** - shared inflation operator; Higman–Sims complement inflations; 477,142 Ramsey(3,8,27) witnesses ingested and inflated
 - [ ] **Phase 10: P4 & P5 — Literature-Frontier Pools** - generalized Kneser cells outside the pinned CLWY window; ETT crooked-graph complements under the battery
 - [ ] **Phase 11: Escalation Machinery (E1/E2/E3)** - falsification harness, monotonicity audit, and survivor protocol executable before any impossibility argument is entertained
@@ -157,7 +157,7 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
 - [x] 08-03-PLAN.md — g(G) certificate schema + stdlib verifier + append-only verify-at-append store; certificate honesty backbone (POOL-2)
 - [x] 08-04-PLAN.md — g(G) per-instance runbook: had₂→had₃ tiering + adjudicate (gen→gate→χ→g→honest verified cert); the P2 spine (POOL-2)
 - [x] 08-05-PLAN.md — ILP optimality-frontier measurement (A4): per-n PROVED window under a deterministic budget; bounds the exact g>0 region (POOL-2)
-- [ ] 08-06-PLAN.md — Structured-vs-random grid sweep over odd |Γ|=31–~500: g-vs-|Γ| + resistant-rate plot data; the break-hunt run (POOL-2)
+- [x] 08-06-PLAN.md — Structured-vs-random grid sweep over odd |Γ|=31–~500: g-vs-|Γ| + resistant-rate plot data; the break-hunt run (POOL-2)
 - [x] 08-07-PLAN.md — P1 secondary: TFP n=31–32 exact sweep + n≈1001–2001 existence-only showpieces; RNG v2 + resistance tracking (POOL-1)
 
 ### Phase 9: P3 & P6 — Inflation Pools
@@ -221,7 +221,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 | 5. CP-SAT, Differential Gate & had₃ | 7/7 | Complete    | 2026-07-22 |
 | 6. Kill Battery CLI (Gate, Search, Statuses) | 5/5 | Complete    | 2026-07-22 |
 | 7. P0 — CDM Frontier | 6/6 | Complete   | 2026-07-23 |
-| 8. P1 & P2 — Seeded Families at Scale | 5/7 | In Progress|  |
+| 8. P1 & P2 — Seeded Families at Scale | 7/7 | Complete   | 2026-07-23 |
 | 9. P3 & P6 — Inflation Pools | 0/TBD | Not started | - |
 | 10. P4 & P5 — Literature-Frontier Pools | 0/TBD | Not started | - |
 | 11. Escalation Machinery (E1/E2/E3) | 0/TBD | Not started | - |
