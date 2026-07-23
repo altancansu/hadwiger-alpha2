@@ -132,7 +132,13 @@ Milestone 1 rebuilds the Hadwiger α = 2 attempt as a disciplined adversary. The
   2. All 1,813 instances run the exact CDM check with the DFS reference and CP-SAT cross-check agreeing on every instance; per-instance certificates enter the corpus.
   3. The transfer lemma (maximal-triangle-free-only suffices for the whole frontier) is written up and proven in-repo.
   4. The verified CDM frontier extends past n ≤ 11 (stretch batches toward n ≤ 17 as budget allows); any CDM-less graph found is escalated immediately to the full battery and independent reproduction.
-**Plans**: TBD
+**Plans**: 6 plans in 3 waves
+- [ ] 07-01-PLAN.md — Wave-0 failing tests + fixtures + package skeleton + paths.CDM_CORPUS (definition-regression gate first)
+- [ ] 07-02-PLAN.md — CDM decision engines: has_cdm DFS reference + cdm_cpsat CP-SAT cross-check
+- [ ] 07-03-PLAN.md — CDM trust leg: build_cdm_record schema + verify_cdm_witness + append-only CDM store
+- [ ] 07-04-PLAN.md — MTF generation: geng/pickg subprocess driver + provenance + sharding cross-check
+- [ ] 07-05-PLAN.md — Transfer-lemma in-repo proof + executable predicates + author-review checkpoint
+- [ ] 07-06-PLAN.md — Adjudication runbook: dual-decision gate + carve-out/escalation + full 1,813 batch
 **Research flags**: re-derive the transfer lemma in-repo; MTF-generator cross-check options and geng res/mod tuning if throughput hurts at n=14+.
 
 ### Phase 8: P1 & P2 — Seeded Families at Scale
@@ -207,7 +213,7 @@ Phases execute in numeric order: 1 → 2 → … → 12. Phases 1→2→3 are st
 | 4. ExactBackend & CBC Reference | 4/4 | Complete   | 2026-07-22 |
 | 5. CP-SAT, Differential Gate & had₃ | 7/7 | Complete    | 2026-07-22 |
 | 6. Kill Battery CLI (Gate, Search, Statuses) | 5/5 | Complete    | 2026-07-22 |
-| 7. P0 — CDM Frontier | 0/TBD | Not started | - |
+| 7. P0 — CDM Frontier | 0/6 | Planned | - |
 | 8. P1 & P2 — Seeded Families at Scale | 0/TBD | Not started | - |
 | 9. P3 & P6 — Inflation Pools | 0/TBD | Not started | - |
 | 10. P4 & P5 — Literature-Frontier Pools | 0/TBD | Not started | - |

@@ -386,7 +386,9 @@ adj = [set(G.neighbors(u)) for u in range(n)]   # feed has_cdm / cdm_cpsat
 | A4 | CDM certificates are solver-independent and thus exempt from the ENV-05 Linux-canonical-platform rule. | Pitfall 5 | If wrong, cross-platform reproduction of CDM certs could drift. **Mitigation:** the witness verifier is pure-integer stdlib (no float, no CBC) — low risk. |
 | A5 | A dedicated CDM corpus + new verifier leg (rather than extending the frozen had₂ trust root/schema) is the preferred integration. | Architecture | If the project prefers a single unified corpus, the schema must instead be extended additively. **This is a design decision for discuss-phase** (Open Q2). |
 
-## Open Questions
+## Open Questions (RESOLVED)
+
+**Resolution (2026-07-22, plan-check):** Q1 → dedicated carve-out — disconnected `K_a⊔K_b` catalogued out-of-scope, connected frontier proven directly (07-05 proof + 07-06 classifier). Q2 → dedicated CDM corpus + new stdlib `verify_cdm_witness` leg (`paths.CDM_CORPUS`; frozen 296-corpus untouched; 07-03). Q3 → v1 second-FILTER route (OEIS A216783 + `is_edge_maximal_tf` + `shortg` canonical-set) ratified at the 07-04 blocking author checkpoint; a fully independent MTF generator is deferred. Q4 → escalation HOOK wired now (07-06: connected-complement CDM-fail → battery had₂ + quarantine); full E1/E2/E3 deferred to Phase 11.
 
 1. **The connected-vs-disconnected carve-out in the transfer proof.**
    - What we know: monotonicity + Lemma 2.5 give the backbone; disconnected edge-minimal graphs (K_a⊔K_b, complete-bipartite complements) can fail CDM without being counterexamples.
