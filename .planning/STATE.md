@@ -4,7 +4,7 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
-last_updated: "2026-07-23T09:14:35.519Z"
+last_updated: "2026-07-23T09:26:05.331Z"
 last_activity: 2026-07-23
 progress:
   total_phases: 12
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-07-21)
 ## Current Position
 
 Phase: 08 (p1-p2-seeded-families-at-scale) — EXECUTING
-Plan: 2 of 7
+Plan: 3 of 7
 Status: Ready to execute
 Last activity: 2026-07-23
 
@@ -78,6 +78,7 @@ Progress: [████████░░] 84%
 | Phase 07 P07-04 | 31min | 3 tasks | 1 files |
 | Phase 07 P07-06 | 32min | 2 tasks | 4 files |
 | Phase 08 P01 | 25min | 3 tasks | 12 files |
+| Phase 08 P02 | 20min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -142,6 +143,10 @@ Execution decisions (Phase 02 Plan 02):
 - [Phase ?]: [Phase 07] Plan 07-06: full n=12-14 batch — 1813 total, DFS≡CP-SAT everywhere (0 disagreements), 1794 CDM-HOLDS certificated (141/386/1267), 19 K_a⊔K_b carve-outs, 0 connected-complement fails; verified CDM frontier extends past n≤11
 - [Phase ?]: [Phase 07] Plan 07-06: CDM corpus is gitignored runtime output; CHI-01 guard extended with pool/cdm/adjudicate.py-scoped networkx allow-list {from_graph6_bytes,complement,is_connected}
 - [Phase 08]: POOL-1/POOL-2 RED contract landed (12 test modules + conftest); certificate-honesty gate executable — requirements deferred to implementation waves 08-03..08-07, not marked complete on the RED scaffold (reporting discipline)
+- [Phase 08 P02]: POOL-2 generation foundation GREEN — Abelian(factors) Γ arithmetic (V5-validated, n≤500 cap), sha256 stage-independent RNG v2 subseeds, structured (Andrásfai middle-interval, Green–Ruzsa) + random-greedy sum-free generators with a raise-based verify_sumfree_maximal net inside every generator, pynauty-canonical dedup (WL/graph-hash forbidden). Frozen generators/cayley.py byte-untouched.
+- [Phase 08 P02]: green_ruzsa_sumfree keys off the ARITHMETIC of |Γ| (smallest prime ≡2 mod3 pullback / all ≡1 mod3 middle interval), never an I/II/III numeral (Pitfall 6); the raise-based re-check makes an unpinned coset-membership formula non-fatal (RESEARCH Open Q1). 3∣n cyclic case deliberately NotImplemented (ambiguous — served by random-greedy).
+- [Phase 08 P02]: deterministic solver budgets are ADDITIVE — SolveParams.det_time → CP-SAT max_deterministic_time, SolveParams.det_nodes → CBC PULP_CBC_CMD(maxNodes=…); both default None → unbounded → 296-corpus reproduction byte-unchanged (273 pre-existing tests still green); map_status untouched (node-limit stop already maps to INCUMBENT_ONLY). Wall-clock forbidden for any recorded verdict (Pitfall 2).
+- [Phase 08 P02]: POOL-2 NOT marked complete — shared across waves 08-02..08-07; this plan lands the generation foundation only. Completed when the g-screen/store/verifier/adjudicate waves make the full contract green (same discipline as 08-01).
 
 ### Pending Todos
 
@@ -175,6 +180,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-23T09:14:08.556Z
+Last session: 2026-07-23T09:26:05.324Z
 Stopped at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
 Resume file: None
