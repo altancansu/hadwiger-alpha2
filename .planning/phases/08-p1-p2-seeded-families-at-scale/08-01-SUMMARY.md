@@ -112,6 +112,10 @@ None - no external service configuration required. (Heavy `-m slow` sweeps run l
 - Module names the implementation must honor: `alpha2.pool.sumfree.{group,generate,dedup,rng,schema,store,verifier,screen,adjudicate,frontier,p1}`.
 - No blockers.
 
+## Self-Check: PASSED
+
+All 12 test modules + SUMMARY.md exist on disk; all four commits (`a13a0ad`, `09d2a55`, `f1b4f93`, `318d39d`) present in git history.
+
 ---
 *Phase: 08-p1-p2-seeded-families-at-scale*
 *Completed: 2026-07-23*

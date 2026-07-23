@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: ready_to_plan
-stopped_at: Phase 07 complete (6/6) — ready to discuss Phase 8
-last_updated: 2026-07-23T07:32:45.467Z
+status: executing
+stopped_at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
+last_updated: "2026-07-23T09:14:35.519Z"
 last_activity: 2026-07-23
 progress:
   total_phases: 12
   completed_phases: 7
-  total_plans: 30
-  completed_plans: 30
+  total_plans: 37
+  completed_plans: 31
   percent: 58
 ---
 
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-21)
 
 **Core value:** Reconstruct the *attempt* under discipline — build the adversary so that anything surviving it is a correct road to a disproof, and anything dying leaves a machine-verified result; never invent the missing hour. Epistemic integrity (verified existence, radioactive impossibility) wins over speed, coverage, or narrative.
-**Current focus:** Phase 8 — p1 & p2 — seeded families at scale
+**Current focus:** Phase 08 — p1-p2-seeded-families-at-scale
 
 ## Current Position
 
-Phase: 8
-Plan: Not started
-Status: Ready to plan
+Phase: 08 (p1-p2-seeded-families-at-scale) — EXECUTING
+Plan: 2 of 7
+Status: Ready to execute
 Last activity: 2026-07-23
 
-Progress: [██████████] 100%
+Progress: [████████░░] 84%
 
 ## Performance Metrics
 
@@ -77,6 +77,7 @@ Progress: [██████████] 100%
 | Phase 07 P07-03 | 14min | 3 tasks | 3 files |
 | Phase 07 P07-04 | 31min | 3 tasks | 1 files |
 | Phase 07 P07-06 | 32min | 2 tasks | 4 files |
+| Phase 08 P01 | 25min | 3 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -140,6 +141,7 @@ Execution decisions (Phase 02 Plan 02):
 - [Phase ?]: [Phase 07] Plan 07-06: adjudicate.py wires the CDM subsystem — decode(V5 n-assert)->has_cdm≡cdm_cpsat gate(CDMCriticalDisagreement, release-blocking)->CDM-HOLDS verify+append; CDM-FAILS is_connected carve-out (K_a⊔K_b out-of-scope) vs connected-complement battery escalation hook
 - [Phase ?]: [Phase 07] Plan 07-06: full n=12-14 batch — 1813 total, DFS≡CP-SAT everywhere (0 disagreements), 1794 CDM-HOLDS certificated (141/386/1267), 19 K_a⊔K_b carve-outs, 0 connected-complement fails; verified CDM frontier extends past n≤11
 - [Phase ?]: [Phase 07] Plan 07-06: CDM corpus is gitignored runtime output; CHI-01 guard extended with pool/cdm/adjudicate.py-scoped networkx allow-list {from_graph6_bytes,complement,is_connected}
+- [Phase 08]: POOL-1/POOL-2 RED contract landed (12 test modules + conftest); certificate-honesty gate executable — requirements deferred to implementation waves 08-03..08-07, not marked complete on the RED scaffold (reporting discipline)
 
 ### Pending Todos
 
@@ -173,6 +175,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-23T06:07:55.265Z
+Last session: 2026-07-23T09:14:08.556Z
 Stopped at: Completed 05-05-PLAN.md — solve_had3 on CBC+CP-SAT, size-3-forced dual-backend escalation (had_2=4<had_3=5) verified through widened trust root; CBC==CP-SAT on had_3 (EXACT-05/EXACT-03)
 Resume file: None
