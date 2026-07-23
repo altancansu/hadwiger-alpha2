@@ -21,8 +21,6 @@ in-file literals; no cross-test imports. Trust-root / exact-value reads are
 made OUTSIDE any test truth-expression — call, bind k, then compare — so the
 verification itself is never an optimization-strippable statement.
 """
-from itertools import combinations
-
 import pytest
 
 from alpha2.corpus.schema import build_record, provenance_params

@@ -47,7 +47,7 @@ import random
 import pytest
 
 from alpha2 import paths
-from alpha2.corpus.schema import build_record, provenance_params, provenance_seed
+from alpha2.corpus.schema import build_record, provenance_params
 from alpha2.corpus.verifier import verify_certificate
 from alpha2.generators.tfp import triangle_free_process
 from alpha2.invariants.matching import matching_number

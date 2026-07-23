@@ -22,7 +22,8 @@ def _H_graph(adj, n):
         raise ValueError(f"n must be a non-negative int, got {n!r}")
     if len(adj) != n:
         raise ValueError(f"adj has {len(adj)} rows, expected n={n}")
-    Hg = nx.Graph(); Hg.add_nodes_from(range(n))
+    Hg = nx.Graph()
+    Hg.add_nodes_from(range(n))
     Hg.add_edges_from((u, v) for u in range(n) for v in adj[u] if u < v)
     return Hg
 

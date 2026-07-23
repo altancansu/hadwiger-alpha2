@@ -84,7 +84,6 @@ def _synthetic_empty_h(provenance):
 
     nu=0, chi=5, model = 5 singletons (all pairwise G-adjacent), M=[], U=[].
     """
-    n = 5
     return build_record(
         provenance=provenance,
         H_edges=[],

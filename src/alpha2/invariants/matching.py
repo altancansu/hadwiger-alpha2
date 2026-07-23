@@ -10,7 +10,8 @@ never estimated or approximated. networkx is confined to this module.
 # ---------- exact chromatic number of G = complement(H) ----------
 def matching_number(adj, n):
     import networkx as nx
-    Hg = nx.Graph(); Hg.add_nodes_from(range(n))
+    Hg = nx.Graph()
+    Hg.add_nodes_from(range(n))
     Hg.add_edges_from((u, v) for u in range(n) for v in adj[u] if u < v)
     M = nx.max_weight_matching(Hg, maxcardinality=True)
     return len(M)
@@ -26,7 +27,8 @@ def matching_edges(adj, n):
     authority. |matching_edges(adj, n)| == matching_number(adj, n) by construction.
     """
     import networkx as nx
-    Hg = nx.Graph(); Hg.add_nodes_from(range(n))
+    Hg = nx.Graph()
+    Hg.add_nodes_from(range(n))
     Hg.add_edges_from((u, v) for u in range(n) for v in adj[u] if u < v)
     M = nx.max_weight_matching(Hg, maxcardinality=True)
     return [sorted(int(x) for x in e) for e in M]
