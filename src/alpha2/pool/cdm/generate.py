@@ -152,6 +152,69 @@ def stream_mtf(n, res=None, mod=None) -> Iterator[tuple[int, str, "str | None"]]
         p2.wait()
 
 
+# --------------------------------------------------------------------------- #
+# Generation cross-checks (POOL-0 SC1) — the ratified v1 anti-drift surface
+# (07-04 Q3 → ratify-v1): OEIS A216783 exact counts + an INDEPENDENT second-filter
+# predicate (`generators.tfp.is_edge_maximal_tf`) + the sharding-sum identity. A
+# fully independent MTF *generator* (triangleramsey/Goedgebeur) is DEFERRED to
+# milestone-2 / n≈16; for n≤14 these three guards already catch generation drift
+# (RESEARCH Pitfall 3). `shortg` is the canonical-set deduper used ONLY when a
+# SECOND generator stream is merged — geng's single stream is already isomorph-free
+# (McKay canonical augmentation), so NO non-canonical (hash-based) dedup is ever
+# applied here; only canonical `shortg` would be, and only across merged streams.
+# --------------------------------------------------------------------------- #
+def count_mtf(n, res=None, mod=None):
+    """Survivor count for a (possibly sharded) MTF stream.
+
+    Used by the sharding-sum identity (Pitfall 3): for any mod,
+    ``count_mtf(n) == sum(count_mtf(n, r, mod) for r in range(mod))`` — a dropped
+    or duplicated shard breaks this equality. E.g. count_mtf(12) == 147.
+    """
+    return sum(1 for _ in stream_mtf(n, res, mod))
+
+
+def _graph6_to_adj(graph6):
+    """Decode a graph6 string to (adj: list[set[int]], n) — stdlib, no networkx.
+
+    A ~15-line local decoder (STACK Blueprint 1) so the cross-check touches no
+    heavyweight `nx.Graph`. Handles n≤62 (single header byte), which covers the
+    whole phase budget (n≤17). Bit order is graph6's column-major upper triangle:
+    (0,1),(0,2),(1,2),(0,3),… — matching `networkx.from_graph6_bytes`.
+    """
+    data = [ord(c) - 63 for c in graph6]
+    n = data[0]
+    bits = []
+    for byte in data[1:]:
+        for k in range(5, -1, -1):
+            bits.append((byte >> k) & 1)
+    adj = [set() for _ in range(n)]
+    idx = 0
+    for j in range(1, n):
+        for i in range(j):
+            if bits[idx]:
+                adj[i].add(j)
+                adj[j].add(i)
+            idx += 1
+    return adj, n
+
+
+def is_survivor_edge_maximal(graph6):
+    """Second-route cross-check: is this `pickg -Z2` survivor edge-maximal-tf?
+
+    Runs the repo's INDEPENDENT Python predicate `is_edge_maximal_tf`
+    (add-any-edge-closes-a-triangle ⟺ diameter 2) over the decoded survivor. nauty's
+    C diameter filter and this Python edge-maximality filter must agree on the whole
+    survivor set (Lemma 2.5 / OEIS A216783). This is the ratified-v1 "second route"
+    — a FILTER cross-check, NOT a second generator. Never run it over the raw
+    triangle-free stream (CLAUDE.md anti-pattern: timed out at n=13); apply it only
+    to the ~10³ survivors `stream_mtf` yields.
+    """
+    from alpha2.generators.tfp import is_edge_maximal_tf
+
+    adj, n = _graph6_to_adj(graph6)
+    return is_edge_maximal_tf(adj, n)
+
+
 def provenance_for(n, graph6, shard, index):
     """schema-v1 graph6 provenance for one MTF instance + a params sidecar.
 
