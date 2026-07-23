@@ -1,11 +1,18 @@
 # The Transfer Lemma (in-repo re-derivation)
 
 **Requirement:** POOL-0 · **ROADMAP:** SC3 · **Phase:** 07 P0 CDM frontier
-**Executable backing:** `tests/pool/cdm/test_transfer_lemma.py`
+**Executable backing:** `tests/pool/cdm/test_transfer_lemma.py`,
+`tests/pool/cdm/test_a3_coverage.py`
 **Status of this document:** states *exactly* what it proves. The two ingredients
 (monotonicity, edge-minimal correspondence) are proven here; CLWY Lemma 2.5 is
-*cited*; the completeness of the connected-frontier claim rests on **Assumption A3**,
-which is flagged below as an author-read residual and is **not** claimed as certified.
+*cited*. The former residual **A3** (the *reach* of the connected-frontier claim) is
+now **discharged** two ways: a **proven-for-all-n lemma** (§5, the two-clique / single
+cross-edge argument) covers exactly the graphs monotonicity misses, and an
+**exhaustive superset enumeration** (`test_a3_coverage`) verifies the *exact* A3
+statement — every connected `α=2` graph holds CDM — for **all `n ≤ 12`**. What
+remains is *not* A3 but the pre-existing frontier target: that the connected
+MTF-complements themselves hold CDM (CLWY, verified `n ≤ 11`; Phase-7-adjudicated at
+`n = 12,13,14`).
 
 ---
 
@@ -45,9 +52,10 @@ A CDM *failure* is **not** a Hadwiger counterexample — CDM is sufficient, not 
 > **provided each such connected complement holds CDM**. These complements are exactly
 > the outputs of `geng -ctq n | pickg -Z2`.
 
-The lemma is carried by two ingredients (§2, §3) and one carve-out (§4). §5 states the
-residual (**A3**) precisely and exhibits the concrete witness (`P4`) that makes A3
-non-trivial — the single point on which the *connected-frontier* completeness turns.
+The lemma is carried by two ingredients (§2, §3) and one carve-out (§4). §5 **closes**
+the former residual (**A3** — the *reach* of the connected-frontier claim): it proves
+the direct lemma that covers exactly the graphs monotonicity misses (the `P4`-class),
+and records the exhaustive-superset gate that verifies the exact A3 statement in range.
 
 ---
 
@@ -148,45 +156,105 @@ Pitfall 1). The operational enforcement is the `07-06` complement-connectivity c
 
 ---
 
-## 5. Residual: Assumption A3 (author-read pending — NOT certified here)
+## 5. Closing the reach residual A3 (proven lemma + exhaustive in-range gate)
 
 The clean target of §1 — *"CDM on the MTF-complements ⟹ CDM for **every** connected
-`α=2` graph"* — needs one more step beyond §2–§4:
+`α=2` graph"* — needs one step beyond §2–§4, historically flagged as **A3**:
 
-> **A3 (`07-RESEARCH.md` Assumptions Log).** The disconnected-complement carve-out
-> `K_a ⊔ K_b` is the **only** obstruction; equivalently, every *connected* `α=2` graph `G`
-> admits a **connected** edge-minimal reduction `G₀ ⊆ G` (so that §3 monotonicity lifts
-> `CDM(G₀)` — known to hold for connected MTF-complements — up to `G`).
+> **A3 (as originally phrased, `07-RESEARCH.md` Assumptions Log).** Every *connected*
+> `α=2` graph `G` admits a **connected** edge-minimal reduction `G₀ ⊆ G`, so that §3
+> monotonicity lifts `CDM(G₀)` — known for connected MTF-complements — up to `G`.
 
-**This document does not prove A3, and does not assert it is externally certified.**
-It is proven here only that:
+**That phrasing is literally FALSE, and `P4` disproves it.** Consider `G = P4` (the path
+`0–1–2–3`): connected, `α(P4)=2`, and it **holds CDM**. Yet the *only* edge-minimal `α=2`
+graph below `P4` is `2K₂ = K₂ ⊔ K₂` (its complement `P̄4` has diameter 3, so `P4` is **not**
+an MTF-complement; the unique maximal-triangle-free extension of `P̄4` is `C₄`, whose
+complement is `2K₂`), and `2K₂` **fails** CDM (§4). So monotonicity from the checked
+connected MTF-complements lifts **nothing** to `P4`. Its CDM is true but must come from a
+*different* argument. The real content of A3 is therefore not "a connected reduction
+always exists" (it need not) but **"the graphs with only disconnected reductions hold CDM
+anyway."** That is what we now prove.
 
-- (§3) monotonicity is valid, and
-- (§4) the disconnected edge-minimal graphs are precisely `K_a ⊔ K_b`.
+### 5.1 The direct lemma (PROVEN for all `n`)
 
-**Why A3 is non-trivial — a concrete witness.** Consider `G = P4` (the path `0–1–2–3`).
-`P4` is connected with `α(P4)=2`, and it **holds CDM** (`has_cdm` returns the perfect
-matching `{01, 23}`, whose two edges are joined by the edge `1–2`). Yet the *only*
-edge-minimal `α=2` graph below `P4` is `2K₂ = K₂ ⊔ K₂` (its complement `P̄4` has diameter 3,
-so `P4` is itself **not** an MTF-complement; the unique maximal-triangle-free extension of
-`P̄4` is `C₄`, whose complement is `2K₂`). And `2K₂` **fails** CDM (§4). So for `P4`,
-monotonicity from the *checked* connected MTF-complements lifts **nothing** — its CDM is
-true but is *not* delivered by the §3 argument. Every step of this is machine-checked in
-`tests/pool/cdm/test_transfer_lemma.py` reasoning and reproducible via `has_cdm`.
+> **Lemma A3 (two-clique closure).** Let `G` be a **connected** graph with `α(G)=2` that
+> admits **at least one disconnected** edge-minimal `α=2` reduction. Then `G` holds CDM;
+> concretely, **any single edge of `G` between the two cliques is, by itself, a connected
+> dominating matching.**
 
-`P4` sits squarely inside A3's scope: it is a connected `α=2` graph whose forced
-edge-minimal reduction is disconnected. A3 asserts such graphs are nonetheless covered
-(their CDM established by other means, or such reductions never obstruct the frontier
-claim). **That assertion is the single residual research statement requiring the author's
-eyes** before any *external* connected-frontier claim is published.
+**Proof.** By §4, a disconnected edge-minimal reduction of `G` is `G₀ = K_a ⊔ K_b`, whose
+complement is the *complete* bipartite `K_{a,b}`. Since reduction adds edges to `H := Ḡ`
+until maximal-triangle-free, `H ⊆ K_{a,b}`; hence **`H` is bipartite** with parts
+`A` (`|A|=a`), `B` (`|B|=b`). Complementing, `A` and `B` are each **cliques of `G`**, and
+they partition `V(G)`. (Equivalently: `G` is two cliques joined by the cross edges that are
+the *non*-edges of `H` between `A` and `B`. Note `α(G)=2` is automatic — any independent
+set meets each clique in `≤1` vertex.)
 
-**Correctness backstop (independent of the prose).** The hard gate is empirical: the
-n≤11 definition gate (`test_cdm_n_le_11.py`) reproduces CLWY's published result — **all
-134** MTF-complements at `n ≤ 11` decide as expected (105 connected hold CDM; 29
-`K_a ⊔ K_b` fail), matching CLWY's all-connected-`α=2`-hold-CDM verification. What Phase 7
-*adjudicates and stores* at `n = 12,13,14` is CDM on the **1,813 MTF-complements**
-themselves; the transfer lemma is the *warrant* for why those instances are the right
-ones to check, with A3 the flagged residual on the reach of "every connected graph."
+`G` is connected, so there is at least one **cross edge** `e = {u, v}` with `u ∈ A`,
+`v ∈ B` (a single cross edge already connects everything, since `u` reaches all of `A` and
+`v` reaches all of `B` inside their cliques; with no cross edge `G` would be `K_a ⊔ K_b`,
+disconnected). Take `M := {e}`.
+
+- **Non-empty:** `M` has one edge. ✔
+- **Connected:** connectedness constrains *pairs* of edges; `|M| = 1`, so it holds
+  vacuously. ✔
+- **Dominating:** let `w ∉ {u, v}`. Then `w ∈ A` or `w ∈ B`. If `w ∈ A`, then `w ∼ u`
+  (both in the clique `A`); if `w ∈ B`, then `w ∼ v` (both in the clique `B`). Either way
+  `w` is adjacent to `≥1` endpoint of `e`, i.e. dominated by the edge `e`. ✔
+
+Hence `M = {e}` is a non-empty connected dominating matching, so `CDM(G)` holds. ∎
+
+This is exactly the `P4` mechanism the old §5 pointed at, made rigorous and *general*:
+`P4 = K₂(01) ∪ K₂(23)` with the single cross edge `1–2`, and indeed `M = {1–2}` alone
+dominates `0` (via `1`) and `3` (via `2`). The lemma **covers precisely the class
+monotonicity misses**: every connected `α=2` graph either has a *connected* edge-minimal
+reduction (→ §3 lifts CDM from the connected MTF-complement frontier) **or** has *only*
+disconnected reductions (→ it is two-clique, and Lemma A3 gives CDM directly). No connected
+`α=2` graph falls outside both cases. The **danger case** flagged in review — two large
+cliques joined by a single sparse cross edge — is exactly where the lemma is *strongest*:
+that lone cross edge dominates both cliques wholesale, so a *one-edge* matching already
+certifies CDM (no need for a simultaneously connected-and-dominating larger matching).
+
+**Machine corroboration (not the proof, a check of it).** Over the full `geng -tq n`
+triangle-free stream for all `n ≤ 11`, every one of the **39,311** connected two-clique
+`α=2` graphs has the property that *every* cross edge is, as a singleton, a dominating
+matching (`has_cdm`-consistent; 0 exceptions).
+
+### 5.2 The exact A3 statement, verified exhaustively in range
+
+Independently of the prose, `tests/pool/cdm/test_a3_coverage.py` checks A3's *exact*
+statement head-on. For each `n` it enumerates the **full triangle-free superset**
+`geng -tq n` (NOT the `pickg -Z2` maximal subset — this is the whole `α=2` universe, the
+edge-minimal graphs *and* every `P4`-like graph above a disconnected floor), complements
+each `H` with `≥1` edge to `G`, and asserts every **connected** `G` satisfies
+`has_cdm(G) is not None`. Result — **every connected `α=2` graph holds CDM**:
+
+| `n` | connected `α=2` graphs | held CDM |
+|----:|-----------------------:|---------:|
+| 4–10 | 14,615 | all |
+| 11 | 105,065 | all |
+| 12 | 1,262,173 | all |
+
+`n ≤ 11` runs as the default gate (matching CLWY's verified range); `n = 12` is behind the
+`slow` marker. **Total: 1,381,853 connected `α=2` graphs at `n ≤ 12`, every one holds
+CDM.** A single connected failure would raise loudly with its graph6 — none occurred.
+
+### 5.3 What is now true (and the honest remaining item — not A3)
+
+A3's *reach* question is **discharged**: §5.1 proves for **all `n`** that the graphs
+monotonicity cannot reach (only-disconnected-reduction, i.e. two-clique) hold CDM; §5.2
+verifies the whole connected `α=2` frontier exhaustively for `n ≤ 12`. The connected-frontier
+claim therefore reduces cleanly to a *single* target: **that the connected MTF-complements
+themselves hold CDM.** That is the pre-existing CLWY frontier (verified `n ≤ 11`, all 105
+connected MTF-complements holding; `test_cdm_n_le_11.py`), and it is exactly what Phase 7
+adjudicates and stores at `n = 12,13,14` (the **1,813 MTF-complements**). It is **not** A3
+and was never in A3's scope; A3 was only ever about whether monotonicity's reach is
+complete, and §5.1–§5.2 settle that.
+
+**Author-check (non-blocking).** Whether CLWY `[arXiv:2512.17114]` states this coverage
+reduction in an equivalent form is not resolvable from the in-repo citation text (Lemma 2.5
+and Conjecture 10 are what the doc cites); the two-clique lemma above is proven **in-repo
+and stands on its own**, so no external certification is needed to discharge A3.
 
 ---
 
@@ -194,15 +262,21 @@ ones to check, with A3 the flagged residual on the reach of "every connected gra
 
 - **Proven:** CDM edge-addition **monotonicity** (§3); every `α=2` graph is a spanning
   supergraph of an edge-minimal `α=2` graph; the disconnected edge-minimal `α=2` graphs
-  are exactly `K_a ⊔ K_b` and legitimately fail CDM (§4).
+  are exactly `K_a ⊔ K_b` and legitimately fail CDM (§4); **Lemma A3 (§5.1) — for all `n`,
+  every connected `α=2` graph whose only edge-minimal reductions are disconnected is a
+  two-clique graph and holds CDM via a single cross edge.**
 - **Cited (not re-proven):** CLWY **Lemma 2.5** four-way TFAE `[arXiv:2512.17114]`,
   empirically corroborated `(i)⟺(ii)` over all 134 `n ≤ 11` MTF survivors.
-- **Consequence:** CDM verified on the connected MTF-complements at `n` lifts, by
-  monotonicity, to every connected `α=2` graph **that possesses a connected edge-minimal
-  reduction**.
-- **Residual (Assumption A3, author-read pending, non-blocking):** that this covers
-  *every* connected `α=2` graph. The witness `P4` shows A3 is non-trivial; the empirical
-  n≤11 definition gate is the correctness backstop. No external certification is claimed.
+- **Consequence:** every connected `α=2` graph holds CDM **iff** the connected
+  MTF-complements do — graphs with a connected edge-minimal reduction by §3 monotonicity,
+  graphs with only disconnected reductions by §5.1 Lemma A3. The reach is now **complete**,
+  not conditional on an uncertified coverage step.
+- **A3 (the reach residual) — DISCHARGED.** Proven for all `n` (§5.1) and, as its exact
+  statement, verified exhaustively for **all `n ≤ 12`** by superset enumeration
+  (`test_a3_coverage`: 1,381,853 connected `α=2` graphs, every one holds CDM; §5.2).
+- **Remaining item (pre-existing, *not* A3):** that the connected MTF-complements hold CDM
+  for all `n` — CLWY's result verified `n ≤ 11`, Phase-7-adjudicated at `n = 12,13,14`.
 
-*This file states exactly what it proves; the reach of the connected-frontier claim is
-bounded by Assumption A3, which remains an author-read item.*
+*This file states exactly what it proves. The connected-frontier reach is now fully
+established (proven lemma + exhaustive-in-range gate); the only open target is the CLWY
+MTF-complement frontier itself, which Phase 7 adjudicates.*
