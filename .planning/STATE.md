@@ -5,7 +5,7 @@ milestone_name: milestone
 status: ready_to_plan
 stopped_at: Phase 6 complete (5/5) — ready to discuss Phase 7
 last_updated: 2026-07-22T13:41:36.091Z
-last_activity: 2026-07-22
+last_activity: 2026-07-22 - Completed quick task 260722-r57: ruff lint cleanup (Phase 1-6)
 progress:
   total_phases: 12
   completed_phases: 5
@@ -136,6 +136,12 @@ None yet.
 - [Phase 6] GATE-02 needs author input: pin the exact original G1–G6 definitions (§2) and reconcile reconstructed labels; also confirm what B₇ denotes in the PST citation. Gather early (any time from Phase 1) — required before the gate is trusted.
 - [Phase 3] Linux x86_64 is the canonical reference-regeneration platform for ILP-method certificates (macOS bundled CBC is x86_64-only, Rosetta on Apple Silicon) — CI must provide it.
 - [Phase 10] P4 requires pinning CLWY Theorem 3.12's exact parameter window before declaring any cell open; P5 is gated on the ETT (arXiv 2508.19646) construction study — instance sizes may exceed exact-ILP range.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260722-r57 | ruff lint cleanup (Phase 1-6): 6 errors → 0, lint-only | 2026-07-22 | 30fbd73 | [260722-r57-ruff-lint-phase-1-6](./quick/260722-r57-ruff-lint-phase-1-6/) |
 
 ## Deferred Items
 
